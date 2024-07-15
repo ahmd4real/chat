@@ -1,10 +1,10 @@
-import 'package:chatapp/Ui/Screens/chat_page.dart';
-import 'package:chatapp/Ui/Screens/register_page.dart';
-import 'package:chatapp/Ui/Widgets/custom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat/view/Screens/register_page.dart';
+import 'package:chat/view/Widgets/custom_button.dart';
+
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import '../../helper/show_snackbar.dart';
+
+
 import '../Widgets/custom_text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -57,17 +57,17 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loading = true;
                       });
-                      try {
-                        await loginUser();
-                        Navigator.pushNamed(context, ChatPage.id,
-                            arguments: email);
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          snackBar(context, 'User not found');
-                        } else if (e.code == 'wrong-password') {
-                          snackBar(context, 'Wrong password');
-                        }
-                      }
+                      // try {
+                      //   await loginUser();
+                      //   Navigator.pushNamed(context, ChatPage.id,
+                      //       arguments: email);
+                      // } on FirebaseAuthException catch (e) {
+                      //   if (e.code == 'user-not-found') {
+                      //     snackBar(context, 'User not found');
+                      //   } else if (e.code == 'wrong-password') {
+                      //     snackBar(context, 'Wrong password');
+                      //   }
+                      // }
                 
                       setState(() {
                         loading = false;
@@ -106,8 +106,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> loginUser() async {
-    UserCredential user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email!, password: password!);
-  }
+  // Future<void> loginUser() async {
+  //   UserCredential user = await FirebaseAuth.instance
+  //       .signInWithEmailAndPassword(email: email!, password: password!);
+  // }
 }

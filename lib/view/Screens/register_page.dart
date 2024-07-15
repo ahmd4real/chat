@@ -1,9 +1,7 @@
-import 'package:chatapp/Ui/Screens/chat_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../../helper/show_snackbar.dart';
 import '../Widgets/custom_button.dart';
 import '../Widgets/custom_text_form_field.dart';
 
@@ -59,17 +57,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (formKey.currentState!.validate()) {
                             loading = true;
                             setState(() {});
-                            try {
-                              await registerUser();
-                              Navigator.pushNamed(context, ChatPage.id);
-                            } on catch (e) {
-                              if (e.code == 'weak-password') {
-                                snackBar(context, 'Weak password');
-                              } else if (e.code == 'email-already-in-use') {
-                                snackBar(context,
-                                    'Email already in use try another one');
-                              }
-                            }
+                            // try {
+                            //   await registerUser();
+                            //   Navigator.pushNamed(context, ChatPage.id);
+                            // } on catch (e) {
+                            //   if (e.code == 'weak-password') {
+                            //     snackBar(context, 'Weak password');
+                            //   } else if (e.code == 'email-already-in-use') {
+                            //     snackBar(context,
+                            //         'Email already in use try another one');
+                            //   }
+                            // }
                             loading = false;
                             setState(() {});
                           }
@@ -106,8 +104,8 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> registerUser() async {
-    UserCredential user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email!, password: password!);
-  }
+  // Future<void> registerUser() async {
+  //   UserCredential user = await FirebaseAuth.instance
+  //       .createUserWithEmailAndPassword(email: email!, password: password!);
+  // }
 }

@@ -1,6 +1,3 @@
-
-
-
 import 'package:chat/constants.dart';
 
 class Message{

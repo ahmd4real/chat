@@ -1,7 +1,9 @@
 import 'package:chat/view/Screens/register_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 
@@ -15,7 +17,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? email, password;
+ TextEditingController emailController = TextEditingController();
+ TextEditingController passwordController = TextEditingController();
   bool loading = false;
 
   GlobalKey<FormState> formKey = GlobalKey();
@@ -37,18 +40,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: [
                       CustomTextFormField(
+                        controller: emailController,
                   hidden: false,
                   hintText: 'Email',
-                  onChanged: (data) {
-                    email = data;
-                  },
+                  
                 ),
                       CustomTextFormField(
+                  controller: passwordController,
                   hidden: true,
                   hintText: 'Password',
-                  onChanged: (data) {
-                    password = data;
-                  },
+                 
                 ),
                 CustomButton(
                   text: 'Login',
@@ -72,6 +73,9 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loading = false;
                       });
+                       print(
+                            'email ${emailController.text} password ${passwordController.text}',
+                          );
                     }
                   },
                 ),
@@ -90,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     GestureDetector(
                         onTap: () {
+                         
                           Navigator.pushNamed(context, RegisterPage.id);
                         },
                         child: const Text(

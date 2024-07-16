@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../Widgets/custom_button.dart';
@@ -14,9 +14,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String? email;
+  TextEditingController emailController = TextEditingController();
 
-  String? password;
+  TextEditingController passwordController = TextEditingController();
+
+  TextEditingController nameController = TextEditingController();
+
+  TextEditingController lastNameController = TextEditingController();
+
+  TextEditingController confirmPasswordController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey();
 
@@ -38,18 +44,29 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     children: [
                       CustomTextFormField(
+                        controller: nameController,
                         hidden: false,
-                        hintText: 'Email',
-                        onChanged: (data) {
-                          email = data;
-                        },
+                        hintText: 'First Name',
                       ),
                       CustomTextFormField(
-                        hidden: true,
+                        controller: lastNameController,
+                        hidden: false,
+                        hintText: 'Last Name',
+                      ),
+                      CustomTextFormField(
+                        controller: emailController,
+                        hidden: false,
+                        hintText: 'Email',
+                      ),
+                      CustomTextFormField(
+                        controller: passwordController,
+                        hidden: false,
                         hintText: 'Password',
-                        onChanged: (data) {
-                          password = data;
-                        },
+                      ),
+                      CustomTextFormField(
+                        controller: confirmPasswordController,
+                        hidden: true,
+                        hintText: 'Confirm Password',
                       ),
                       CustomButton(
                         text: 'Sign Up',
@@ -70,6 +87,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             // }
                             loading = false;
                             setState(() {});
+                            print(
+                            'email ${emailController.text} password ${passwordController.text} confirm password ${confirmPasswordController.text} name ${nameController.text} last name ${lastNameController.text}');
+                        
                           }
                         },
                       ),
@@ -77,25 +97,31 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Already have an account? ',
+              Padding(
+
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Already have an account? ',
                       // style:
                       //     TextStyle(color: Color.fromARGB(255, 206, 230, 218))
-                          ),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.w600),
-                      ))
-                ],
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          print(
+                              'email ${emailController.text} password ${passwordController.text} confirm password ${confirmPasswordController.text} name ${nameController.text} last name ${lastNameController.text}');
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w600),
+                        ))
+                  ],
+                ),
               )
             ],
           ),

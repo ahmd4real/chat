@@ -12,13 +12,12 @@ import '../Widgets/custom_text_form_field.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key, required this.email});
   static String id = 'registerPage';
-   final String email;
+  final String email;
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -52,7 +51,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         hidden: false,
                         hintText: 'Last Name',
                       ),
-                      
                       CustomTextFormField(
                         controller: passwordController,
                         hidden: true,
@@ -79,18 +77,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (formKey.currentState!.validate()) {
                             loading = true;
                             setState(() {});
-                            // try {
-                            //   await registerUser();
-                            //   Navigator.pushNamed(context, ChatPage.id);
-                            // } on catch (e) {
-                            //   if (e.code == 'weak-password') {
-                            //     snackBar(context, 'Weak password');
-                            //   } else if (e.code == 'email-already-in-use') {
-                            //     snackBar(context,
-                            //         'Email already in use try another one');
-                            //   }
-                            // }
-                             addUser(
+
+                            addUser(
                                 widget.email,
                                 passwordController.text,
                                 nameController.text,
@@ -98,8 +86,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 confirmPasswordController.text);
                             loading = false;
                             setState(() {});
-
-                           
                           }
                         },
                       ),
@@ -114,12 +100,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     const Text(
                       'Already have an account? ',
-                      // style:
-                      //     TextStyle(color: Color.fromARGB(255, 206, 230, 218))
                     ),
                     GestureDetector(
                         onTap: () {
-                        Navigator.popUntil(context, (ModalRoute.withName(LoginPage.id)));
+                          Navigator.popUntil(
+                              context, (ModalRoute.withName(LoginPage.id)));
                         },
                         child: const Text(
                           'Login',
@@ -150,12 +135,4 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
   }
-  // bool passwordMatched(String password, String confirmPassword) {
-  //   return password==confirmPassword;
-  // }
-
-  // Future<void> registerUser() async {
-  //   UserCredential user = await FirebaseAuth.instance
-  //       .createUserWithEmailAndPassword(email: email!, password: password!);
-  // }
 }

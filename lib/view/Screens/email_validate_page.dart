@@ -3,6 +3,7 @@ import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/login_page.dart';
 import 'package:chat/view/Screens/register_page.dart';
+import 'package:chat/view/Screens/verificaton_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -52,10 +53,11 @@ class _EmailValidatePageState extends State<EmailValidatePage> {
                           if (formKey.currentState!.validate()) {
                             loading = true;
                             setState(() {});
+                            sendVerifyCode(emailController.text, false);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegisterPage(
+                                  builder: (context) => VerificationCodePage(
                                         email: emailController.text,
                                       )),
                             );
@@ -75,12 +77,10 @@ class _EmailValidatePageState extends State<EmailValidatePage> {
                   children: [
                     const Text(
                       'Already have an account? ',
-                     
                     ),
                     GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, LoginPage.id);
-                         
                         },
                         child: const Text(
                           'Login',
@@ -95,6 +95,16 @@ class _EmailValidatePageState extends State<EmailValidatePage> {
           ),
         ),
       ),
+    );
+  }
+
+  void sendVerifyCode(String email, bool reset) {
+    API().post(
+      url: '${baseUrl}SendCode',
+      body: {
+        "email": email,
+        "reset": reset, //true reset password false send code/verify email
+      },
     );
   }
 }

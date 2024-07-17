@@ -1,9 +1,10 @@
 
 
 
-import 'package:chat/view/Screens/chat_page.dart';
+
+import 'package:chat/view/Screens/email_validate_page.dart';
 import 'package:chat/view/Screens/login_page.dart';
-import 'package:chat/view/Screens/register_page.dart';
+
 import 'package:flutter/material.dart';
 
 void main()async {
@@ -20,7 +21,8 @@ class ChatApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         LoginPage.id:(context) =>  const LoginPage(),
-        RegisterPage.id:(context) => const RegisterPage(),
+        //RegisterPage.id:(context) =>  RegisterPage(),
+        EmailValidatePage.id:(context) => const EmailValidatePage(),
         //ChatPage.id:(context) => const ChatPage(),
       },
       initialRoute: LoginPage.id,

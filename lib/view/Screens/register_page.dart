@@ -1,3 +1,7 @@
+import 'package:chat/API/api.dart';
+import 'package:chat/constants.dart';
+import 'package:chat/utilities.dart';
+import 'package:chat/view/Screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -6,24 +10,19 @@ import '../Widgets/custom_button.dart';
 import '../Widgets/custom_text_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  const RegisterPage({super.key, required this.email});
   static String id = 'registerPage';
-
+   final String email;
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  TextEditingController emailController = TextEditingController();
-
+  
   TextEditingController passwordController = TextEditingController();
-
   TextEditingController nameController = TextEditingController();
-
   TextEditingController lastNameController = TextEditingController();
-
   TextEditingController confirmPasswordController = TextEditingController();
-
   GlobalKey<FormState> formKey = GlobalKey();
 
   bool loading = false;
@@ -53,20 +52,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         hidden: false,
                         hintText: 'Last Name',
                       ),
-                      CustomTextFormField(
-                        controller: emailController,
-                        hidden: false,
-                        hintText: 'Email',
-                      ),
+                      
                       CustomTextFormField(
                         controller: passwordController,
-                        hidden: false,
+                        hidden: true,
                         hintText: 'Password',
                       ),
                       CustomTextFormField(
                         controller: confirmPasswordController,
                         hidden: true,
                         hintText: 'Confirm Password',
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Field is Required';
+                          }
+                          if (!passwordMatched(
+                              passwordController.text, value)) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
                       ),
                       CustomButton(
                         text: 'Sign Up',
@@ -85,11 +90,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             //         'Email already in use try another one');
                             //   }
                             // }
+                             addUser(
+                                widget.email,
+                                passwordController.text,
+                                nameController.text,
+                                lastNameController.text,
+                                confirmPasswordController.text);
                             loading = false;
                             setState(() {});
-                            print(
-                            'email ${emailController.text} password ${passwordController.text} confirm password ${confirmPasswordController.text} name ${nameController.text} last name ${lastNameController.text}');
-                        
+
+                           
                           }
                         },
                       ),
@@ -98,7 +108,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               Padding(
-
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -110,9 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     GestureDetector(
                         onTap: () {
-                          print(
-                              'email ${emailController.text} password ${passwordController.text} confirm password ${confirmPasswordController.text} name ${nameController.text} last name ${lastNameController.text}');
-                          Navigator.pop(context);
+                        Navigator.popUntil(context, (ModalRoute.withName(LoginPage.id)));
                         },
                         child: const Text(
                           'Login',
@@ -129,6 +136,23 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
+  void addUser(String email, String password, String firstName, String lastName,
+      String confirmPassword) {
+    API().post(
+      url: '${baseUrl}SignUp',
+      body: {
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "password": password,
+        "confirmPassword": confirmPassword
+      },
+    );
+  }
+  // bool passwordMatched(String password, String confirmPassword) {
+  //   return password==confirmPassword;
+  // }
 
   // Future<void> registerUser() async {
   //   UserCredential user = await FirebaseAuth.instance

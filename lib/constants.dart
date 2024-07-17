@@ -17,3 +17,6 @@ String kLogo='assets/images/logo.png';
 String kMessage='msg';
 String kCreatedAt='createdAt';
 String kMessageId='id';
+
+
+const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';

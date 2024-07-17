@@ -1,3 +1,6 @@
+import 'package:chat/API/api.dart';
+import 'package:chat/constants.dart';
+import 'package:chat/view/Screens/email_validate_page.dart';
 import 'package:chat/view/Screens/register_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,13 +72,14 @@ class _LoginPageState extends State<LoginPage> {
                       //     snackBar(context, 'Wrong password');
                       //   }
                       // }
+                      login(emailController.text, passwordController.text);
                 
                       setState(() {
                         loading = false;
                       });
-                       print(
-                            'email ${emailController.text} password ${passwordController.text}',
-                          );
+                      //  print(
+                      //       'email ${emailController.text} password ${passwordController.text}',
+                      //     );
                     }
                   },
                 ),
@@ -95,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                         onTap: () {
                          
-                          Navigator.pushNamed(context, RegisterPage.id);
+                          Navigator.pushReplacementNamed(context, EmailValidatePage.id);
                         },
                         child: const Text(
                           style: TextStyle(decoration:TextDecoration.underline ,fontWeight: FontWeight.w600),
@@ -108,6 +112,18 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+    void login(String email, String password) {
+    API().post(
+      url: '${baseUrl}SignUp',
+      body: {
+       
+        "email": email,
+        "password": password,
+        
+      },
     );
   }
 

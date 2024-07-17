@@ -1,14 +1,23 @@
+
+
+import 'package:chat/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField(
       {required this.hidden, super.key, this.onChanged, this.hintText, 
-      required this.controller
-      
+      required this.controller,
+ 
+      this.keyboardType=TextInputType.text,
+      this.validator
       });
   String? hintText;
+  //String errorMsg;
   bool hidden;
+  String? Function(String?)? validator;
+  TextInputType keyboardType;
    TextEditingController controller=TextEditingController();
   Function(String)? onChanged;
   @override
@@ -18,12 +27,13 @@ class CustomTextFormField extends StatelessWidget {
           horizontal: MediaQuery.of(context).size.width * 0.08, vertical: 4),
       child: TextFormField(
         obscureText: hidden,
-        validator: (value) {
+        validator: validator ?? (value) {
           if (value!.isEmpty) {
-            return 'Field is Required';
+            return 'Field is required';
           }
           return null;
         },
+        keyboardType: keyboardType,
         controller: controller ,
         onChanged: onChanged,
         decoration: InputDecoration(

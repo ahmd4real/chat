@@ -2,8 +2,9 @@
 
 
 
-import 'package:chat/view/Screens/email_validate_page.dart';
 import 'package:chat/view/Screens/login_page.dart';
+import 'package:chat/view/Screens/signup_page.dart';
+import 'package:chat/view/Screens/verificaton_code_page.dart';
 
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,9 @@ class ChatApp extends StatelessWidget {
       routes: {
         LoginPage.id:(context) =>  const LoginPage(),
         //RegisterPage.id:(context) =>  RegisterPage(),
-        EmailValidatePage.id:(context) => const EmailValidatePage(),
+        
+        SignUpPage.id:(context) => const SignUpPage(),
+       // VerificationCodePage.id:(context) =>  VerificationCodePage(),
         //ChatPage.id:(context) => const ChatPage(),
       },
       initialRoute: LoginPage.id,

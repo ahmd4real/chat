@@ -1,6 +1,7 @@
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
-import 'package:chat/view/Screens/register_page.dart';
+import 'package:chat/view/Screens/home_page.dart';
+
 
 import 'package:chat/view/Widgets/custom_button.dart';
 
@@ -55,8 +56,8 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegisterPage(
-                                        email: widget.email,
+                                  builder: (context) => const HomePage(
+                                       
                                       )),
                             );
                             setState(() {

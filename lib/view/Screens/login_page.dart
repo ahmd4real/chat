@@ -1,7 +1,8 @@
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
-import 'package:chat/view/Screens/email_validate_page.dart';
-import 'package:chat/view/Screens/register_page.dart';
+
+
+import 'package:chat/view/Screens/signup_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -37,8 +38,10 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Card(
+                  elevation: 5,
                   child: Column(
                     children: [
+                      const SizedBox(height: 16,),
                       CustomTextFormField(
                         controller: emailController,
                         hidden: false,
@@ -81,7 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                         onTap: () {
                           Navigator.pushReplacementNamed(
-                              context, EmailValidatePage.id);
+                              context, SignUpPage.id);
+                              
                         },
                         child: const Text(
                           style: TextStyle(

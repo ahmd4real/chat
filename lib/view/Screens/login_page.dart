@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-
 import '../Widgets/custom_text_form_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,8 +19,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
- TextEditingController emailController = TextEditingController();
- TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   bool loading = false;
 
   GlobalKey<FormState> formKey = GlobalKey();
@@ -35,62 +34,45 @@ class _LoginPageState extends State<LoginPage> {
           child: ListView(
             children: [
               Image.asset('assets/images/logo.png'),
-              
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Card(
-                  
                   child: Column(
                     children: [
                       CustomTextFormField(
                         controller: emailController,
-                  hidden: false,
-                  hintText: 'Email',
-                  
-                ),
+                        hidden: false,
+                        hintText: 'Email',
+                      ),
                       CustomTextFormField(
-                  controller: passwordController,
-                  hidden: true,
-                  hintText: 'Password',
-                 
-                ),
-                CustomButton(
-                  text: 'Login',
-                  onTap: () async {
-                    if (formKey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                      });
-                      // try {
-                      //   await loginUser();
-                      //   Navigator.pushNamed(context, ChatPage.id,
-                      //       arguments: email);
-                      // } on FirebaseAuthException catch (e) {
-                      //   if (e.code == 'user-not-found') {
-                      //     snackBar(context, 'User not found');
-                      //   } else if (e.code == 'wrong-password') {
-                      //     snackBar(context, 'Wrong password');
-                      //   }
-                      // }
-                      login(emailController.text, passwordController.text);
-                
-                      setState(() {
-                        loading = false;
-                      });
-                      //  print(
-                      //       'email ${emailController.text} password ${passwordController.text}',
-                      //     );
-                    }
-                  },
-                ),
+                        controller: passwordController,
+                        hidden: true,
+                        hintText: 'Password',
+                      ),
+                      CustomButton(
+                        text: 'Login',
+                        onTap: () async {
+                          if (formKey.currentState!.validate()) {
+                            setState(() {
+                              loading = true;
+                            });
+
+                            login(
+                                emailController.text, passwordController.text);
+
+                            setState(() {
+                              loading = false;
+                            });
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom:16.0),
+                padding: const EdgeInsets.only(bottom: 16.0),
                 child: Row(
-                  
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
@@ -98,11 +80,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     GestureDetector(
                         onTap: () {
-                         
-                          Navigator.pushReplacementNamed(context, EmailValidatePage.id);
+                          Navigator.pushReplacementNamed(
+                              context, EmailValidatePage.id);
                         },
                         child: const Text(
-                          style: TextStyle(decoration:TextDecoration.underline ,fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w600),
                           'Sign Up',
                         ))
                   ],
@@ -115,20 +99,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-    void login(String email, String password) {
+  void login(String email, String password) {
     API().post(
-      url: '${baseUrl}SignUp',
+      url: '${baseUrl}Login',
       body: {
-       
         "email": email,
         "password": password,
-        
       },
     );
   }
-
-  // Future<void> loginUser() async {
-  //   UserCredential user = await FirebaseAuth.instance
-  //       .signInWithEmailAndPassword(email: email!, password: password!);
-  // }
 }

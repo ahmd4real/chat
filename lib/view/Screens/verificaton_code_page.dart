@@ -52,7 +52,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                             });
                             validateCode(
                                 widget.email, verifyCodeController.text);
- Navigator.push(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => RegisterPage(

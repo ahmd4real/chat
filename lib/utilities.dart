@@ -13,3 +13,9 @@ Future<String?> getData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString(key);
 }
+
+// Future<bool> isLoggedIn()async{
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   return prefs.getBool('isLoggedIn')==true;
+
+// }

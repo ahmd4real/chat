@@ -17,7 +17,7 @@ class SignUpPage extends StatefulWidget {
     super.key,
   });
   static String id = 'SignUpPage';
- 
+
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
@@ -31,6 +31,43 @@ class _SignUpPageState extends State<SignUpPage> {
   GlobalKey<FormState> formKey = GlobalKey();
 
   bool loading = false;
+
+  // Function to handle user sign up
+  Future<void> handleSignUp() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
+
+      try {
+        await signUp(
+          emailController.text,
+          passwordController.text,
+          nameController.text,
+          lastNameController.text,
+          confirmPasswordController.text,
+        );
+        await sendVerifyCode(emailController.text, false);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationCodePage(
+              email: emailController.text,
+            ),
+          ),
+        );
+      } catch (e) {
+        // Handle sign up error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to sign up: $e')),
+        );
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,24 +85,22 @@ class _SignUpPageState extends State<SignUpPage> {
                   elevation: 5,
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 16,
-                      ),
+                      const SizedBox(height: 16),
                       CustomTextFormField(
                         controller: nameController,
                         hidden: false,
                         hintText: 'First Name',
                       ),
-                       CustomTextFormField(
-                                               controller: lastNameController,
-                                               hidden: false,
-                                               hintText: 'Last Name',
-                                             ),
-                     
+                      CustomTextFormField(
+                        controller: lastNameController,
+                        hidden: false,
+                        hintText: 'Last Name',
+                      ),
                       CustomTextFormField(
                         controller: emailController,
                         hidden: false,
                         hintText: 'Email',
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       CustomTextFormField(
                         controller: passwordController,
@@ -89,28 +124,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       CustomButton(
                         text: 'Sign Up',
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                            loading = true;
-                            setState(() {});
-
-                            addUser(
-                                emailController.text,
-                                passwordController.text,
-                                nameController.text,
-                                lastNameController.text,
-                                confirmPasswordController.text);
-                              sendVerifyCode(emailController.text, false);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => VerificationCodePage(
-                                          email: emailController.text,
-                                        )));
-                            loading = false;
-                            setState(() {});
-                          }
-                        },
+                        onTap: handleSignUp,
                       ),
                     ],
                   ),
@@ -121,30 +135,26 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Already have an account? ',
-                    ),
+                    const Text('Already have an account? '),
                     GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context,LoginPage.id);
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.w600),
-                        ))
+                      onTap: () {
+                        Navigator.pushNamed(context, LoginPage.id);
+                      },
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-
-  
-  }
+}

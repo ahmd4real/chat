@@ -2,27 +2,28 @@ import 'dart:convert';
 
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
 
 // Sign Up
-Future<bool> addUser(String email, String password, String firstName, String lastName, String confirmPassword) async {
+Future<bool> signUp(String email, String password, String firstName, String lastName, String confirmPassword) async {
   try {
-    final response = await API().post(
-      url: '${baseUrl}SignUp',
-      body: {
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "password": password,
-        "confirmPassword": confirmPassword
-      },
-      token: null,
+   final response = await http.post(
+      Uri.parse('${baseUrl}Login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'firstName': firstName,
+        'lastName': lastName,
+        'confirmPassword': confirmPassword
+      }),
     );
 
-    if (response != null) {
+   if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('email', email);
       prefs.setString('firstName', firstName);
@@ -41,16 +42,13 @@ Future<bool> addUser(String email, String password, String firstName, String las
 // Send Verification Code
 Future<bool> sendVerifyCode(String email, bool reset) async {
   try {
-    final response = await API().post(
-      url: '${baseUrl}SendCode',
-      body: {
-        "email": email,
-        "reset": reset, // true to reset password, false to send code/verify email
-      },
-      token: null,
+    final response = await http.post(
+      Uri.parse('${baseUrl}Login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'reset': reset}),
     );
 
-    if (response != null) {
+   if (response.statusCode == 200) {
       return true;
     } else {
       print('Send Code Failed: Empty response');
@@ -65,16 +63,12 @@ Future<bool> sendVerifyCode(String email, bool reset) async {
 // Validate Verification Code
 Future<bool> validateVerificationCode(String email, String code) async {
   try {
-    final response = await API().post(
-      url: '${baseUrl}ValidateEmailVerificationCode',
-      body: {
-        "email": email,
-        "code": code,
-      },
-      token: null,
+     final response = await http.post(
+      Uri.parse('${baseUrl}Login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'code': code}),
     );
-
-    if (response != null) {
+if (response.statusCode == 200) {
       return true;
     } else {
       print('Validate Code Failed: Empty response');
@@ -89,22 +83,23 @@ Future<bool> validateVerificationCode(String email, String code) async {
 // Login
 Future<bool> login(String email, String password) async {
   try {
-    final response = await API().post(
-      url: '${baseUrl}Login',
-      body: {
-        "email": email,
-        "password": password,
-      },
-      token: null,
+    final response = await http.post(
+      Uri.parse('${baseUrl}Login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
     );
+    
 
-    if (response != null) {
+    final data=jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('jwt', response['jwt']);
-      prefs.setString('refreshToken', response['refreshToken']);
-      prefs.setString('email', response['email']);
-      prefs.setString('firstName', response['firstName']);
-      prefs.setString('lastName', response['lastName']);
+      prefs.setString('jwt', data['jwt']);
+      prefs.setString('refreshToken', data['refreshToken']);
+      prefs.setString('email', data['email']);
+      prefs.setString('firstName', data['firstName']);
+      prefs.setString('lastName', data['lastName']);
+      prefs.setBool('isLoggedIn', true);
       return true;
     } else {
       print('Login Failed: Empty response');
@@ -122,7 +117,7 @@ Future<void> refreshJwtToken() async {
   String? refreshToken = prefs.getString('refreshToken');
 
   if (refreshToken != null) {
-    //final url = ''; // Replace with your refresh token endpoint
+
 
     final response = await http.post(
       Uri.parse('${baseUrl}tokens'),
@@ -133,7 +128,7 @@ Future<void> refreshJwtToken() async {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // Update tokens in SharedPreferences
+      
       await prefs.setString('jwt', data['jwt']);
       await prefs.setString('refreshToken', data['refreshToken']);
     } else {

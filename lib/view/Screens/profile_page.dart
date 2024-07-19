@@ -13,51 +13,16 @@ class ProfilePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.purple.shade100,
-                child: Icon(Icons.person),
-              ),
-              title: Row(
-                children: [
-                  FutureBuilder<String?>(
-                    future: getData('firstName'),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Text(
-                          snapshot.data ?? 'No First Name',
-                          style: const TextStyle(fontSize: 20),
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder<String?>(
-                    future: getData('lastName'),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Text(
-                          snapshot.data ?? 'No Last Name',
-                          style: const TextStyle(fontSize: 20),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              subtitle: FutureBuilder<String?>(
-                future: getData('email'),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.purple.shade100,
+            child: const Icon(Icons.person),
+          ),
+          Row(
+            children: [
+              FutureBuilder<String?>(
+                future: getData('firstName'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
@@ -65,15 +30,45 @@ class ProfilePage extends StatelessWidget {
                     return Text('Error: ${snapshot.error}');
                   } else {
                     return Text(
-                      snapshot.data ?? 'No Email',
+                      snapshot.data ?? 'No First Name',
                       style: const TextStyle(fontSize: 20),
                     );
                   }
                 },
               ),
-            ),
-          ],
-        ),
+              FutureBuilder<String?>(
+                future: getData('lastName'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Text(
+                      snapshot.data ?? 'No Last Name',
+                      style: const TextStyle(fontSize: 20),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          FutureBuilder<String?>(
+            future: getData('email'),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Text(
+                  snapshot.data ?? 'No Email',
+                  style: const TextStyle(fontSize: 20),
+                );
+              }
+            },
+          ),
+        ]),
       ),
     );
   }

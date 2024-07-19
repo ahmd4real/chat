@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:http/http.dart' as http;
+
 
 // Sign Up
 Future<bool> addUser(String email, String password, String firstName, String lastName, String confirmPassword) async {
@@ -95,7 +100,7 @@ Future<bool> login(String email, String password) async {
 
     if (response != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', response['jwt']);
+      prefs.setString('jwt', response['jwt']);
       prefs.setString('refreshToken', response['refreshToken']);
       prefs.setString('email', response['email']);
       prefs.setString('firstName', response['firstName']);
@@ -108,5 +113,33 @@ Future<bool> login(String email, String password) async {
   } catch (e) {
     print('Error in login: $e');
     return false;
+  }
+}
+
+
+Future<void> refreshJwtToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? refreshToken = prefs.getString('refreshToken');
+
+  if (refreshToken != null) {
+    //final url = ''; // Replace with your refresh token endpoint
+
+    final response = await http.post(
+      Uri.parse('${baseUrl}tokens'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'refreshToken': refreshToken,'email': prefs.getString('email')}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // Update tokens in SharedPreferences
+      await prefs.setString('jwt', data['jwt']);
+      await prefs.setString('refreshToken', data['refreshToken']);
+    } else {
+      throw Exception('Failed to refresh token');
+    }
+  } else {
+    throw Exception('No refresh token found');
   }
 }

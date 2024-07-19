@@ -60,6 +60,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                        
                                       )),
                             );
+                            
                             setState(() {
                               loading = false;
                             });

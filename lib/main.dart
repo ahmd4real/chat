@@ -1,14 +1,10 @@
-
-
-
-
 import 'package:chat/view/Screens/login_page.dart';
 import 'package:chat/view/Screens/signup_page.dart';
 import 'package:chat/view/Screens/verificaton_code_page.dart';
 
 import 'package:flutter/material.dart';
 
-void main()async {
+void main() {
   
   runApp(const ChatApp());
 }

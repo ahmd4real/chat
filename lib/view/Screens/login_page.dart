@@ -1,5 +1,8 @@
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
+import 'package:chat/services/services.dart';
+import 'package:chat/utilities.dart';
+import 'package:chat/view/Screens/home_page.dart';
 
 
 import 'package:chat/view/Screens/signup_page.dart';
@@ -60,8 +63,13 @@ class _LoginPageState extends State<LoginPage> {
                               loading = true;
                             });
 
+                            if (getData('token') != null) {
+                              Navigator.pushReplacement( context, MaterialPageRoute(builder: (context)=>const HomePage()));
+                            }
+        
                             login(
-                                emailController.text, passwordController.text);
+                                emailController.text, passwordController.text
+                                );
 
                             setState(() {
                               loading = false;
@@ -103,13 +111,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void login(String email, String password) {
-    API().post(
-      url: '${baseUrl}Login',
-      body: {
-        "email": email,
-        "password": password,
-      },
-    );
-  }
+
 }

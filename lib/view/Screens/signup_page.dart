@@ -1,3 +1,4 @@
+import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/verificaton_code_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class SignUpPage extends StatefulWidget {
     super.key,
   });
   static String id = 'SignUpPage';
-  //final String email;
+ 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
@@ -125,8 +126,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     GestureDetector(
                         onTap: () {
-                          Navigator.popUntil(
-                              context, (ModalRoute.withName(LoginPage.id)));
+                          Navigator.pushNamed(
+                              context,LoginPage.id);
                         },
                         child: const Text(
                           'Login',
@@ -144,25 +145,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void addUser(String email, String password, String firstName, String lastName,
-      String confirmPassword) {
-    API().post(
-      url: '${baseUrl}SignUp',
-      body: {
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "password": password,
-        "confirmPassword": confirmPassword
-      },
-    );
+
+  
   }
-void sendVerifyCode(String email, bool reset) {
-    API().post(
-      url: '${baseUrl}SendCode',
-      body: {
-        "email": email,
-        "reset": reset, //true reset password false send code/verify email
-      },
-    );
-  }}

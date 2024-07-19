@@ -1,7 +1,7 @@
 import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
 import 'package:chat/view/Screens/home_page.dart';
-
+import 'package:chat/services/services.dart';
 
 import 'package:chat/view/Widgets/custom_button.dart';
 
@@ -51,8 +51,8 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                             setState(() {
                               loading = true;
                             });
-                            validateCode(
-                                widget.email, verifyCodeController.text);
+                            validateVerificationCode(
+                                widget.email, verifyCodeController.text,);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -77,13 +77,5 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
     );
   }
 
-  void validateCode(String email, String code) {
-    API().post(
-      url: '${baseUrl}ValidateEmailVerificationCode',
-      body: {
-        "email": email,
-        "code": code,
-      },
-    );
-  }
+  
 }

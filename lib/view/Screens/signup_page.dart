@@ -1,12 +1,14 @@
+import 'dart:math';
+
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/verificaton_code_page.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chat/API/api.dart';
+
 import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/login_page.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../Widgets/custom_button.dart';
@@ -40,13 +42,15 @@ class _SignUpPageState extends State<SignUpPage> {
       });
 
       try {
-        await signUp(
+       final worked= await signUp(
           emailController.text,
           passwordController.text,
           nameController.text,
           lastNameController.text,
           confirmPasswordController.text,
+          context
         );
+        if(worked){
         await sendVerifyCode(emailController.text, false);
         Navigator.push(
           context,
@@ -56,8 +60,8 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
         );
+        }
       } catch (e) {
-        // Handle sign up error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to sign up: $e')),
         );
@@ -78,7 +82,8 @@ class _SignUpPageState extends State<SignUpPage> {
           key: formKey,
           child: ListView(
             children: [
-              Image.asset('assets/images/logo.png'),
+              Image.asset(kLogo,
+                  height: MediaQuery.of(context).size.height / 4),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Card(
@@ -101,6 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         hidden: false,
                         hintText: 'Email',
                         keyboardType: TextInputType.emailAddress,
+                        validator: emailValidator,
                       ),
                       CustomTextFormField(
                         controller: passwordController,
@@ -138,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const Text('Already have an account? '),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, LoginPage.id);
+                        Navigator.pushReplacementNamed(context, LoginPage.id);
                       },
                       child: const Text(
                         'Login',

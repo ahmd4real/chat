@@ -1,19 +1,13 @@
-import 'package:chat/API/api.dart';
-import 'package:chat/constants.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/home_page.dart';
-
-
 import 'package:chat/view/Screens/signup_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../Widgets/custom_text_form_field.dart';
+
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,22 +27,29 @@ class _LoginPageState extends State<LoginPage> {
     return ModalProgressHUD(
       inAsyncCall: loading,
       child: Scaffold(
+        appBar: AppBar(),
         body: Form(
           key: formKey,
           child: ListView(
             children: [
-              Image.asset('assets/images/logo.png'),
+              Image.asset(
+                'assets/images/logo.png',
+                height: MediaQuery.of(context).size.height / 4,
+              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Card(
                   elevation: 5,
                   child: Column(
                     children: [
-                      const SizedBox(height: 16,),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       CustomTextFormField(
                         controller: emailController,
                         hidden: false,
                         hintText: 'Email',
+                        validator: emailValidator,
                       ),
                       CustomTextFormField(
                         controller: passwordController,
@@ -63,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
                               loading = true;
                             });
 
-                            if (getData('token') != null) {
-                              Navigator.pushReplacement( context, MaterialPageRoute(builder: (context)=>const HomePage()));
+                            await login(
+                                emailController.text, passwordController.text);
+                            if (await isLoggedIn()) {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomePage()));
                             }
-        
-                            login(
-                                emailController.text, passwordController.text
-                                );
 
                             setState(() {
                               loading = false;
@@ -93,7 +95,6 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           Navigator.pushReplacementNamed(
                               context, SignUpPage.id);
-                              
                         },
                         child: const Text(
                           style: TextStyle(
@@ -110,6 +111,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-
 }

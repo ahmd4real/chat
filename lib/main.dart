@@ -1,8 +1,7 @@
-import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/login_page.dart';
 import 'package:chat/view/Screens/signup_page.dart';
-import 'package:chat/view/Screens/verificaton_code_page.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,12 +15,14 @@ class ChatApp extends StatelessWidget {
   const ChatApp({super.key});
     Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
+   return prefs.getBool('isLoggedIn') ?? false;
+  //return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
+      theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       routes: {
         LoginPage.id:(context) =>  const LoginPage(),

@@ -14,8 +14,20 @@ Future<String?> getData(String key) async {
   return prefs.getString(key);
 }
 
-// Future<bool> isLoggedIn()async{
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getBool('isLoggedIn')==true;
+Future<bool> isLoggedIn()async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('isLoggedIn')==true;
 
-// }
+}
+
+String? emailValidator(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Email is required';
+  }
+  // Regular expression for email validation
+  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+  if (!emailRegex.hasMatch(value)) {
+    return 'Enter a valid email';
+  }
+  return null;
+}

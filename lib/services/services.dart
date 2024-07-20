@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 
 // Sign Up
-Future<bool> signUp(String email, String password, String firstName, String lastName, String confirmPassword) async {
+Future<bool> signUp(String email, String password, String firstName, String lastName, String confirmPassword,BuildContext context) async {
   try {
    final response = await http.post(
       Uri.parse('${baseUrl}Login'),
@@ -30,7 +30,15 @@ Future<bool> signUp(String email, String password, String firstName, String last
       prefs.setString('lastName', lastName);
       return true;
     } else {
-      print('Sign Up Failed: Empty response');
+      if (response.statusCode == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('This Email Already Exists')),
+        );
+        return false;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to sign up')),
+      );
       return false;
     }
   } catch (e) {
@@ -100,8 +108,13 @@ Future<bool> login(String email, String password) async {
       prefs.setString('firstName', data['firstName']);
       prefs.setString('lastName', data['lastName']);
       prefs.setBool('isLoggedIn', true);
+      print(response.body);
       return true;
     } else {
+      if (response.statusCode == 404) {
+        print('email or password is incorrect');
+        return false;
+      }
       print('Login Failed: Empty response');
       return false;
     }
@@ -137,4 +150,28 @@ Future<void> refreshJwtToken() async {
   } else {
     throw Exception('No refresh token found');
   }
+}
+
+Future<bool >signOut() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+ 
+   
+  String? refreshToken = prefs.getString('refreshToken');
+  String? email = prefs.getString('email');
+  final response=await http.delete(
+     Uri.parse('${baseUrl}SignOut'),
+     headers: {'Content-Type': 'application/json'},
+     body: jsonEncode({'email': email,'refreshToken':refreshToken}),
+  );
+
+  if (response.statusCode == 200) {
+    print('Account Deleted');
+     prefs.clear();
+     return true;
+  } else {
+    print('Failed to delete account');
+    return false;
+  }
+
+
 }

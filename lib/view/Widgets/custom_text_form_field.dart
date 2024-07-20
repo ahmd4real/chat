@@ -13,9 +13,10 @@ class CustomTextFormField extends StatelessWidget {
       this.keyboardType=TextInputType.text,
       this.validator
       });
-  String? hintText;
+  String? labelText,hintText;
   //String errorMsg;
   bool hidden;
+  
   String? Function(String?)? validator;
   TextInputType keyboardType;
    TextEditingController controller=TextEditingController();
@@ -24,7 +25,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.08, vertical: 4),
+          horizontal: MediaQuery.of(context).size.width * 0.08, vertical: 8),
       child: TextFormField(
         obscureText: hidden,
         validator: validator ?? (value) {
@@ -37,6 +38,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller ,
         onChanged: onChanged,
         decoration: InputDecoration(
+          labelText: hintText,
           hintText: hintText,
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),

@@ -10,13 +10,16 @@ Color kLightGreen=const Color(0xFF4CAF50);
 
 
 //PATHS
-String kLogo='assets/images/logo.png';
+const String kLogo='assets/images/logo.png';
+const String  kAvatar='assets/images/avatar.png';
 
 
 //KEYS
 String kMessage='msg';
 String kCreatedAt='createdAt';
 String kMessageId='id';
+
+
 
 
 const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';

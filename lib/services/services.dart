@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:chat/constants.dart';
+import 'package:chat/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:http/http.dart' as http;
 
-
 // Sign Up
-Future<bool> signUp(String email, String password, String firstName, String lastName, String confirmPassword,BuildContext context) async {
+Future<bool> signUp(String email, String password, String firstName,
+    String lastName, String confirmPassword, BuildContext context) async {
   try {
-   final response = await http.post(
+    final response = await http.post(
       Uri.parse('${baseUrl}SignUp'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -21,8 +21,7 @@ Future<bool> signUp(String email, String password, String firstName, String last
         'confirmPassword': confirmPassword
       }),
     );
-
-   if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('email', email);
       prefs.setString('firstName', firstName);
@@ -55,27 +54,32 @@ Future<bool> sendVerifyCode(String email, bool reset) async {
       body: jsonEncode({'email': email, 'reset': reset}),
     );
 
-   if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return true;
     } else {
-      print('Send Code Failed: Empty response');
+      print('Send Code Failed form sendVerifyCode Function: Empty response');
       return false;
     }
   } catch (e) {
-    print('Error in sendVerifyCode: $e');
+    print('Error in sendVerifyCode from sendVerifyCode Function: $e');
     return false;
   }
 }
 
 // Validate Verification Code
-Future<bool> validateVerificationCode(String email, String code) async {
+Future<bool> validateCode(String email, String code,
+    {bool isForResetPassword = false}) async {
   try {
-     final response = await http.post(
-      Uri.parse('${baseUrl}ValidateEmailVerificationCode'),
+    final response = await http.post(
+      Uri.parse('${baseUrl}ValidateCode'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'code': code}),
+      body: jsonEncode({
+        'email': email,
+        'code': code,
+        'isForResetPassword': isForResetPassword
+      }),
     );
-if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return true;
     } else {
       print('Validate Code Failed: Empty response');
@@ -95,9 +99,8 @@ Future<bool> login(String email, String password) async {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-    
 
-    final data=jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,24 +126,20 @@ Future<bool> login(String email, String password) async {
   }
 }
 
-
 Future<void> refreshJwtToken() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? refreshToken = prefs.getString('refreshToken');
 
   if (refreshToken != null) {
-
-
     final response = await http.post(
       Uri.parse('${baseUrl}tokens'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'refreshToken': refreshToken,'email': prefs.getString('email')}),
+      body: jsonEncode(
+          {'refreshToken': refreshToken, 'email': prefs.getString('email')}),
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
-      
       await prefs.setString('jwt', data['jwt']);
       await prefs.setString('refreshToken', data['refreshToken']);
     } else {
@@ -151,41 +150,57 @@ Future<void> refreshJwtToken() async {
   }
 }
 
-Future<bool >signOut() async {
+Future<bool> signOut() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
- 
-   
+
   String? refreshToken = prefs.getString('refreshToken');
   String? email = prefs.getString('email');
-  final response=await http.delete(
-     Uri.parse('${baseUrl}SignOut'),
-     headers: {'Content-Type': 'application/json'},
-     body: jsonEncode({'email': email,'refreshToken':refreshToken}),
+  final response = await http.delete(
+    Uri.parse('${baseUrl}SignOut'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'email': email, 'refreshToken': refreshToken}),
   );
 
   if (response.statusCode == 200) {
     print('Account Deleted');
-     prefs.clear();
-     return true;
+    prefs.clear();
+    return true;
   } else {
     print('Failed to delete account');
     return false;
   }
-
-
 }
 
-Future<bool >resetPassword(String email,String newPassword) async {
+Future<bool> resetPassword(String email, String newPassword) async {
   final response = await http.post(
-    Uri.parse('${baseUrl}new-password'),
-    headers: {'Content-Type': 'application/json',
-    'Accept': '*/*',},
-    body: jsonEncode({'email': email,
-    'newPassword': newPassword}),
+    Uri.parse('${baseUrl}resetpassword'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+    },
+    body: jsonEncode({'email': email, 'newPassword': newPassword}),
   );
 
   if (response.statusCode == 200) {
-    print('Password reset successful'); 
+    print('Password reset successful');
+    return true;
+  }
+  return false;
+}
+
+Future<bool> changePassword(String oldPassword, String newPassword) async {
+  final jwt = getData('jwt');
+  final response = await http.post(Uri.parse('${baseUrl}settings/password'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwt'
+      },
+      body: jsonEncode({
+        {"oldPassword": oldPassword, "newPassword": newPassword}
+      }));
+
+  if (response.statusCode == 200) {
+    print('Password changed successfully');
     return true;
   }
   return false;

@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool loading = false;
-  String? firstName = '', lastName = '';
+  String? firstName = '', lastName = '', email = '';
 
   @override
   void initState() {
@@ -26,17 +26,16 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       loading = true;
     });
+
     firstName = await getData('firstName');
-    lastName = await getData('lastName')  ;
-    setState(() {
+    lastName = await getData('lastName');
+    email = await getData('email');
+      setState(() {
       loading = false;
     });
   }
 
- @override
- 
-  
-  
+  @override
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -55,15 +54,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildUserInfo(BuildContext context) {
     return Container(
- 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const CircleAvatar(
-          radius: 70,
-           backgroundImage: AssetImage(kAvatar),
+            radius: 70,
+            backgroundImage: AssetImage(kAvatar),
           ),
-           const SizedBox(
+          const SizedBox(
             height: 24,
           ),
           SizedBox(
@@ -72,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
               '$firstName $lastName',
               style: const TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold,  
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -81,23 +79,19 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           ElevatedButton(
               onPressed: () async {
-               setState(() {
-                 loading = true;
-               });
+                setState(() {
+                  loading = true;
+                });
                 if (await signOut()) {
-                    Navigator.pushNamed(context, LoginPage.id);
+                  Navigator.pushReplacementNamed(context, LoginPage.id);
                 }
                 setState(() {
                   loading = false;
                 });
               },
               child: const Text('Logout')),
-      
-              
         ],
       ),
     );
   }
-
-  
 }

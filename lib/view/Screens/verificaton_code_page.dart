@@ -1,7 +1,7 @@
-import 'package:chat/utilities.dart';
+
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/services/services.dart';
-import 'package:chat/view/Screens/signup_page.dart';
+
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -13,10 +13,10 @@ class VerificationCodePage extends StatefulWidget {
       required this.email,
       this.resetPass = false,
       this.newPassword = ""});
-  static String id = 'VerificationCodePage';
-  final String email;
-  final bool resetPass;
-  late String newPassword;
+      static String id = 'VerificationCodePage';
+      final String email;
+      final bool resetPass;
+      late String newPassword;
 
   @override
   State<VerificationCodePage> createState() => _VerificationCodePageState();
@@ -54,9 +54,10 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                             setState(() {
                               loading = true;
                             });
-                            if (await validateVerificationCode(
+                            if (await validateCode(
                               widget.email,
                               verifyCodeController.text,
+                              isForResetPassword: widget.resetPass
                             )) {
                               if (widget.resetPass) {
                                 if (await resetPassword(
@@ -66,7 +67,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                     content: Text('Password Reset Successful'),
                                   ));
                                   await login(widget.email, widget.newPassword);
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
@@ -79,7 +80,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                 }
                               } else {
                                 await login(widget.email, widget.newPassword);
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
@@ -90,11 +91,8 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                                   .showSnackBar(const SnackBar(
                                 content: Text('Invalid verification code'),
                               ));
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignUpPage()),
-                              );
+                              
+                              
                             }
 
                             setState(() {

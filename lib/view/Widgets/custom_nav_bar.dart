@@ -12,9 +12,13 @@ class CustomNavBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical:  16.0),
       child: GNav(
+        tabBorderRadius: 50,
+       
+        style: GnavStyle.google,
           onTabChange: (index) => onTabChange!(index),
-          duration: const Duration(milliseconds: 500),
-      
+          duration: const Duration(milliseconds: 200),
+      gap: 1,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           tabBackgroundColor: kButtonsColor,
           mainAxisAlignment: MainAxisAlignment.center,
           tabs: const [
@@ -25,6 +29,10 @@ class CustomNavBar extends StatelessWidget {
             GButton(
               icon: Icons.person,
               text: 'Profile',
+            ),
+            GButton(
+              icon: Icons.settings,
+              text: 'Settings',
             ),
           ]),
     );

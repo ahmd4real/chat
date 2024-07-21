@@ -6,18 +6,28 @@ import 'package:chat/view/Screens/verificaton_code_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:chat/view/Widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class EnterYourEmail extends StatelessWidget {
-   EnterYourEmail({super.key});
-   static String id = 'EnterYourEmail';
-   TextEditingController verifyCodeController = TextEditingController();
-   TextEditingController emailController = TextEditingController();
-   TextEditingController passwordController = TextEditingController();
-   TextEditingController confirmPasswordController = TextEditingController();
+class EnterYourEmail extends StatefulWidget {
+  EnterYourEmail({super.key});
+  static String id = 'EnterYourEmail';
+  @override
+  State<EnterYourEmail> createState() => _EnterYourEmailState();
+}
+
+class _EnterYourEmailState extends State<EnterYourEmail> {
+  TextEditingController verifyCodeController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey();
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ModalProgressHUD(
+      inAsyncCall: loading,
+      child: Scaffold(
         body: Form(
           key: formKey,
           child: ListView(
@@ -34,14 +44,12 @@ class EnterYourEmail extends StatelessWidget {
                         hintText: 'Email',
                         validator: emailValidator,
                       ),
-
                       CustomTextFormField(
                         controller: passwordController,
                         hidden: true,
                         hintText: 'New Password',
-                        
                       ),
-                       CustomTextFormField(
+                      CustomTextFormField(
                         controller: confirmPasswordController,
                         hidden: true,
                         hintText: 'Confirm New Password',
@@ -55,31 +63,39 @@ class EnterYourEmail extends StatelessWidget {
                           }
                           return null;
                         },
-                        
                       ),
                       CustomButton(
                         text: 'Continue',
                         onTap: () async {
                           if (formKey.currentState!.validate()) {
-                            
-                           await sendVerifyCode(
-                                emailController.text, true,)?
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>  VerificationCodePage
-                                  (
-                                    email: emailController.text,
-                                    resetPass: true,
-                                       newPassword: passwordController.text,
-                                      )),
-                            ):ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Failed to send verification code, please try again'),
-                              ),
-                            );
-                            
-                            
+                            setState(() {
+                              loading = true;
+                            });
+                            await sendVerifyCode(
+                              emailController.text,
+                              true,
+                            )
+                                ? Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            VerificationCodePage(
+                                              email: emailController.text,
+                                              resetPass: true,
+                                              newPassword:
+                                                  passwordController.text,
+                                            )),
+                                  )
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Failed to send verification code, please try again'),
+                                    ),
+                                  );
+
+                            setState(() {
+                              loading = false;
+                            });
                           }
                         },
                       ),
@@ -90,6 +106,7 @@ class EnterYourEmail extends StatelessWidget {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

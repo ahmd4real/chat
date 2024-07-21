@@ -88,10 +88,17 @@ class _LoginPageState extends State<LoginPage> {
                             await login(
                                 emailController.text, passwordController.text);
                             if (await isLoggedIn()) {
+                              
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => const HomePage()));
+                            }else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Email or password is not correct'),
+                                ),
+                              );
                             }
 
                             setState(() {

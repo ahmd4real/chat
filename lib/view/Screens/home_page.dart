@@ -1,6 +1,7 @@
 import 'package:chat/services/services.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/profile_page.dart';
+import 'package:chat/view/Screens/settings_page.dart';
 import 'package:chat/view/Widgets/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ static String id = 'HomePage';
 }
 
 class _HomePageState extends State<HomePage> {
-  int currentIndex = 0;
+  int currentIndex = 1;
   void navigateScreens(int index) {
    setState(() {
      currentIndex = index;
@@ -23,11 +24,13 @@ class _HomePageState extends State<HomePage> {
   List<Widget>pages=const [
    Home(),
    ProfilePage(),
+   SettingsPage(),
   ];
   @override
 
   Widget build(BuildContext context) {
     return Scaffold(
+      
       bottomNavigationBar: CustomNavBar(onTabChange: (index)=> navigateScreens(index),),
       body: pages[currentIndex],
     
@@ -40,27 +43,10 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return  const SafeArea(
         child: Center(
           child: 
-              const Text('NOW YOU\'RE SIGNED IN',style: TextStyle(fontSize: 20),),
-              
-              // ElevatedButton(
-              //     onPressed: () {
-              //       Navigator.push(context,
-              //           MaterialPageRoute(builder: (context) => const ProfilePage()));
-              //     },
-              //     child: const Text('Goto profile')),
-              // ElevatedButton(
-              //     onPressed: () async{
-              //       print('old password is ${await getData('jwt')}');
-              //       refreshJwtToken();
-              //        print('new password is ${await getData('jwt')}');
-        
-              //     },
-              //     child: const Text('Refersh token')),
-            
-          
+               Text('NOW YOU\'RE SIGNED IN',style: TextStyle(fontSize: 20),),
         ),
       );
   }

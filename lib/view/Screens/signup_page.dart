@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/verificaton_code_page.dart';
@@ -62,6 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
         );
         }
       } catch (e) {
+        print('Error in handleSignUp: ${e.toString()}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to sign up: $e')),
         );

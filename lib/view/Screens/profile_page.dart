@@ -14,6 +14,29 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool loading = false;
+  String? firstName = '', lastName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserFullName();
+  }
+
+  Future<void> _getUserFullName() async {
+    setState(() {
+      loading = true;
+    });
+    firstName = await getData('firstName');
+    lastName = await getData('lastName')  ;
+    setState(() {
+      loading = false;
+    });
+  }
+
+ @override
+ 
+  
+  
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -24,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: _buildUserInfo(context),
+          child: Center(child: _buildUserInfo(context)),
         ),
       ),
     );
@@ -32,65 +55,26 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildUserInfo(BuildContext context) {
     return Container(
-      //color: const Color(0xffF8F8F8),
+ 
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children:  [
-              const CircleAvatar(
-                radius: 50,
-               backgroundImage: AssetImage(kAvatar),
-               
+          const CircleAvatar(
+          radius: 70,
+           backgroundImage: AssetImage(kAvatar),
+          ),
+           const SizedBox(
+            height: 24,
+          ),
+          SizedBox(
+            width: 130,
+            child: Text(
+              '$firstName $lastName',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,  
               ),
-               const SizedBox(
-                width: 16,
-              ),
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 130,
-                            child: FutureBuilder(
-                              future: _getUserFullName(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text(
-                                    'Error',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  );
-                                } else {
-                                  return Text(
-                                    snapshot.data ?? '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
           const SizedBox(
             height: 8,
@@ -102,23 +86,18 @@ class _ProfilePageState extends State<ProfilePage> {
                });
                 if (await signOut()) {
                     Navigator.pushNamed(context, LoginPage.id);
-
                 }
                 setState(() {
                   loading = false;
                 });
               },
               child: const Text('Logout')),
-
+      
               
         ],
       ),
     );
   }
 
-  Future<String> _getUserFullName() async {
-    final firstName = await getData('firstName');
-    final lastName = await getData('lastName');
-    return '$firstName $lastName';
-  }
+  
 }

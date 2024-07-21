@@ -1,3 +1,4 @@
+import 'package:chat/view/Screens/enter_email.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/login_page.dart';
 import 'package:chat/view/Screens/signup_page.dart';
@@ -15,7 +16,7 @@ class ChatApp extends StatelessWidget {
   const ChatApp({super.key});
     Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-   return prefs.getBool('isLoggedIn') ?? false;
+  return prefs.getBool('isLoggedIn') ?? false;
   //return false;
   }
 
@@ -30,8 +31,10 @@ class ChatApp extends StatelessWidget {
         HomePage.id:(context) => const HomePage(),
 
         SignUpPage.id:(context) => const SignUpPage(),
+
+        EnterYourEmail.id:(context) =>  EnterYourEmail(),
        
-      },
+      },  
      home: FutureBuilder<bool>(
         future: isLoggedIn(),
         builder: (context, snapshot) {

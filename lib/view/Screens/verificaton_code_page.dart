@@ -1,20 +1,23 @@
-import 'package:chat/API/api.dart';
-import 'package:chat/constants.dart';
+import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/services/services.dart';
-
+import 'package:chat/view/Screens/signup_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../Widgets/custom_text_form_field.dart';
 
 class VerificationCodePage extends StatefulWidget {
-  const VerificationCodePage({super.key, required this.email});
+  VerificationCodePage(
+      {super.key,
+      required this.email,
+      this.resetPass = false,
+      this.newPassword = ""});
   static String id = 'VerificationCodePage';
   final String email;
+  final bool resetPass;
+  late String newPassword;
+
   @override
   State<VerificationCodePage> createState() => _VerificationCodePageState();
 }
@@ -51,16 +54,49 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                             setState(() {
                               loading = true;
                             });
-                            validateVerificationCode(
-                                widget.email, verifyCodeController.text,);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage(
-                                       
-                                      )),
-                            );
-                            
+                            if (await validateVerificationCode(
+                              widget.email,
+                              verifyCodeController.text,
+                            )) {
+                              if (widget.resetPass) {
+                                if (await resetPassword(
+                                    widget.email, widget.newPassword)) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text('Password Reset Successful'),
+                                  ));
+                                  await login(widget.email, widget.newPassword);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomePage()));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text('Failed to Reset Password'),
+                                  ));
+                                }
+                              } else {
+                                await login(widget.email, widget.newPassword);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomePage()));
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text('Invalid verification code'),
+                              ));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignUpPage()),
+                              );
+                            }
+
                             setState(() {
                               loading = false;
                             });
@@ -77,6 +113,4 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
       ),
     );
   }
-
-  
 }

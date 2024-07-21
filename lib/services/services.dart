@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:chat/API/api.dart';
 import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 Future<bool> signUp(String email, String password, String firstName, String lastName, String confirmPassword,BuildContext context) async {
   try {
    final response = await http.post(
-      Uri.parse('${baseUrl}Login'),
+      Uri.parse('${baseUrl}SignUp'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email,
@@ -51,7 +50,7 @@ Future<bool> signUp(String email, String password, String firstName, String last
 Future<bool> sendVerifyCode(String email, bool reset) async {
   try {
     final response = await http.post(
-      Uri.parse('${baseUrl}Login'),
+      Uri.parse('${baseUrl}SendCode'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'reset': reset}),
     );
@@ -72,7 +71,7 @@ Future<bool> sendVerifyCode(String email, bool reset) async {
 Future<bool> validateVerificationCode(String email, String code) async {
   try {
      final response = await http.post(
-      Uri.parse('${baseUrl}Login'),
+      Uri.parse('${baseUrl}ValidateEmailVerificationCode'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'code': code}),
     );
@@ -174,4 +173,20 @@ Future<bool >signOut() async {
   }
 
 
+}
+
+Future<bool >resetPassword(String email,String newPassword) async {
+  final response = await http.post(
+    Uri.parse('${baseUrl}new-password'),
+    headers: {'Content-Type': 'application/json',
+    'Accept': '*/*',},
+    body: jsonEncode({'email': email,
+    'newPassword': newPassword}),
+  );
+
+  if (response.statusCode == 200) {
+    print('Password reset successful'); 
+    return true;
+  }
+  return false;
 }

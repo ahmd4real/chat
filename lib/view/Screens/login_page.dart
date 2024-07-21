@@ -1,5 +1,6 @@
 import 'package:chat/services/services.dart';
 import 'package:chat/utilities.dart';
+import 'package:chat/view/Screens/enter_email.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/signup_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
@@ -55,6 +56,26 @@ class _LoginPageState extends State<LoginPage> {
                         controller: passwordController,
                         hidden: true,
                         hintText: 'Password',
+                      ),
+                      Padding(
+                         padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.08, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushReplacementNamed(
+                                  context, EnterYourEmail.id);
+                            },
+                            child: const Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          )
+                        ],),
                       ),
                       CustomButton(
                         text: 'Login',

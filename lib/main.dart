@@ -1,6 +1,8 @@
+import 'package:chat/view/Screens/change_password_page.dart';
 import 'package:chat/view/Screens/enter_email.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/login_page.dart';
+import 'package:chat/view/Screens/profile_page.dart';
 import 'package:chat/view/Screens/signup_page.dart';
 
 
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
+ 
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const ChatApp());
 }
@@ -33,6 +36,7 @@ class ChatApp extends StatelessWidget {
         SignUpPage.id:(context) => const SignUpPage(),
 
         EnterYourEmail.id:(context) =>  EnterYourEmail(),
+        ChangePasswordPage.id:(context) =>  ChangePasswordPage(),
        
       },  
      home: FutureBuilder<bool>(

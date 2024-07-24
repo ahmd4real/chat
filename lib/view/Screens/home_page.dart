@@ -16,20 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
-  late String firstName , lastName, email;
+    String? firstName , lastName, email;
    List<Widget> pages=[];
   @override
   void initState() {
     super.initState();
     _getUserFullName();
-  }
-
-  Future<void> _getUserFullName() async {
-    firstName = await getData('firstName') ?? '';
-    lastName = await getData('lastName') ?? '';
-    email = await getData('email') ?? '';
-    
-    // Initialize pages after data is fetched
     pages = [
       Home(),
       ProfilePage(
@@ -39,6 +31,15 @@ class _HomePageState extends State<HomePage> {
       ),
       SettingsPage(),
     ];
+  }
+
+  Future<void> _getUserFullName() async {
+    firstName = await getData('firstName');
+    lastName = await getData('lastName') ?? '';
+    email = await getData('email') ?? '';
+    
+    // Initialize pages after data is fetched
+    
 
     // Update the state to reflect changes
     setState(() {

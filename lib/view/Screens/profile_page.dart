@@ -1,4 +1,5 @@
 import 'package:chat/constants.dart';
+import 'package:chat/models/BLoCs/imageCubit/image_cubit.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/edit_profile_page.dart';
 
@@ -9,12 +10,13 @@ import 'package:chat/view/Screens/settings_page.dart';
 import 'package:chat/view/Widgets/profile_page_items.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/utilities.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.firstName, required this.lastName, required this.email});
+   ProfilePage({super.key, required this.firstName, required this.lastName, required this.email});
   static String id = 'ProfilePage';
- final String firstName , lastName, email;
+  String? firstName , lastName, email;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -22,42 +24,28 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool loading = false;
-  //String? firstName = '', lastName = '', email = '';
+  
 
-  @override
-  // void initState() {
-  //   super.initState();
-  //   _getUserFullName();
-  // }
+ 
 
-  // Future<void> _getUserFullName() async {
-  //   setState(() {
-  //     loading = true;
-  //   });
 
-  //   firstName = await getData('firstName');
-  //   lastName = await getData('lastName');
-  //   email = await getData('email');
-  //   setState(() {
-  //     loading = false;
-  //   });
-  // }
-
-  @override
+  
   @override
   Widget build(BuildContext context) {
+     final imageCubit = context.read<ImageCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(child: _buildUserInfo(context)),
+        child: Center(child: _buildUserInfo(context,imageCubit)),
       ),
     );
   }
 
-  Widget _buildUserInfo(BuildContext context) {
+  Widget _buildUserInfo(BuildContext context,final imageCubit) {
+     
     return Column(
       children: [
         const CircleAvatar(
@@ -131,8 +119,14 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 32,),
             InkWell(onTap: (){
               print('hello');
-              startTokenRefreshTimer();
-            }, child: Icon(Icons.timer,size: 50,)
+         
+                 showImagePicker(context, 
+                 (Image newImage) {
+                              imageCubit.setAvatarImg(newImage);
+                            });
+             
+              //startTokenRefreshTimer();
+            }, child: Icon(Icons.image,size: 50,)
             )
       ],
     );

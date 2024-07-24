@@ -1,29 +1,31 @@
 import 'dart:io';
 
+import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/custom_image_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void snackBar(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+}
 
- bool passwordMatched(String password, String confirmPassword) {
-    return password==confirmPassword;
-  }
+bool passwordMatched(String password, String confirmPassword) {
+  return password == confirmPassword;
+}
 
 Future<String?> getData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString(key);
 }
 
-Future<bool> isLoggedIn()async{
+Future<bool> isLoggedIn() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('isLoggedIn')==true;
-
+  return prefs.getBool('isLoggedIn') == true;
 }
 
 String? emailValidator(String? value) {
@@ -37,8 +39,6 @@ String? emailValidator(String? value) {
   }
   return null;
 }
-
-
 
 final picker = ImagePicker();
 
@@ -57,7 +57,6 @@ showImagePicker(BuildContext context, Function(Image) setImage) async {
       }
     } on PlatformException catch (error) {
       print('Error in showImagePicker: $error');
-      //AppLogger.log(error.message);
     }
   } else {
     showModalBottomSheet(
@@ -75,7 +74,6 @@ imagePick(ImageSource source, Function(Image) setImage) async {
       _cropImage(File(value.path), setImage);
     } else {
       print('No image selected');
-     // AppLogger.log("You didn't pick any image");
     }
   });
 }
@@ -104,7 +102,7 @@ _cropImage(File imgFile, Function(Image) setImage) async {
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: "Edit Photo",
-            toolbarColor:Colors.green, //kGreenBigButtons,
+            toolbarColor: Colors.green, //kGreenBigButtons,
             toolbarWidgetColor: Colors.white,
             statusBarColor: Colors.green,
             activeControlsWidgetColor: Colors.green,
@@ -120,9 +118,4 @@ _cropImage(File imgFile, Function(Image) setImage) async {
     await uploadImage(croppedFile);
     setImage(Image.file(File(croppedFile.path)));
   }
-
-}
-
-uploadImage(CroppedFile croppedFile) async {
-  print('Uploading image');
 }

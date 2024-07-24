@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -221,24 +223,36 @@ Future<bool> changePassword(String oldPassword, String newPassword) async {
   return false;
 }
 
-//to retrieve the last jwt and update it
-// Future<void> makeApiCall() async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   String? jwt = prefs.getString('jwt');
-
-//   final response = await http.get(
-//     Uri.parse('${baseUrl}'),
-//     headers: {'Authorization': 'Bearer $jwt'},
-//   );
-
-//   if (response.statusCode == 401) {
-//     // Handle token expiration if not already managed
-//     await refreshJwtToken();
-//     await makeApiCall(); // Retry the API call
-//   }
-
-//   // Handle the response
-// }
+Future<void> uploadImage(CroppedFile croppedFile) async {
+  File imageFile = File(croppedFile.path);
+  if (imageFile != null) {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          '${baseUrl}settings/profile-picture'), // Replace with your upload URL
+    );
+    request.headers.addAll(
+      {
+        'Content-Type': 'multipart/form-data',
+        'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YzUwNDA1Ny0xZTg2LTQ1MTAtOWM3Yy0zOWY0NDc4OTJmYTMiLCJlbWFpbCI6ImFobWVkYWwwMTE2MDVAZ21haWwuY29tIiwiaWQiOiIyMSIsImZpcnN0TmFtZSI6IkFobWVkIiwibGFzdE5hbWUiOiJBbGFhIiwiZXhwIjoxNzIxODIzNTE0LCJpc3MiOiJBdXRoZW50aWNhdGlvbi9CYWNrRW5kIiwiYXVkIjoiQXV0aGVudGljYXRpb24vRnJvbnRFbmQifQ.J5jJDaXqCVw_TORy_OZBHubG4E7hqF_jBLURi5ld8KU'
+      },
+    );
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'newPicture',
+        imageFile.path,
+        filename: imageFile.path,
+      ),
+    );
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print("File uploaded successfully!");
+    } else {
+      print("File upload failed: ${response.statusCode}");
+    }
+  }
+}
 
 void startTokenRefreshTimer() async {
   //haredPreferences prefs = await SharedPreferences.getInstance();

@@ -45,12 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildUserInfo(BuildContext context,final imageCubit) {
-     
+     final imageState = context.watch<ImageCubit>().state;
     return Column(
       children: [
-        const CircleAvatar(
+         CircleAvatar(
           radius: 70,
-          backgroundImage: AssetImage(kAvatar),
+          backgroundImage: imageState.avatarImg.image,//AssetImage(kAvatar),
         ),
         const SizedBox(
           height: 24,

@@ -3,11 +3,9 @@ import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/verificaton_code_page.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/login_page.dart';
-
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../Widgets/custom_button.dart';

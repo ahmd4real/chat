@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -94,7 +95,6 @@ Future<bool> validateCode(String email, String code,
   }
 }
 
-// Login
 Future<bool> login(String email, String password) async {
   try {
     final response = await http.post(
@@ -147,18 +147,16 @@ Future<void> refreshJwtToken() async {
       final oldRefreshToken = prefs.getString('refreshToken');
       await prefs.setString('jwt', data['jwt']);
       await prefs.setString('refreshToken', data['refreshToken']);
-    
-print("Refreshed successfully");
 
-    print('''Token Data:
+      print("Refreshed successfully");
+
+      print('''Token Data:
     oldToken: $oldToken
     newToken: ${data['jwt']}
     oldRefreshToken: $oldRefreshToken
     newRefreshToken: ${data['refreshToken']}
     ''');
-    
     } else {
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: builder))
       throw Exception('Failed to refresh token');
     }
   } else {
@@ -221,6 +219,75 @@ Future<bool> changePassword(String oldPassword, String newPassword) async {
   }
   print(response.statusCode);
   return false;
+}
+
+Future<int?> updateUserData({
+  required bool updateFirstName,
+  required bool updateLastName,
+  required bool updateBio,
+  String? newFirstName,
+  String? newLastName,
+  String? newBio,
+}) async {
+  List<Map<String, dynamic>> updateData =
+      List<Map<String, dynamic>>.empty(growable: true);
+  if (updateFirstName) {
+    updateData.add({
+      "operationType": 0,
+      "path": "firstName",
+      "op": "replace",
+      "from": "string",
+      "value": newFirstName
+    });
+  }
+  if (updateLastName) {
+    updateData.add({
+      "operationType": 0,
+      "path": "lastName",
+      "op": "replace",
+      "from": "string",
+      "value": newLastName
+    });
+  }
+  if (updateBio) {
+    updateData.add({
+      "operationType": 0,
+      "path": "biography",
+      "op": "replace",
+      "from": "string",
+      "value": newBio
+    });
+  }
+
+  try {
+    final url = Uri.parse(
+        'https://chat-app.runasp.net/api/Accounts/settings/insensitive-data');
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString(
+        'jwtToken'); // Assume you store the JWT token in SharedPreferences
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNTk4NmZiNy1kMmUxLTQ1ODEtODU4Yi1iMjdjMzJjZDY3ZTYiLCJlbWFpbCI6ImFobWVkYWwwMTE2MDVAZ21haWwuY29tIiwiaWQiOiIyMSIsImZpcnN0TmFtZSI6Im9tYXIiLCJsYXN0TmFtZSI6IkFsYWEiLCJleHAiOjE3MjE5MDcxNTYsImlzcyI6IkF1dGhlbnRpY2F0aW9uL0JhY2tFbmQiLCJhdWQiOiJBdXRoZW50aWNhdGlvbi9Gcm9udEVuZCJ9.A2sbapVmQLeEaigXNsulu9KiedzC_T3i9tTIxGwvFb0',
+    };
+
+    final body = jsonEncode(updateData);
+
+    final response = await http.patch(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      print('User data updated successfully');
+      return response.statusCode;
+    } else {
+      print('Failed to update user data: ${response.statusCode}');
+      return response.statusCode;
+    }
+  } catch (error) {
+    print('Error updating user data: $error');
+    return null;
+  }
 }
 
 Future<void> uploadImage(CroppedFile croppedFile) async {

@@ -23,16 +23,16 @@ class CustomNavBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           tabs: const [
             GButton(
-              icon: Icons.home,
-              text: 'Home',
+              icon: Icons.chat,
+              text: 'Chats',
             ),
             GButton(
               icon: Icons.person,
               text: 'Profile',
             ),
             GButton(
-              icon: Icons.settings,
-              text: 'Settings',
+              icon: Icons.people,
+              text: 'Requests',
             ),
           ]),
     );

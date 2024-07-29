@@ -6,7 +6,7 @@ class CustomTextFormField extends StatelessWidget {
   CustomTextFormField(
       {required this.hidden, super.key, this.onChanged, this.hintText, 
       required this.controller,
- 
+       this.labelText,
       this.keyboardType=TextInputType.text,
       this.validator
       });
@@ -35,7 +35,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller ,
         onChanged: onChanged,
         decoration: InputDecoration(
-          labelText: hintText,
+          labelText: labelText,
           hintText: hintText,
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),

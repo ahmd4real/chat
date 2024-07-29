@@ -11,124 +11,47 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 // Sign Up
-Future<bool> signUp(String email, String password, String firstName,
-    String lastName, String confirmPassword, BuildContext context) async {
-  try {
-    final response = await http.post(
-      Uri.parse('${baseUrl}SignUp'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-        'firstName': firstName,
-        'lastName': lastName,
-        'confirmPassword': confirmPassword
-      }),
-    );
-    if (response.statusCode == 200) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('email', email);
-      prefs.setString('firstName', firstName);
-      prefs.setString('lastName', lastName);
-      return true;
-    } else {
-      if (response.statusCode == 404) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This Email Already Exists')),
-        );
-        return false;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to sign up')),
-      );
-      return false;
-    }
-  } catch (e) {
-    print('Error in addUser: $e');
-    return false;
-  }
-}
+// Future<bool> signUp(String email, String password, String firstName,
+//     String lastName, String confirmPassword, BuildContext context) async {
+//   try {
+//     final response = await http.post(
+//       Uri.parse('${baseUrl}SignUp'),
+//       headers: {'Content-Type': 'application/json'},
+//       body: jsonEncode({
+//         'email': email,
+//         'password': password,
+//         'firstName': firstName,
+//         'lastName': lastName,
+//         'confirmPassword': confirmPassword
+//       }),
+//     );
+//     if (response.statusCode == 200) {
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       prefs.setString('email', email);
+//       prefs.setString('firstName', firstName);
+//       prefs.setString('lastName', lastName);
+//       return true;
+//     } else {
+//       if (response.statusCode == 404) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           const SnackBar(content: Text('This Email Already Exists')),
+//         );
+//         return false;
+//       }
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(content: Text('Failed to sign up')),
+//       );
+//       return false;
+//     }
+//   } catch (e) {
+//     print('Error in addUser: $e');
+//     return false;
+//   }
+// }
 
 // Send Verification Code
-Future<bool> sendVerifyCode(String email, bool reset) async {
-  try {
-    final response = await http.post(
-      Uri.parse('${baseUrl}SendCode'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'reset': reset}),
-    );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      print('Send Code Failed form sendVerifyCode Function: Empty response');
-      return false;
-    }
-  } catch (e) {
-    print('Error in sendVerifyCode from sendVerifyCode Function: $e');
-    return false;
-  }
-}
 
-// Validate Verification Code
-Future<bool> validateCode(String email, String code,
-    {bool isForResetPassword = false}) async {
-  try {
-    final response = await http.post(
-      Uri.parse('${baseUrl}ValidateCode'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'code': code,
-        'isForResetPassword': isForResetPassword
-      }),
-    );
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      print('Validate Code Failed: Empty response');
-      return false;
-    }
-  } catch (e) {
-    print('Error in validateVerificationCode: $e');
-    return false;
-  }
-}
-
-Future<bool> login(String email, String password) async {
-  try {
-    final response = await http.post(
-      Uri.parse('${baseUrl}Login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
-    );
-
-    final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('jwt', data['jwt']);
-      prefs.setString('refreshToken', data['refreshToken']);
-      prefs.setString('email', data['email']);
-      prefs.setString('firstName', data['firstName']);
-      prefs.setString('lastName', data['lastName']);
-      prefs.setBool('isLoggedIn', true);
-      prefs.setString('expirationOfJwt', data['expirationOfJwt']);
-      print(response.body);
-      return true;
-    } else {
-      if (response.statusCode == 404) {
-        print('email or password is incorrect');
-        return false;
-      }
-      print('Login Failed: Empty response');
-      return false;
-    }
-  } catch (e) {
-    print('Error in login: $e');
-    return false;
-  }
-}
 
 Future<void> refreshJwtToken() async {
   final refreshToken = await getData('refreshToken');
@@ -171,7 +94,7 @@ Future<bool> signOut() async {
   String? email = prefs.getString('email');
   final response = await http.delete(
     Uri.parse('${baseUrl}SignOut'),
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json-patch+json'},
     body: jsonEncode({'email': email, 'refreshToken': refreshToken}),
   );
 
@@ -185,22 +108,7 @@ Future<bool> signOut() async {
   }
 }
 
-Future<bool> resetPassword(String email, String newPassword) async {
-  final response = await http.post(
-    Uri.parse('${baseUrl}resetpassword'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': '*/*',
-    },
-    body: jsonEncode({'email': email, 'newPassword': newPassword}),
-  );
 
-  if (response.statusCode == 200) {
-    print('Password reset successful');
-    return true;
-  }
-  return false;
-}
 
 Future<bool> changePassword(String oldPassword, String newPassword) async {
   final jwt = await getData('jwt');
@@ -261,16 +169,16 @@ Future<int?> updateUserData({
 
   try {
     final url = Uri.parse(
-        'https://chat-app.runasp.net/api/Accounts/settings/insensitive-data');
+        '${baseUrl}settings/insensitive-data');
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(
-        'jwtToken'); // Assume you store the JWT token in SharedPreferences
+        'jwt'); // Assume you store the JWT token in SharedPreferences
 
     final headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json-patch+json',
       'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiNTk4NmZiNy1kMmUxLTQ1ODEtODU4Yi1iMjdjMzJjZDY3ZTYiLCJlbWFpbCI6ImFobWVkYWwwMTE2MDVAZ21haWwuY29tIiwiaWQiOiIyMSIsImZpcnN0TmFtZSI6Im9tYXIiLCJsYXN0TmFtZSI6IkFsYWEiLCJleHAiOjE3MjE5MDcxNTYsImlzcyI6IkF1dGhlbnRpY2F0aW9uL0JhY2tFbmQiLCJhdWQiOiJBdXRoZW50aWNhdGlvbi9Gcm9udEVuZCJ9.A2sbapVmQLeEaigXNsulu9KiedzC_T3i9tTIxGwvFb0',
+          'Bearer $token',
     };
 
     final body = jsonEncode(updateData);

@@ -1,4 +1,4 @@
-import 'package:chat/view/Screens/change_password_page.dart';
+import 'package:chat/view/Screens/Auth/change_password_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 

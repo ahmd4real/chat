@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:signalr_netcore/signalr_client.dart';
+
+
+
+
+// The location of the SignalR Server.
+// Import the library.
+
+
 
 
 
@@ -21,6 +30,6 @@ String kCreatedAt='createdAt';
 String kMessageId='id';
 
 
-
+late HubConnection hubConnection;
 
 const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';

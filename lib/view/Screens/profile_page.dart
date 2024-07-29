@@ -1,24 +1,27 @@
-import 'dart:convert';
 
-import 'package:chat/constants.dart';
-import 'package:chat/models/BLoCs/imageCubit/image_cubit.dart';
 import 'package:chat/services/services.dart';
+import 'package:chat/view/Screens/freindsRequests.dart';
+import 'package:chat/view/Screens/requests_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
+import 'package:chat/view/Screens/Auth/login_page.dart';
 import 'package:chat/view/Screens/edit_profile_page.dart';
-
-import 'package:chat/view/Screens/login_page.dart';
 import 'package:chat/view/Screens/manage_profile_page.dart';
 import 'package:chat/view/Screens/settings_page.dart';
-
 import 'package:chat/view/Widgets/profile_page_items.dart';
-import 'package:flutter/material.dart';
 import 'package:chat/utilities.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class ProfilePage extends StatefulWidget {
-   ProfilePage({super.key, required this.firstName, required this.lastName, required this.email});
+  const ProfilePage({
+    super.key,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
+
   static String id = 'ProfilePage';
-  String? firstName , lastName, email;
+  final String firstName, lastName, email;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -26,128 +29,115 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool loading = false;
-  
 
- 
-
-
-  
   @override
   Widget build(BuildContext context) {
-     final imageCubit = context.read<ImageCubit>();
+    final imageCubit = context.read<ImageCubit>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(child: _buildUserInfo(context,imageCubit)),
+        padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+        child: Center(child: _buildUserInfo(context, imageCubit)),
       ),
     );
   }
 
-  Widget _buildUserInfo(BuildContext context,final imageCubit) {
-     final imageState = context.watch<ImageCubit>().state;
-    return Column(
+  Widget _buildUserInfo(BuildContext context, ImageCubit imageCubit) {
+    final imageState = context.watch<ImageCubit>().state;
+    return ListView(
       children: [
-        CircleAvatar(
-         radius: 70,
-         backgroundImage: imageState.avatarImg.image,//AssetImage(kAvatar),
+        Expanded(
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 70,
+                backgroundImage:  imageState.avatarImg.image,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '${widget.firstName} ${widget.lastName}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ProfilePageItems(
+                icon: Icons.edit,
+                text: "Edit Profile",
+                navigateScreens: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfilePage(),
                     ),
-                    const SizedBox(
-         height: 24,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              ProfilePageItems(
+                icon: Icons.person,
+                text: "Manage Profile",
+                navigateScreens: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageProfilePage(),
                     ),
-                    Text(
-         '${widget.firstName} ${widget.lastName}',
-         style: const TextStyle(
-           fontSize: 20,
-           fontWeight: FontWeight.bold,
-         ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              ProfilePageItems(
+                icon: Icons.settings,
+                text: "FreindsRequests",
+                navigateScreens: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  FreindsRequests(),
                     ),
-                    const SizedBox(
-         height: 32,
-                    ),
-                    ProfilePageItems(
-         icon: Icons.edit,
-         text: "Edit Profile",
-         navigateScreens: () {
-           Navigator.push(
-               context,
-               MaterialPageRoute(
-                   builder: (context) => const EditProfilePage()));
-         },
-                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    loading = true;
+                  });
+                  if (await signOut()) {
+                    Navigator.pushReplacementNamed(context, LoginPage.id);
+                  }
+                  setState(() {
+                    loading = false;
+                  });
+                },
+                child: const Text('Logout'),
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  
+                  InkWell(
+                    onTap: () {
                     
-                    const SizedBox(
-         height: 8,
-                    ),
-                    ProfilePageItems(
-         icon: Icons.person,
-         text: "Manage Profile",
-         navigateScreens: () {
-           Navigator.push(
-               context,
-               MaterialPageRoute(
-                   builder: (context) => const ManageProfilePage()));
-         },
-                    ),
-                    const SizedBox(
-         height: 8,
-                    ),
-                    ProfilePageItems(
-           icon: Icons.settings,
-           text: "Settings",
-           navigateScreens: () {
-             Navigator.push(context,
-                 MaterialPageRoute(builder: (context) => const 
-                 SettingsPage()));
-           }),
-                    
-                    const SizedBox(
-         height: 8,
-                    ),
-                
-                    ElevatedButton(
-           onPressed: () async {
-             setState(() {
-               loading = true;
-             });
-             if (await signOut()) {
-               Navigator.pushReplacementNamed(context, LoginPage.id);
-             }
-             setState(() {
-               loading = false;
-             });
-           },
-           child: const Text('Logout')),
-                
-           SizedBox(height: 32,),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceAround,
-             children: [
-               InkWell(onTap: (){
-                 print('hello');
-                         updateUserData(updateFirstName: true, updateLastName: true, updateBio: true,
-                         newFirstName: 'jemmy', newLastName: 'Ashraf', newBio: 'Flutter Dev'
-                         );
-                
-                 //startTokenRefreshTimer();
-               }, child: Icon(Icons.image,size: 50,)
-               ),
-                
-               InkWell(onTap: (){
-                 print('hello');
-                        
-                    showImagePicker(context, 
-                    (Image newImage) {
-                                 imageCubit.setAvatarImg(newImage);
-                               });
-                
-                 //startTokenRefreshTimer();
-               }, child: Icon(Icons.image,size: 50,)
-               ),
-             ],
-           ),
+                      showImagePicker(context, (Image newImage) {
+                        imageCubit.setAvatarImg(newImage);
+                      });
+                    },
+                    child: const Icon(Icons.image, size: 50),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

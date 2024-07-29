@@ -34,6 +34,7 @@ class CustomNavBar extends StatelessWidget {
               icon: Icons.people,
               text: 'Requests',
             ),
+           
           ]),
     );
   }

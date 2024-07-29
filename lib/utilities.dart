@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signalr_netcore/hub_connection_builder.dart';
 
 void snackBar(BuildContext context, String msg) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
@@ -144,9 +145,9 @@ getImage(){
       width: 300,         // Adjust the width as needed
       height: 300,        // Adjust the height as needed
     );
-                     var imageCubit;
-                     imageCubit.setAvatarImg(retImg);
-
+                    //  var imageCubit;
+                    //  imageCubit.setAvatarImg(retImg);
+return retImg;
               
 
 }

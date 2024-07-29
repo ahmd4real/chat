@@ -2,8 +2,9 @@ import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 
 class RequestWidget extends StatelessWidget {
-  const RequestWidget({super.key});
-
+  const RequestWidget({super.key,required this.fullName,required this.bio});
+   final String fullName ;
+   final String bio ;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -11,8 +12,8 @@ class RequestWidget extends StatelessWidget {
         backgroundImage: AssetImage(kAvatar),
         radius: 30,
       ),
-      title: const Text('Ahmed'),
-      subtitle: const Text('User Bio'),
+      title:  Text(fullName),
+      subtitle:  Text(bio),
       trailing: Container(
         width: 100,
         child: Row(

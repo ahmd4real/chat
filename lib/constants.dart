@@ -16,7 +16,8 @@ Color kGreen=const  Color.fromARGB(255, 70, 110, 84);
 Color kBlack=const Color.fromARGB(255, 0, 0, 0);
 Color kLightGreen=const Color(0xFF4CAF50);
 Color kButtonsColor=const Color(0xff7e97f3);
-
+Color kDarkGrey=const Color.fromARGB(255, 51, 51, 51);
+Color noColor= const Color.fromARGB(0, 0, 0, 0);
 
 
 //PATHS
@@ -33,3 +34,5 @@ String kMessageId='id';
 late HubConnection hubConnection;
 
 const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';
+
+late String kToken;

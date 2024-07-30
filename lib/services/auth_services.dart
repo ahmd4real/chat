@@ -1,3 +1,4 @@
+import 'package:chat/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,7 @@ class AuthServices {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      kToken=data['jwt'];
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('jwt', data['jwt']);
       prefs.setString('refreshToken', data['refreshToken']);

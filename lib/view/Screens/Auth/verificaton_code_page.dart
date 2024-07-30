@@ -7,10 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-
 import '../home_page.dart';
 
-class VerificationCodePage extends StatefulWidget {
+class VerificationCodePage extends StatelessWidget {
   VerificationCodePage({
     super.key,
     required this.email,
@@ -22,12 +21,8 @@ class VerificationCodePage extends StatefulWidget {
   final bool resetPass;
   late String newPassword;
 
-  @override
-  State<VerificationCodePage> createState() => _VerificationCodePageState();
-}
-
-class _VerificationCodePageState extends State<VerificationCodePage> {
   TextEditingController verifyCodeController = TextEditingController();
+
   GlobalKey<FormState> formKey = GlobalKey();
 
   @override
@@ -37,15 +32,13 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
         if (state is VerificationCodeLoading) {
           // Show loading
         } else if (state is VerificationCodeSuccess) {
-          if (widget.resetPass) {
+          if (resetPass) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
             // Handle password reset success
-          } else {
-            
-          }
+          } else {}
         } else if (state is VerificationCodeFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
@@ -53,7 +46,8 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
         }
       },
       child: ModalProgressHUD(
-        inAsyncCall: context.watch<VerificationCodeBloc>().state is VerificationCodeLoading,
+        inAsyncCall: context.watch<VerificationCodeBloc>().state
+            is VerificationCodeLoading,
         child: Scaffold(
           body: Form(
             key: formKey,
@@ -64,23 +58,27 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Card(
                     child: Column(
+                      
                       children: [
+                        const SizedBox(height: 16),
                         CustomTextFormField(
+                          keyboardType: TextInputType.number,
                           controller: verifyCodeController,
                           hidden: false,
-                          hintText: 'Enter your verification code',
+                          labelText: 'Enter your verification code',
                         ),
                         CustomButton(
                           text: 'Continue',
                           onTap: () {
                             if (formKey.currentState!.validate()) {
-                              context.read<VerificationCodeBloc>().add(VerifyCodeSubmitted(
-                                email: widget.email,
-                                code: verifyCodeController.text,
-                                isForResetPassword: widget.resetPass,
-                                newPassword: widget.newPassword,
-                              ));
-                              
+                              context
+                                  .read<VerificationCodeBloc>()
+                                  .add(VerifyCodeSubmitted(
+                                    email: email,
+                                    code: verifyCodeController.text,
+                                    isForResetPassword: resetPass,
+                                    newPassword: newPassword,
+                                  ));
                             }
                           },
                         ),

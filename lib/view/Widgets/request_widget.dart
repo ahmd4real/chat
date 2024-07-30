@@ -2,9 +2,11 @@ import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 
 class RequestWidget extends StatelessWidget {
-  const RequestWidget({super.key,required this.fullName,required this.bio});
+   RequestWidget({super.key,required this.fullName,required this.bio,this.onAccept,this.onCancel});
    final String fullName ;
    final String bio ;
+   void Function()? onAccept;
+   void Function()? onCancel;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -14,16 +16,12 @@ class RequestWidget extends StatelessWidget {
       ),
       title:  Text(fullName),
       subtitle:  Text(bio),
-      trailing: Container(
+      trailing: SizedBox(
         width: 100,
         child: Row(
           children: [
-            IconButton(onPressed: (){
-              print('Accept');
-            }, icon: Icon(Icons.check_circle_outline,color: Colors.green,)),
-            IconButton(onPressed: (){
-        print('cancel');
-      }, icon: Icon(Icons.cancel_outlined,color: Colors.red,)),
+            IconButton(onPressed: onAccept, icon: const Icon(Icons.check_circle_outline,color: Colors.green,size: 32,)),
+            IconButton(onPressed: onCancel, icon: const Icon(Icons.cancel_outlined,color: Colors.red,size: 32,)),
 
           ],
         ),

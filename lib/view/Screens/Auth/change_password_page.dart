@@ -35,20 +35,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 child: Card(
                   child: Column(
                     children: [
+                      const SizedBox(height: 16),
                       CustomTextFormField(
                         controller: oldPasswordController,
                         hidden: false,
-                        hintText: 'Enter old Password',
+                        labelText: 'Enter old Password',
                       ),
                       CustomTextFormField(
                         controller: newPasswordController,
                         hidden: false,
-                        hintText: 'Enter New Password',
+                        labelText: 'Enter New Password',
                       ),
                       CustomTextFormField(
                         controller: confirmPasswordController,
                         hidden: true,
-                        hintText: 'Confirm New Password',
+                        labelText: 'Confirm New Password',
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Field is Required';

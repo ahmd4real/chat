@@ -10,46 +10,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-// Sign Up
-// Future<bool> signUp(String email, String password, String firstName,
-//     String lastName, String confirmPassword, BuildContext context) async {
-//   try {
-//     final response = await http.post(
-//       Uri.parse('${baseUrl}SignUp'),
-//       headers: {'Content-Type': 'application/json'},
-//       body: jsonEncode({
-//         'email': email,
-//         'password': password,
-//         'firstName': firstName,
-//         'lastName': lastName,
-//         'confirmPassword': confirmPassword
-//       }),
-//     );
-//     if (response.statusCode == 200) {
-//       SharedPreferences prefs = await SharedPreferences.getInstance();
-//       prefs.setString('email', email);
-//       prefs.setString('firstName', firstName);
-//       prefs.setString('lastName', lastName);
-//       return true;
-//     } else {
-//       if (response.statusCode == 404) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text('This Email Already Exists')),
-//         );
-//         return false;
-//       }
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('Failed to sign up')),
-//       );
-//       return false;
-//     }
-//   } catch (e) {
-//     print('Error in addUser: $e');
-//     return false;
-//   }
-// }
-
-// Send Verification Code
 
 
 
@@ -246,4 +206,25 @@ void startTokenRefreshTimer() async {
       startTokenRefreshTimer();
     });
   }
+}
+
+
+friendRequestResponse(bool isAccepted,int id)async{
+  final response = await http.post(Uri.parse('https://chat-app.runasp.net/api/FriendRequest/response'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $kToken'
+      },
+      body:
+          jsonEncode({"isAccepted": isAccepted, "id": id}));
+  if (response.statusCode == 200 ) {
+    if (isAccepted) 
+    print('Friend request accepted successfully');
+    else
+    print('Friend request declined successfully');
+    return true;
+  }
+  print(response.statusCode);
+  return false;
+
 }

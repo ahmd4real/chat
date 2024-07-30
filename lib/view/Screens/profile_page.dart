@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircleAvatar(
                 radius: 70,
-                backgroundImage:  imageState.avatarImg.image,
+                backgroundImage:  NetworkImage('https://chat-app.runasp.net/Users//c4e7b7ee-c0d6-4fa6-9359-c305bf6a354c.jpg'),//imageState.avatarImg.image,
               ),
               const SizedBox(height: 24),
               Text(
@@ -99,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>  FreindsRequests(),
+                      builder: (context) =>  FriendsRequests(),
                     ),
                   );
                 },

@@ -1,6 +1,5 @@
 import 'package:chat/constants.dart';
 import 'package:chat/services/auth_services.dart';
-import 'package:chat/services/services.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/Auth/verificaton_code_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
@@ -40,21 +39,22 @@ class _EnterYourEmailState extends State<EnterYourEmail> {
                 child: Card(
                   child: Column(
                     children: [
+                      const SizedBox(height: 16),
                       CustomTextFormField(
                         controller: emailController,
                         hidden: false,
-                        hintText: 'Email',
+                        labelText: 'Email',
                         validator: emailValidator,
                       ),
                       CustomTextFormField(
                         controller: passwordController,
                         hidden: true,
-                        hintText: 'New Password',
+                        labelText: 'New Password',
                       ),
                       CustomTextFormField(
                         controller: confirmPasswordController,
                         hidden: true,
-                        hintText: 'Confirm New Password',
+                        labelText: 'Confirm New Password',
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Field is Required';

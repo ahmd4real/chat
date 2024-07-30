@@ -1,5 +1,6 @@
 import 'package:chat/constants.dart';
 import 'package:chat/utilities.dart';
+import 'package:chat/view/Screens/freindsRequests.dart';
 import 'package:chat/view/Screens/inside_chat.dart';
 import 'package:chat/view/Screens/profile_page.dart';
 import 'package:chat/view/Screens/requests_page.dart';
@@ -29,23 +30,11 @@ class _HomePageState extends State<HomePage> {
 void initState()  {
     super.initState();
     _getUserFullName();
-initSignalR();
+
 
   }
 
-  initSignalR()async{
-    
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-  final token=await prefs.getString('jwt') ?? '';
-  hubConnection = HubConnectionBuilder().withUrl(
-    "https://chat-app.runasp.net/chat", options: HttpConnectionOptions(
-    accessTokenFactory: () async {
-      return '${token}';
-    }
-  ),).build();
-  print(token);
-  await hubConnection.start();
-  }
+ 
 
   Future<void> _getUserFullName() async {
     firstName = await getData('firstName') ?? '';
@@ -60,7 +49,7 @@ initSignalR();
           lastName: lastName,
           email: email,
         ),
-         RequestsPage(),
+         FriendsRequests(),
       ];
     });
   }

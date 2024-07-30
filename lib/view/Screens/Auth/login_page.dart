@@ -1,3 +1,4 @@
+import 'package:chat/constants.dart';
 import 'package:chat/models/BLoCs/Login/login_bloc.dart';
 import 'package:chat/models/BLoCs/Login/login_event.dart';
 import 'package:chat/models/BLoCs/Login/login_state.dart';
@@ -11,18 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatelessWidget {
+   LoginPage({super.key});
   static String id = 'loginPage';
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
   GlobalKey<FormState> formKey = GlobalKey();
 
   @override
@@ -32,8 +29,8 @@ class _LoginPageState extends State<LoginPage> {
         if (state is AuthLoading) {
           // Show loading
         } else if (state is AuthSuccess) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomePage()));
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
@@ -50,29 +47,30 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Image.asset(
                   'assets/images/logo.png',
-                  height: MediaQuery.of(context).size.height / 4,
+                  height: MediaQuery.of(context).size.height / 3,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Card(
-                    elevation: 5,
+                    
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
                         CustomTextFormField(
                           controller: emailController,
                           hidden: false,
-                          hintText: 'Email',
+                          labelText: 'Email',
                           validator: emailValidator,
                         ),
                         CustomTextFormField(
                           controller: passwordController,
                           hidden: true,
-                          hintText: 'Password',
+                          labelText: 'Password',
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).size.width * 0.08,
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.08,
                               vertical: 8),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -82,9 +80,11 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.pushReplacementNamed(
                                       context, EnterYourEmail.id);
                                 },
-                                child: const Text(
+                                child:  Text(
                                   'Forgot Password?',
                                   style: TextStyle(
+                                    color: kDarkGrey,
+                                    fontSize: 14,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -97,7 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: () {
                             if (formKey.currentState!.validate()) {
                               context.read<AuthBloc>().add(LoginEvent(
-                                  emailController.text, passwordController.text));
+                                  emailController.text,
+                                  passwordController.text));
                             }
                           },
                         ),
@@ -110,14 +111,17 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Don\'t have an account? '),
+                       Text('Don\'t have an account? ',style: TextStyle(color: kDarkGrey,fontSize: 16),
+                      ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, SignUpPage.id);
+                          Navigator.pushReplacementNamed(
+                              context, SignUpPage.id);
                         },
                         child: const Text(
                           'Sign Up',
                           style: TextStyle(
+                            fontSize: 16,
                               decoration: TextDecoration.underline,
                               fontWeight: FontWeight.w600),
                         ),

@@ -73,16 +73,17 @@ class _InsideChatState extends State<InsideChat> {
   }
 
   void sendMessage() async {
+    //final SignalRService signalRService =SignalRService();
     final message = controller.text.trim();
     if (message.isNotEmpty) {
-      await widget.signalRService.sendMessage(widget.chatId, message);
+      await widget.signalRService.sendMessage(message, widget.chatId);
       setState(() {
         messagesList.insert(
           0,
           Message(
             msg: message,
             sender: widget.currentUserId.toString(), // Use currentUserId as the sender
-            timestamp: DateTime.now(),
+            timestamp: DateTime.now().toString(),
           ),
         );
       });

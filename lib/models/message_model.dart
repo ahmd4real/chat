@@ -1,7 +1,7 @@
 class Message {
   final String msg;
   final String sender;
-  final DateTime timestamp;
+  final String timestamp;
   String messageDate;
 
   Message({
@@ -14,7 +14,7 @@ class Message {
   // Factory constructor to create a Message from JSON
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      timestamp: DateTime.now(),
+      timestamp: DateTime.now().toString(),
       msg: json['messageText'],
       sender: json['senderId'].toString(),  // Use senderId as a string for now
       messageDate:json['messageDate'],  // Convert timestamp

@@ -5,8 +5,8 @@ class SignalRService {
   late HubConnection hubConnection;
   Function(Message)? onMessageReceived;
 
-  // Setup SignalR with an optional callback function for receiving messages
-  Future<void> setupSignalR(String token, {Function(Message)? onMessageReceived}) async {
+  Future<void> setupSignalR(String token,
+      {Function(Message)? onMessageReceived}) async {
     this.onMessageReceived = onMessageReceived;
 
     hubConnection = HubConnectionBuilder()
@@ -18,30 +18,18 @@ class SignalRService {
         )
         .build();
 
-    // Listen to incoming messages
-    // hubConnection.on('SendMessage', (parameters) {
-    //   if (parameters != null && parameters.length == 3) {
-    //     final name = parameters[0] as String;
-    //     final message = parameters[1] as String;
-    //     final timestamp = DateTime.parse(parameters[2] as String);
-
-    //     // Handle incoming message, e.g., update UI
-    //     print('New message received: $name: $message at $timestamp');
-    //         if (onMessageReceived != null) {
-    //           onMessageReceived(Message(msg: message, sender: name, timestamp: timestamp));
-    //         }
-    //   }
-    //});
     hubConnection.on('SendMessage', (parameters) {
+      print("A7A");
       if (parameters != null && parameters.length == 3) {
         final name = parameters[0] as String;
         final message = parameters[1] as String;
-        final timestamp = DateTime.parse(parameters[2] as String);
+        final timestamp = parameters[2] as String;
 
-        // Handle incoming message, e.g., update UI
         print('New message received: $name: $message at $timestamp');
-        if (onMessageReceived != null)
-         onMessageReceived(Message(msg: message, sender: name, timestamp: timestamp));
+        if (onMessageReceived != null) {
+          onMessageReceived(
+              Message(msg: message, sender: name, timestamp: timestamp));
+        }
       }
     });
 
@@ -56,23 +44,22 @@ class SignalRService {
   }
 
   // Send a message to the server
-   Future<void> sendMessage(String chatId, String message) async {
+  Future<void> sendMessage(String message, String chatId) async {
+  if (hubConnection.state == HubConnectionState.Connected) {
     try {
       await hubConnection.invoke('SendMessage', args: [
-        message, 
-        chatId,  
+        message,
+        chatId,
       ]);
       print('Message sent: $message');
     } catch (e) {
       print('Error sending message: $e');
     }
-  }
+  }}
 
-  // Delete a chat by chat ID
   Future<void> deleteChat(String chatId) async {
     if (hubConnection.state == HubConnectionState.Connected) {
       try {
-        // Invoke the DeleteChat method on the server
         await hubConnection.invoke('DeleteChat', args: [chatId]);
         print('DeleteChat invoked successfully');
       } catch (e) {
@@ -83,7 +70,6 @@ class SignalRService {
     }
   }
 
-  // Dispose of the SignalR connection
   void dispose() {
     hubConnection.stop();
   }

@@ -94,7 +94,7 @@ class _HomeState extends State<Home> {
   late List<Chat> allChats;
   List<Chat> filteredChats = [];
   final TextEditingController _searchController = TextEditingController();
-  late SignalRService signalRService;
+   late SignalRService signalRService;
 
   @override
   void initState() {

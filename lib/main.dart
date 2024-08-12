@@ -7,6 +7,7 @@ import 'package:chat/models/BLoCs/Theme/theme_state.dart';
 import 'package:chat/models/BLoCs/Verification/verification_bloc.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/services/auth_services.dart';
+import 'package:chat/services/signalR.dart';
 
 import 'package:chat/view/Screens/Auth/change_password_page.dart';
 import 'package:chat/view/Screens/Auth/enter_email.dart';
@@ -22,8 +23,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
    kToken = prefs.getString('jwt') ?? '';
+   SignalRService signalRService = SignalRService();
+   signalRService.setupSignalR(kToken);
   runApp(const ChatApp());
 }
 

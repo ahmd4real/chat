@@ -36,7 +36,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ?  Center(child: CircularProgressIndicator(color: mainColor,))
           : requests.isEmpty
               ? const Center(child: Text('No friend requests'))
               : ListView.builder(
@@ -46,13 +46,16 @@ class _FriendsRequestsState extends State<FriendsRequests> {
                     return RequestWidget(
                       fullName: '${request.firstName ?? 'Unknown'} ${request.lastName ?? ''}',
                       bio: request.biography ?? 'No bio available',
-                      onAccept: () async {
+                      onAccept: () {
+                        removeRequestById(request.id);
                         friendRequestResponse(true, request.id);
                       },
                       onCancel: () {
-                        friendRequestResponse(false, request.id);
+                        removeRequestById(request.id);
+                       friendRequestResponse(false, request.id);
                         
                       },
+                      profilePicture: request.profilePicture ?? '',
                       
                     );
                   },
@@ -101,8 +104,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
       ),
     ).build();
 
-    //hubConnection.onclose((error) => print('Connection Closed: $error'));
-
+   
     hubConnection.on('friendRequest', (parameters) {
       if (parameters != null && parameters.length == 4) {
         final id = parameters[0] as int;
@@ -115,7 +117,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
         setState(() {
           requests.add(newRequest);
         });
-
+       
         print('New friend request added: $newRequest');
       }
     });
@@ -132,7 +134,8 @@ class _FriendsRequestsState extends State<FriendsRequests> {
       }
     });
 
-    await hubConnection.start();
+    await hubConnection.start(); 
+    //TODO: Make it global when the app starts
     print('SignalR connection started');
   }
 
@@ -146,3 +149,5 @@ class _FriendsRequestsState extends State<FriendsRequests> {
     });
   }
 }
+
+

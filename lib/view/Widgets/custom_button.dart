@@ -17,11 +17,11 @@ class CustomButton extends StatelessWidget {
           height: 60,
           width: MediaQuery.of(context).size.width * 0.75,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20), color: kButtonsColor),
+              borderRadius: BorderRadius.circular(20), color: mainColor),
           child: Center(
               child: Text(
             '$text',
-            style: const TextStyle(color: Color.fromARGB(239, 242, 242, 243),fontSize: 20),
+            style:  TextStyle(color: kWhite,fontSize: 20),
           )),
         ),
       ),

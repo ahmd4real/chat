@@ -5,13 +5,13 @@ import 'sign_up_state.dart';
 
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  final AuthServices authRepository;
+  final AuthServices authServices;
 
-  SignUpBloc({required this.authRepository}) : super(SignUpInitial()) {
+  SignUpBloc({required this.authServices}) : super(SignUpInitial()) {
     on<SignUpSubmitted>((event, emit) async {
       emit(SignUpLoading());
       try {
-        final worked = await authRepository.signUp(
+        final worked = await authServices.signUp(
           event.email,
           event.password,
           event.firstName,
@@ -19,7 +19,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           event.confirmPassword,
         );
         if (worked) {
-          await authRepository.sendVerifyCode(event.email, false);
+          await authServices.sendVerifyCode(event.email, false);
           emit(SignUpSuccess());
         } else {
           emit(SignUpFailure('Sign Up Failed'));

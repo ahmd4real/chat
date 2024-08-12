@@ -21,14 +21,14 @@ class AuthServices {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('jwt', data['jwt']);
       prefs.setString('refreshToken', data['refreshToken']);
-      prefs.setString('email', data['email']);
-      prefs.setString('firstName', data['firstName']);
-      prefs.setString('lastName', data['lastName']);
+      prefs.setString('email', data['email']??'');
+      prefs.setString('firstName', data['firstName']??'');
+      prefs.setString('lastName', data['lastName']??'');
       prefs.setBool('isLoggedIn', true);
-      prefs.setString('expirationOfJwt', data['expirationOfJwt']);
-      prefs.setString('bio', data['biography']);
-      prefs.setString('profilePicture', data['profilePicture']);
-      prefs.setInt('userId', data['userId']);
+      prefs.setString('expirationOfJwt', data['expirationOfJwt']??'');
+      prefs.setString('bio', data['biography']??'');
+      prefs.setString('profilePicture', data['profilePicture']??'');
+      prefs.setInt('userId', data['userId']??'');
      
       return data;
     } else {
@@ -111,6 +111,7 @@ Future<bool> validateCode(String email, String code,
 }
 
 Future<bool> resetPassword(String email, String newPassword) async {
+  
   final response = await http.post(
     Uri.parse('${baseUrl}resetpassword'),
     headers: {
@@ -126,4 +127,5 @@ Future<bool> resetPassword(String email, String newPassword) async {
   }
   return false;
 }
+
 }

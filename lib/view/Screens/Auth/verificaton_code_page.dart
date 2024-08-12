@@ -1,3 +1,4 @@
+import 'package:chat/constants.dart';
 import 'package:chat/models/BLoCs/Verification/verification_bloc.dart';
 import 'package:chat/models/BLoCs/Verification/verification_event.dart';
 import 'package:chat/models/BLoCs/Verification/verification_state.dart';
@@ -46,6 +47,7 @@ class VerificationCodePage extends StatelessWidget {
         }
       },
       child: ModalProgressHUD(
+        progressIndicator: CircularProgressIndicator(color: mainColor,),
         inAsyncCall: context.watch<VerificationCodeBloc>().state
             is VerificationCodeLoading,
         child: Scaffold(
@@ -53,37 +55,50 @@ class VerificationCodePage extends StatelessWidget {
             key: formKey,
             child: ListView(
               children: [
-                Image.asset('assets/images/logo.png'),
+               SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.08 + 16,
+                    ),
+                    child:  Text('Verification Code',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: kDarkGrey,
+                            fontSize: 48, fontWeight: FontWeight.bold)),
+                  
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Card(
-                    child: Column(
-                      
-                      children: [
-                        const SizedBox(height: 16),
-                        CustomTextFormField(
-                          keyboardType: TextInputType.number,
-                          controller: verifyCodeController,
-                          hidden: false,
-                          labelText: 'Enter your verification code',
-                        ),
-                        CustomButton(
-                          text: 'Continue',
-                          onTap: () {
-                            if (formKey.currentState!.validate()) {
-                              context
-                                  .read<VerificationCodeBloc>()
-                                  .add(VerifyCodeSubmitted(
-                                    email: email,
-                                    code: verifyCodeController.text,
-                                    isForResetPassword: resetPass,
-                                    newPassword: newPassword,
-                                  ));
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    
+                    children: [
+                      const SizedBox(height: 16),
+                      CustomTextFormField(
+                        prefixIcon: Icons.verified_user_outlined,
+                        keyboardType: TextInputType.number,
+                        controller: verifyCodeController,
+                        hidden: false,
+                        labelText: 'Enter your verification code',
+                      ),
+                      CustomButton(
+                        text: 'Continue',
+                        onTap: () {
+                          if (formKey.currentState!.validate()) {
+                            context
+                                .read<VerificationCodeBloc>()
+                                .add(VerifyCodeSubmitted(
+                                  email: email,
+                                  code: verifyCodeController.text,
+                                  isForResetPassword: resetPass,
+                                  newPassword: newPassword,
+                                ));
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],

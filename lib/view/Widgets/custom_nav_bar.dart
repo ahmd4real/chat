@@ -19,20 +19,29 @@ class CustomNavBar extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
       gap: 1,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          tabBackgroundColor: kButtonsColor,
+          tabBackgroundColor: mainColor,
           mainAxisAlignment: MainAxisAlignment.center,
-          tabs: const [
+          tabs:  const [
             GButton(
-              icon: Icons.chat,
+              icon: Icons.chat_outlined,
               text: 'Chats',
+             
             ),
-            GButton(
-              icon: Icons.person,
-              text: 'Profile',
+
+             GButton(
+              icon: Icons.search_outlined,
+              text: 'Explore',
             ),
+           
             GButton(
-              icon: Icons.people,
+              icon: Icons.people_outlined,
               text: 'Requests',
+            ),
+            
+
+             GButton(
+              icon: Icons.person_outlined,
+              text: 'Profile',
             ),
            
           ]),

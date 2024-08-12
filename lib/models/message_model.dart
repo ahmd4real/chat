@@ -1,11 +1,23 @@
-import 'package:chat/constants.dart';
-
-class Message{
+class Message {
   final String msg;
-  final String id;
-  Message(this.msg,this.id);
+  final String sender;
+  final DateTime timestamp;
+  String messageDate;
 
-  factory Message.fromJson(jsonData){
-    return Message(jsonData[kMessage],jsonData[kMessageId]);
+  Message({
+    required this.msg,
+    required this.sender,
+    required this.timestamp,
+    this.messageDate = '',
+  });
+
+  // Factory constructor to create a Message from JSON
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      timestamp: DateTime.now(),
+      msg: json['messageText'],
+      sender: json['senderId'].toString(),  // Use senderId as a string for now
+      messageDate:json['messageDate'],  // Convert timestamp
+    );
   }
 }

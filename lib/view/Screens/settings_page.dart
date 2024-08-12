@@ -1,5 +1,6 @@
 import 'package:chat/view/Screens/Auth/change_password_page.dart';
-import 'package:chat/view/Widgets/custom_button.dart';
+import 'package:chat/view/Widgets/profile_page_items.dart';
+import 'package:chat/view/Widgets/toggle_button.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -7,34 +8,41 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
         centerTitle: true,
       ),
       body: Center(
-        child:
-        ListView(
+        child: ListView(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GestureDetector(
-                child: Text(
-                  'Change Password',
-              
+            for (int i = 0; i < 3; i++)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                child: ProfilePageItems(
+                  icon: Icons.settings_outlined,
+                  text: "change Password",
+                  navigateScreens: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePasswordPage(),
+                      ),
+                    );
+                  },
                 ),
-                onTap: (){
-                  Navigator.pushNamed(context, ChangePasswordPage.id);
-                },
               ),
-            ),
-            Container(
-              color: Colors.grey,
-              width: double.infinity,
-              height: 1,
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+              child: ProfilePageItems(
+                  icon: Icons.brightness_6_outlined,
+                  text: "Change Theme",
+                  trailing: ChangeThemeButton()),
             )
           ],
-        )
+        ),
       ),
     );
   }

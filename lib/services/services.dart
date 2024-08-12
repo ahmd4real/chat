@@ -1,19 +1,41 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:chat/constants.dart';
+import 'package:chat/models/chat_model.dart';
+import 'package:chat/models/message_model.dart';
 import 'package:chat/utilities.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+Future<void> storeTokens(String jwt, String refreshToken, String jwtExpiry,
+    String refreshTokenExpiry) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('jwt', jwt);
+  await prefs.setString('refreshToken', refreshToken);
+  await prefs.setString('expirationOfJwt', jwtExpiry);
+  await prefs.setString('expirationOfRefreshToken', refreshTokenExpiry);
+}
 
+Future<bool> isTokenExpired() async {
+  final prefs = await SharedPreferences.getInstance();
+  final jwtExpiryString = prefs.getString('expirationOfJwt');
 
+  if (jwtExpiryString != null) {
+    final expiryDate = DateTime.parse(jwtExpiryString);
+    return DateTime.now().isAfter(expiryDate);
+  }
+  return true;
+}
 
-Future<void> refreshJwtToken() async {
+Future<void> ensureJwtToken() async {
+  if (await isTokenExpired()) {
+    await refreshJwtToken();
+  }
+}
+
+Future<bool> refreshJwtToken() async {
   final refreshToken = await getData('refreshToken');
   final email = await getData('email');
   if (refreshToken != null) {
@@ -24,21 +46,16 @@ Future<void> refreshJwtToken() async {
     );
 
     if (response.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
       final data = jsonDecode(response.body);
-      final oldToken = prefs.getString('jwt');
-      final oldRefreshToken = prefs.getString('refreshToken');
-      await prefs.setString('jwt', data['jwt']);
-      await prefs.setString('refreshToken', data['refreshToken']);
+      final jwt = data['jwt'];
+      final newRefreshToken = data['refreshToken'];
+      final jwtExpiry = data['expirationOfJwt'];
+      final refreshTokenExpiry = data['expirationOfRefreshToken'];
+
+      await storeTokens(jwt, newRefreshToken, jwtExpiry, refreshTokenExpiry);
 
       print("Refreshed successfully");
-
-      print('''Token Data:
-    oldToken: $oldToken
-    newToken: ${data['jwt']}
-    oldRefreshToken: $oldRefreshToken
-    newRefreshToken: ${data['refreshToken']}
-    ''');
+      return true;
     } else {
       throw Exception('Failed to refresh token');
     }
@@ -48,8 +65,8 @@ Future<void> refreshJwtToken() async {
 }
 
 Future<bool> signOut() async {
+  //await ensureJwtToken();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-
   String? refreshToken = prefs.getString('refreshToken');
   String? email = prefs.getString('email');
   final response = await http.delete(
@@ -68,9 +85,8 @@ Future<bool> signOut() async {
   }
 }
 
-
-
 Future<bool> changePassword(String oldPassword, String newPassword) async {
+  await ensureJwtToken();
   final jwt = await getData('jwt');
 
   print('jwt: $jwt');
@@ -81,6 +97,7 @@ Future<bool> changePassword(String oldPassword, String newPassword) async {
       },
       body:
           jsonEncode({"oldPassword": oldPassword, "newPassword": newPassword}));
+
   if (response.statusCode == 200) {
     print('Password changed successfully');
     return true;
@@ -97,6 +114,8 @@ Future<int?> updateUserData({
   String? newLastName,
   String? newBio,
 }) async {
+  await ensureJwtToken();
+
   List<Map<String, dynamic>> updateData =
       List<Map<String, dynamic>>.empty(growable: true);
   if (updateFirstName) {
@@ -128,17 +147,13 @@ Future<int?> updateUserData({
   }
 
   try {
-    final url = Uri.parse(
-        '${baseUrl}settings/insensitive-data');
-
+    final url = Uri.parse('${baseUrl}settings/insensitive-data');
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString(
-        'jwt'); // Assume you store the JWT token in SharedPreferences
+    final token = prefs.getString('jwt');
 
     final headers = {
       'Content-Type': 'application/json-patch+json',
-      'Authorization':
-          'Bearer $token',
+      'Authorization': 'Bearer $token',
     };
 
     final body = jsonEncode(updateData);
@@ -169,8 +184,7 @@ Future<void> uploadImage(CroppedFile croppedFile) async {
     request.headers.addAll(
       {
         'Content-Type': 'multipart/form-data',
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4YzUwNDA1Ny0xZTg2LTQ1MTAtOWM3Yy0zOWY0NDc4OTJmYTMiLCJlbWFpbCI6ImFobWVkYWwwMTE2MDVAZ21haWwuY29tIiwiaWQiOiIyMSIsImZpcnN0TmFtZSI6IkFobWVkIiwibGFzdE5hbWUiOiJBbGFhIiwiZXhwIjoxNzIxODIzNTE0LCJpc3MiOiJBdXRoZW50aWNhdGlvbi9CYWNrRW5kIiwiYXVkIjoiQXV0aGVudGljYXRpb24vRnJvbnRFbmQifQ.J5jJDaXqCVw_TORy_OZBHubG4E7hqF_jBLURi5ld8KU'
+        'Authorization': 'Bearer ${await getData('jwt')}'
       },
     );
     request.files.add(
@@ -189,42 +203,133 @@ Future<void> uploadImage(CroppedFile croppedFile) async {
   }
 }
 
-void startTokenRefreshTimer() async {
-  //haredPreferences prefs = await SharedPreferences.getInstance();
-  final expirationOfJwt = await getData('expirationOfJwt');
-  print(expirationOfJwt);
-  if (expirationOfJwt != null) {
-    DateTime jwtExpiration = DateTime.parse(expirationOfJwt);
-    print(
-        'before Parsing jwtExpiration: $expirationOfJwt After Parsing jwtExpiration: $jwtExpiration');
-    Duration timeUntilExpiration = jwtExpiration.difference(DateTime.now());
-    print('timeUntilExpiration: $timeUntilExpiration');
-    // Set the timer to refresh the token a few minutes before it expires
-    Timer(timeUntilExpiration - Duration(minutes: 10), () async {
-      await refreshJwtToken();
-      // Restart the timer after refreshing the token
-      startTokenRefreshTimer();
-    });
-  }
-}
+Future<bool> friendRequestResponse(bool isAccepted, int id) async {
+  await ensureJwtToken();
+  final jwt = await getData('jwt');
 
-
-friendRequestResponse(bool isAccepted,int id)async{
-  final response = await http.post(Uri.parse('https://chat-app.runasp.net/api/FriendRequest/response'),
+  final response = await http.post(
+      Uri.parse('https://chat-app.runasp.net/api/FriendRequest/response'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $kToken'
+        'Authorization': 'Bearer $jwt'
       },
-      body:
-          jsonEncode({"isAccepted": isAccepted, "id": id}));
-  if (response.statusCode == 200 ) {
-    if (isAccepted) 
-    print('Friend request accepted successfully');
+      body: jsonEncode({"isAccepted": isAccepted, "id": id}));
+
+  if (response.statusCode == 200) {
+    if (isAccepted)
+      print('Friend request accepted successfully');
     else
-    print('Friend request declined successfully');
+      print('Friend request declined successfully');
     return true;
   }
   print(response.statusCode);
   return false;
-
 }
+
+Future<List<Chat>> fetchChats(String jwtToken) async {
+  await ensureJwtToken();
+  final jwt = await getData('jwt');
+
+  final url = Uri.parse('https://chat-app.runasp.net/api/Chat');
+  final response = await http.get(
+    url,
+    headers: {
+      'accept': '*/*',
+      'Authorization': 'Bearer $jwt',
+    },
+  );
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    final body = jsonDecode(response.body);
+    List<dynamic> people = body['chats'];
+    return people.map((chatJson) => Chat.fromJson(chatJson)).toList();
+  } else {
+    throw Exception('Failed to load chats');
+  }
+}
+
+Future<List<dynamic>> explore(String jwtToken) async {
+  await ensureJwtToken();
+  final jwt = await getData('jwt');
+
+  final url = Uri.parse('https://chat-app.runasp.net/api/Search');
+  final response = await http.get(
+    url,
+    headers: {
+      'accept': '*/*',
+      'Authorization': 'Bearer $jwt',
+    },
+  );
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    final body = jsonDecode(response.body);
+    List<dynamic> people = body;
+    print(people);
+    return people;
+  } else {
+    throw Exception('Failed to load people');
+  }
+}
+
+Future<bool> addFriend(int id) async {
+  await ensureJwtToken();
+  final jwt = await getData('jwt');
+
+  final response = await http.post(
+    Uri.parse('https://chat-app.runasp.net/api/FriendRequest/$id'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    },
+    body: jsonEncode({"id": id}),
+  );
+
+  if (response.statusCode == 200) {
+    print(
+      'sent successfully',
+    );
+    return true;
+  }
+  return false;
+}
+
+Future<bool> cancelFriend(int id) async {
+  await ensureJwtToken();
+  final jwt = await getData('jwt');
+
+  final response = await http.delete(
+    Uri.parse('https://chat-app.runasp.net/api/FriendRequest/$id'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    },
+    body: jsonEncode({"id": id}),
+  );
+
+  if (response.statusCode == 200) {
+    print(
+      'cancelled successfully',
+    );
+    return true;
+  }
+  return false;
+}
+
+ Future<List<Message>> fetchMessages(String chatId, String token) async {
+    final response = await http.get(
+      Uri.parse('https://chat-app.runasp.net/api/Chat/message?chatId=$chatId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonList = json.decode(response.body);
+      List<Message> messages = jsonList.map((json) => Message.fromJson(json)).toList();
+      return messages;
+    } else {
+      throw Exception('Failed to load messages');
+    }
+  }

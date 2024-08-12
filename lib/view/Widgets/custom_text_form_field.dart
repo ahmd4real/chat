@@ -1,7 +1,8 @@
+import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
-  CustomTextFormField({
+  const CustomTextFormField({
     required this.hidden,
     super.key,
     this.onChanged,
@@ -9,7 +10,9 @@ class CustomTextFormField extends StatefulWidget {
     required this.controller,
     this.labelText,
     this.keyboardType = TextInputType.text,
-    this.validator,
+    this.validator,  this.maxLines, 
+     this.prefixIcon,
+    
   });
 
   final String? labelText, hintText;
@@ -18,6 +21,8 @@ class CustomTextFormField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextEditingController controller;
   final Function(String)? onChanged;
+  final int ?maxLines;
+  final IconData? prefixIcon;
 
   @override
   _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
@@ -46,34 +51,43 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         vertical: 8,
       ),
       child: TextFormField(
+       // maxLines: widget.maxLines,
         obscureText: isHidden,
-        validator: widget.validator ?? (value) {
-          if (value!.isEmpty) {
-            return 'Field is required';
-          }
-          return null;
-        },
+        validator: widget.validator ??
+            (value) {
+              if (value!.isEmpty) {
+                return 'Field is required';
+              }
+              return null;
+            },
+        cursorColor: mainColor,
+      
         keyboardType: widget.keyboardType,
         controller: widget.controller,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
+          prefixIcon: Icon(widget.prefixIcon, color: mainColor,),
           labelText: widget.labelText,
           hintText: widget.hintText,
+          
+          hintStyle: TextStyle(color: kGrey),
+          labelStyle: TextStyle(color: mainColor),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            borderSide: BorderSide(color: Colors.grey),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            borderSide: BorderSide(color: kGrey),
           ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            borderSide: BorderSide(color: Colors.deepPurple),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            borderSide: BorderSide(color: mainColor),
           ),
           suffixIcon: widget.hidden
               ? IconButton(
                   icon: Icon(
-                    isHidden ? Icons.visibility_off : Icons.visibility,
+                    isHidden ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                    color: mainColor,
                   ),
                   onPressed: toggleVisibility,
                 )

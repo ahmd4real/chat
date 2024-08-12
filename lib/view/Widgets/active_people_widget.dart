@@ -9,14 +9,15 @@ class ActivePeopleWidget extends StatelessWidget {
     return Container(
       width: 80,
       height: 80,
-      child: const Column(
+      child:  Column(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(kAvatar),
+            backgroundImage: const AssetImage(kAvatar),
             radius: 35,
+            backgroundColor: noColor,
           ),
-          SizedBox(height: 4),
-          Text('Ahmed ')]
+          const SizedBox(height: 4),
+          const Text('Ahmed ')]
       ),
     );
   }

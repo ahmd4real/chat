@@ -5,20 +5,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class VerificationCodeBloc extends Bloc<VerificationCodeEvent, VerificationCodeState> {
-  final AuthServices authRepository;
+  final AuthServices authServices;
 
-  VerificationCodeBloc({required this.authRepository}) : super(VerificationCodeInitial()) {
+  VerificationCodeBloc({required this.authServices}) : super(VerificationCodeInitial()) {
     on<VerifyCodeSubmitted>((event, emit) async {
       emit(VerificationCodeLoading());
       try {
-        final isValid = await authRepository.validateCode(
+        final isValid = await authServices.validateCode(
           event.email,
           event.code,
           isForResetPassword: event.isForResetPassword,
         );
         if (isValid) {
           if (event.isForResetPassword) {
-            final resetSuccess = await authRepository.resetPassword(
+            final resetSuccess = await authServices.resetPassword(
               event.email,
               event.newPassword,
             );

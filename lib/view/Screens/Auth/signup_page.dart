@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUpPage extends StatelessWidget {
-   SignUpPage({super.key});
+  SignUpPage({super.key});
   static String id = 'SignUpPage';
 
   TextEditingController passwordController = TextEditingController();
@@ -49,6 +49,7 @@ class SignUpPage extends StatelessWidget {
         }
       },
       child: ModalProgressHUD(
+       progressIndicator: CircularProgressIndicator(color: mainColor,),
         inAsyncCall: context.watch<SignUpBloc>().state is SignUpLoading,
         child: Scaffold(
           appBar: AppBar(),
@@ -56,69 +57,84 @@ class SignUpPage extends StatelessWidget {
             key: formKey,
             child: ListView(
               children: [
-               
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 12,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.08 + 16,
+                  ),
+                  child: Text('Sign Up',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: mainColor,
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold)),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
-                    child: Card(
-                     
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          CustomTextFormField(
-                            controller: nameController,
-                            hidden: false,
-                            labelText: 'First Name',
-                          ),
-                          CustomTextFormField(
-                            controller: lastNameController,
-                            hidden: false,
-                            labelText: 'Last Name',
-                          ),
-                          CustomTextFormField(
-                            controller: emailController,
-                            hidden: false,
-                            labelText: 'Email',
-                            keyboardType: TextInputType.emailAddress,
-                            validator: emailValidator,
-                          ),
-                          CustomTextFormField(
-                            controller: passwordController,
-                            hidden: true,
-                            labelText: 'Password',
-                          ),
-                          CustomTextFormField(
-                            controller: confirmPasswordController,
-                            hidden: true,
-                            labelText: 'Confirm Password',
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Field is Required';
-                              }
-                              if (!passwordMatched(
-                                  passwordController.text, value)) {
-                                return 'Passwords do not match';
-                              }
-                              return null;
-                            },
-                          ),
-                          CustomButton(
-                            text: 'Sign Up',
-                            onTap: () {
-                              if (formKey.currentState!.validate()) {
-                                context.read<SignUpBloc>().add(SignUpSubmitted(
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                      firstName: nameController.text,
-                                      lastName: lastNameController.text,
-                                      confirmPassword:
-                                          confirmPasswordController.text,
-                                    ));
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        CustomTextFormField(
+                          controller: nameController,
+                          hidden: false,
+                          labelText: 'First Name',
+                          prefixIcon: Icons.person_outlined,
+                        ),
+                        CustomTextFormField(
+                          controller: lastNameController,
+                          hidden: false,
+                          labelText: 'Last Name',
+                          prefixIcon: Icons.person_outlined,
+                        ),
+                        CustomTextFormField(
+                          controller: emailController,
+                          hidden: false,
+                          labelText: 'Email',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: emailValidator,
+                          prefixIcon: Icons.mail_outlined,
+                        ),
+                        CustomTextFormField(
+                          controller: passwordController,
+                          hidden: true,
+                          labelText: 'Password',
+                          prefixIcon: Icons.key_outlined,
+                        ),
+                        CustomTextFormField(
+                          controller: confirmPasswordController,
+                          hidden: true,
+                          labelText: 'Confirm Password',
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Field is Required';
+                            }
+                            if (!passwordMatched(
+                                passwordController.text, value)) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                          prefixIcon: Icons.key_outlined,
+                        ),
+                        CustomButton(
+                          text: 'Sign Up',
+                          onTap: () {
+                            if (formKey.currentState!.validate()) {
+                              context.read<SignUpBloc>().add(SignUpSubmitted(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    firstName: nameController.text,
+                                    lastName: lastNameController.text,
+                                    confirmPassword:
+                                        confirmPasswordController.text,
+                                  ));
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -1,38 +1,40 @@
+import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 import '../../models/message_model.dart';
 
 class ChatBubble extends StatelessWidget {
-  ChatBubble(
-      {required this.messgae,
-      required this.align,
-      required this.bottomLeft,
-      required this.bottomRight,
-      required this.msgColor,
-      super.key});
-  final Message messgae;
-  final double bottomLeft;
-  final double bottomRight;
-  final Alignment align;
-  Color msgColor;
+  ChatBubble({
+    required this.message,
+    required this.isSentByUser, // Add this parameter to indicate if the message was sent by the user
+    super.key,
+  });
+
+  final Message message;
+  final bool isSentByUser;
+
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: align,
+      alignment: isSentByUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(right: 64, left: 16, bottom: 16, top: 16),
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(right: 32, left: 16, bottom: 16, top: 16),
         decoration: BoxDecoration(
-            color: msgColor,
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(32),
-                topRight: const Radius.circular(32),
-                bottomRight: Radius.circular(bottomRight),
-                bottomLeft: Radius.circular(bottomLeft))),
-        child: Text(messgae.msg,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            )),
+          color: isSentByUser ? mainColor : Colors.grey[700],
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(32),
+            topRight: const Radius.circular(32),
+            bottomRight: Radius.circular(isSentByUser ? 0 : 32),
+            bottomLeft: Radius.circular(isSentByUser ? 32 : 0),
+          ),
+        ),
+        child: Text(
+          message.msg,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }

@@ -1,94 +1,170 @@
 import 'package:chat/constants.dart';
+import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:chat/models/message_model.dart';
+import 'package:chat/services/signalR.dart';
 
-class InsideChat extends StatelessWidget {
-  InsideChat({super.key});
+class InsideChat extends StatefulWidget {
+  InsideChat({
+    super.key,
+    required this.chatId,
+    this.picUrl,
+    required this.fullName,
+    required this.currentUserId,
+    required this.signalRService,
+  });
 
+  final String chatId;
+  final String fullName;
+  final String? picUrl;
+  final int currentUserId;
+  final SignalRService signalRService;
+
+  @override
+  _InsideChatState createState() => _InsideChatState();
+}
+
+class _InsideChatState extends State<InsideChat> {
   TextEditingController controller = TextEditingController();
-
   final scrollCTRL = ScrollController();
-  final messagesList = [];
-  final email = '';
-  var messages;
+  List<Message> messagesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMessages();
+
+    // Setup SignalR and handle incoming messages
+    widget.signalRService.setupSignalR(kToken, onMessageReceived: (message) {
+      setState(() {
+        messagesList.insert(0, message);
+      });
+      _scrollToBottom();
+    });
+  }
+
+  Future<void> _loadMessages() async {
+    try {
+      List<Message> fetchedMessages =
+          await fetchMessages(widget.chatId, kToken);
+      setState(() {
+        messagesList.addAll(fetchedMessages);
+        messagesList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      });
+    } catch (e) {
+      print('Error fetching messages: $e');
+    }
+  }
+
+  void _scrollToBottom() {
+    scrollCTRL.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    widget.signalRService.dispose();
+    super.dispose();
+  }
+
+  void sendMessage() async {
+    final message = controller.text.trim();
+    if (message.isNotEmpty) {
+      await widget.signalRService.sendMessage(widget.chatId, message);
+      setState(() {
+        messagesList.insert(
+          0,
+          Message(
+            msg: message,
+            sender: widget.currentUserId.toString(), // Use currentUserId as the sender
+            timestamp: DateTime.now(),
+          ),
+        );
+      });
+      controller.clear();
+      _scrollToBottom();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: kGreen,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(
+        leadingWidth: 80,
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(width: 50, height: 50, child: Image.asset(kAvatar)),
-              const Text('App')
+              const Icon(
+                Icons.arrow_back,
+                size: 32,
+              ),
+              CircleAvatar(
+                backgroundImage: widget.picUrl != null
+                    ? NetworkImage(
+                        'https://chat-app.runasp.net/${widget.picUrl!}')
+                    : const AssetImage(kAvatar) as ImageProvider,
+                radius: 24,
+              ),
             ],
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  reverse: true,
-                  controller: scrollCTRL,
-                  itemCount: messagesList.length,
-                  itemBuilder: (context, index) {
-                    return messagesList[index].id == email
-                        ? ChatBubble(
-                            msgColor: kLightGreen,
-                            bottomLeft: 32,
-                            bottomRight: 0,
-                            align: Alignment.centerRight,
-                            messgae: messagesList[index],
-                          )
-                        : ChatBubble(
-                            messgae: messagesList[index],
-                            msgColor: Colors.blue,
-                            bottomLeft: 0,
-                            align: Alignment.centerLeft,
-                            bottomRight: 32,
-                          );
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: TextField(
-                onSubmitted: (data) {
-                  messages.add({
-                    kMessage: data,
-                    'createdAt': DateTime.now(),
-                    'id': email
-                  });
-                  controller.clear();
+        iconTheme: IconThemeData(color: kWhite),
+        backgroundColor: mainColor,
+        title: Text(widget.fullName),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              controller: scrollCTRL,
+              itemCount: messagesList.length,
+              itemBuilder: (context, index) {
+                final message = messagesList[index];
+                final isSentByUser =
+                    message.sender == widget.currentUserId.toString();
 
-                  scrollCTRL.animateTo(0,
-                      duration: const Duration(seconds: 1),
-                      curve: Curves.fastOutSlowIn);
-                },
-                style: const TextStyle(color: Colors.black),
-                decoration: InputDecoration(
-                  hintText: 'Send',
-                  suffix: const Icon(
-                    Icons.send,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  hintStyle: const TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32),
-                      borderSide: const BorderSide(color: Colors.black)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32),
-                      borderSide:  BorderSide(
-                          color: kButtonsColor
+                return ChatBubble(
+                  message: message,
+                  isSentByUser: isSentByUser,
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: TextField(
+              controller: controller,
+              onSubmitted: (_) => sendMessage(),
+              decoration: InputDecoration(
+                hintText: 'Send',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send, color: mainColor),
+                  onPressed: sendMessage,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32),
+                  borderSide: BorderSide(color: kGrey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32),
+                  borderSide: BorderSide(color: mainColor),
                 ),
               ),
-            )
-        )
-        )],
-        ));
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

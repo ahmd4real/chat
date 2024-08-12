@@ -1,12 +1,9 @@
 
 import 'dart:io';
-
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/custom_image_picker.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,16 +68,16 @@ showImagePicker(BuildContext context, Function(Image) setImage) async {
 }
 
 imagePick(ImageSource source, Function(Image) setImage) async {
-  await picker.pickImage(source: source, imageQuality: 100).then((value) {
+  await picker.pickImage(source: source, imageQuality: 50).then((value) {
     if (value != null) {
-      _cropImage(File(value.path), setImage);
+      cropImage(File(value.path), setImage);
     } else {
       print('No image selected');
     }
   });
 }
 
-_cropImage(File imgFile, Function(Image) setImage) async {
+cropImage(File imgFile, Function(Image) setImage) async {
   final croppedFile = await ImageCropper().cropImage(
       sourcePath: imgFile.path,
       aspectRatioPresets: Platform.isAndroid

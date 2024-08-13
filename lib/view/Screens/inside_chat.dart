@@ -12,14 +12,14 @@ class InsideChat extends StatefulWidget {
     this.picUrl,
     required this.fullName,
     required this.currentUserId,
-    required this.signalRService,
+    //required this.signalRService,
   });
 
   final String chatId;
   final String fullName;
   final String? picUrl;
   final int currentUserId;
-  final SignalRService signalRService;
+  //final SignalRService signalRService;
 
   @override
   _InsideChatState createState() => _InsideChatState();
@@ -29,6 +29,7 @@ class _InsideChatState extends State<InsideChat> {
   TextEditingController controller = TextEditingController();
   final scrollCTRL = ScrollController();
   List<Message> messagesList = [];
+  final SignalRService signalRService = SignalRService();
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _InsideChatState extends State<InsideChat> {
     _loadMessages();
 
     // Setup SignalR and handle incoming messages
-    widget.signalRService.setupSignalR(kToken, onMessageReceived: (message) {
+   signalRService.setupSignalR(kToken, onMessageReceived: (message) {
       setState(() {
         messagesList.insert(0, message);
       });
@@ -68,7 +69,7 @@ class _InsideChatState extends State<InsideChat> {
   @override
   void dispose() {
     controller.dispose();
-    widget.signalRService.dispose();
+    signalRService.dispose();
     super.dispose();
   }
 
@@ -76,7 +77,7 @@ class _InsideChatState extends State<InsideChat> {
     //final SignalRService signalRService =SignalRService();
     final message = controller.text.trim();
     if (message.isNotEmpty) {
-      await widget.signalRService.sendMessage(message, widget.chatId);
+      await signalRService.sendMessage(message, widget.chatId);
       setState(() {
         messagesList.insert(
           0,

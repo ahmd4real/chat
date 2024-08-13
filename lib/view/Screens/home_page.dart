@@ -211,8 +211,10 @@ class _HomeState extends State<Home> {
                           onTap: () async {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                             final currentUserId = prefs.getInt('userId');
-                            await signalRService.setupSignalR(kToken);
+                           // await signalRService.setupSignalR(kToken);
                             print('Current user ID: $currentUserId');
+
+                            signalRService.dispose();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -220,7 +222,7 @@ class _HomeState extends State<Home> {
                                   chatId: chat.id,
                                   picUrl: user.profilePicture,
                                   fullName: fullName,
-                                  signalRService: signalRService,
+                                  //signalRService: signalRService,
                                    currentUserId: currentUserId!,
                                 ),
                               ),

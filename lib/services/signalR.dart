@@ -70,7 +70,15 @@ class SignalRService {
     }
   }
 
-  void dispose() {
-    hubConnection.stop();
-  }
+  @override
+void dispose() {
+  print('Dispose method called, stopping SignalR connection...');
+  hubConnection.stop().then((_) {
+    print('SignalR connection stopped successfully.');
+  }).catchError((error) {
+    print('Error stopping SignalR connection: $error');
+  });
+ // super.dispose();
+}
+
 }

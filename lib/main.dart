@@ -27,7 +27,7 @@ void main() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
    kToken = prefs.getString('jwt') ?? '';
    SignalRService signalRService = SignalRService();
-   signalRService.setupSignalR(kToken);
+   //signalRService.setupSignalR(kToken);
   runApp(const ChatApp());
 }
 

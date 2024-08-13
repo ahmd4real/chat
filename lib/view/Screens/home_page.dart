@@ -1,5 +1,4 @@
 import 'package:chat/constants.dart';
-import 'package:chat/main.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/services/services.dart';
@@ -14,15 +13,7 @@ import 'package:chat/view/Widgets/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:signalr_netcore/signalr_client.dart';
- final hubConnection= HubConnectionBuilder()
-        .withUrl(
-          'https://chat-app.runasp.net/chat',
-          options: HttpConnectionOptions(
-            accessTokenFactory: () async => kToken,
-          ),
-        )
-        .build().start();
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   static String id = 'HomePage';
@@ -103,8 +94,7 @@ class _HomeState extends State<Home> {
   late List<Chat> allChats;
   List<Chat> filteredChats = [];
   final TextEditingController _searchController = TextEditingController();
-   //late SignalRService signalRService;
-   //final signalRService = SignalRService();
+   late SignalRService signalRService;
 
   @override
   void initState() {
@@ -119,8 +109,8 @@ class _HomeState extends State<Home> {
 
     _searchController.addListener(_filterChats);
 
-    
-    // signalRService.setupSignalR(kToken);
+    signalRService = SignalRService();
+    signalRService.setupSignalR(kToken);
   }
 
   void _filterChats() {
@@ -145,7 +135,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     _searchController.dispose();
-    //signalRService.dispose();
+    signalRService.dispose();
     super.dispose();
   }
 
@@ -221,7 +211,7 @@ class _HomeState extends State<Home> {
                           onTap: () async {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                             final currentUserId = prefs.getInt('userId');
-                            //await signalRService.setupSignalR(kToken);
+                            await signalRService.setupSignalR(kToken);
                             print('Current user ID: $currentUserId');
                             Navigator.push(
                               context,
@@ -230,7 +220,7 @@ class _HomeState extends State<Home> {
                                   chatId: chat.id,
                                   picUrl: user.profilePicture,
                                   fullName: fullName,
-                                  //signalRService: signalRService,
+                                  signalRService: signalRService,
                                    currentUserId: currentUserId!,
                                 ),
                               ),

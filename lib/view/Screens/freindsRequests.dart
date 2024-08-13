@@ -28,7 +28,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
 
   @override
   void dispose() {
-   // hubConnection.stop();
+    hubConnection.stop();
     super.dispose();
   }
 

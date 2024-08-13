@@ -1,26 +1,22 @@
-import 'package:chat/constants.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:chat/models/message_model.dart';
 
 class SignalRService {
-  final hubConnection= HubConnectionBuilder()
-        .withUrl(
-          'https://chat-app.runasp.net/chat',
-          options: HttpConnectionOptions(
-            accessTokenFactory: () async => kToken,
-          ),
-        )
-        .build().start();
-       
-    
+  late HubConnection hubConnection;
   Function(Message)? onMessageReceived;
- 
 
   Future<void> setupSignalR(String token,
       {Function(Message)? onMessageReceived}) async {
     this.onMessageReceived = onMessageReceived;
 
-    
+    hubConnection = HubConnectionBuilder()
+        .withUrl(
+          'https://chat-app.runasp.net/chat',
+          options: HttpConnectionOptions(
+            accessTokenFactory: () async => token,
+          ),
+        )
+        .build();
 
     hubConnection.on('SendMessage', (parameters) {
       print("A7A");
@@ -43,14 +39,13 @@ class SignalRService {
     });
 
     // Start the SignalR connection
-    
+    await hubConnection.start();
+    print('SignalR connection started');
   }
 
   // Send a message to the server
   Future<void> sendMessage(String message, String chatId) async {
-   print('Message sent: $message');
   if (hubConnection.state == HubConnectionState.Connected) {
-   print('Message sent after hub con: $message');
     try {
       await hubConnection.invoke('SendMessage', args: [
         message,

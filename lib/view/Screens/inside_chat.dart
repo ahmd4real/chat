@@ -1,5 +1,4 @@
 import 'package:chat/constants.dart';
-import 'package:chat/main.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +12,14 @@ class InsideChat extends StatefulWidget {
     this.picUrl,
     required this.fullName,
     required this.currentUserId,
-   // required this.signalRService,
+    required this.signalRService,
   });
 
   final String chatId;
   final String fullName;
   final String? picUrl;
   final int currentUserId;
-  //final SignalRService signalRService;
+  final SignalRService signalRService;
 
   @override
   _InsideChatState createState() => _InsideChatState();
@@ -35,17 +34,14 @@ class _InsideChatState extends State<InsideChat> {
   void initState() {
     super.initState();
     _loadMessages();
-     setState(() {
-        messagesList.insert(0, Message(msg: 'Hello', sender: "ahmed", timestamp: DateTime.now().toString()));
-      });
-    //   _scrollToBottom();
+
     // Setup SignalR and handle incoming messages
-    // widget.signalRService.setupSignalR(kToken, onMessageReceived: (message) {
-    //   setState(() {
-    //     messagesList.insert(0, message);
-    //   });
-    //   _scrollToBottom();
-    // });
+    widget.signalRService.setupSignalR(kToken, onMessageReceived: (message) {
+      setState(() {
+        messagesList.insert(0, message);
+      });
+      _scrollToBottom();
+    });
   }
 
   Future<void> _loadMessages() async {
@@ -72,18 +68,15 @@ class _InsideChatState extends State<InsideChat> {
   @override
   void dispose() {
     controller.dispose();
-    //signalRService.dispose();
+    widget.signalRService.dispose();
     super.dispose();
   }
 
   void sendMessage() async {
-    
     //final SignalRService signalRService =SignalRService();
     final message = controller.text.trim();
     if (message.isNotEmpty) {
-      
-      await signalRService.sendMessage(message, widget.chatId);
-     print('ay 7aga me =n send inside chat');
+      await widget.signalRService.sendMessage(message, widget.chatId);
       setState(() {
         messagesList.insert(
           0,

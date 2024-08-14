@@ -18,6 +18,9 @@ class SignalRService {
         )
         .build();
 
+           await hubConnection.start();
+    print('SignalR connection started');
+
     hubConnection.on('SendMessage', (parameters) {
       print("A7A");
       if (parameters != null && parameters.length == 3) {
@@ -34,13 +37,12 @@ class SignalRService {
     });
 
     // Example of another event handler
-    hubConnection.on('DeleteChat', (message) {
+     hubConnection.on('DeleteChat', (message) {
       print('DeleteChat message received: $message');
     });
 
     // Start the SignalR connection
-    await hubConnection.start();
-    print('SignalR connection started');
+ 
   }
 
   // Send a message to the server

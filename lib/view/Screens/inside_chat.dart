@@ -12,14 +12,14 @@ class InsideChat extends StatefulWidget {
     this.picUrl,
     required this.fullName,
     required this.currentUserId,
-    //required this.signalRService,
+    
   });
 
   final String chatId;
   final String fullName;
   final String? picUrl;
   final int currentUserId;
-  //final SignalRService signalRService;
+ 
 
   @override
   _InsideChatState createState() => _InsideChatState();
@@ -36,13 +36,21 @@ class _InsideChatState extends State<InsideChat> {
     super.initState();
     _loadMessages();
 
-    // Setup SignalR and handle incoming messages
-   signalRService.setupSignalR(kToken, onMessageReceived: (message) {
+    
+   signalRService.setupSignalR(kToken,);
+
+    signalRService.onMessageReceived = (message) {
       setState(() {
-        messagesList.insert(0, message);
+        messagesList.insert(
+          0,
+          Message(
+            msg: message.msg,
+            sender: message.sender,
+            timestamp: message.timestamp,
+          ),
+        );
       });
-      _scrollToBottom();
-    });
+    };
   }
 
   Future<void> _loadMessages() async {

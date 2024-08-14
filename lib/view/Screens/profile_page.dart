@@ -130,37 +130,68 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      loading = true;
-                    });
-                    if (await signOut()) {
-                      Navigator.pushReplacementNamed(context, LoginPage.id);
-                    }
-                    setState(() {
-                      loading = false;
-                    });
-                  },
-                  child: Container(
-                    height: 38,
-                    width: MediaQuery.of(context).size.width / 4,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32),
-                     
-                      border: Border.all(
-                          color: Color.fromARGB(164, 133, 2, 2), width: 1.5),
+  onTap: () {
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                setState(() {
+                  loading = true;
+                });
+                if (await signOut()) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  LoginPage(),
                     ),
-                    child: const Center(
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(
-                            color: Color.fromARGB(164, 133, 2, 2),
-                            fontSize: 20),
-                      ),
-                    ),
-                  ),
-                ),
-        
+                  );
+                }
+                setState(() {
+                  loading = false;
+                });
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  },
+  child: Container(
+    height: 38,
+    width: MediaQuery.of(context).size.width / 4,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(32),
+      border: Border.all(
+        color: Color.fromARGB(164, 133, 2, 2),
+        width: 1.5,
+      ),
+    ),
+    child: const Center(
+      child: Text(
+        'Logout',
+        style: TextStyle(
+          color: Color.fromARGB(164, 133, 2, 2),
+          fontSize: 20,
+        ),
+      ),
+    ),
+  ),
+),
+
                
                 SizedBox(
                   width: 16,
@@ -174,69 +205,69 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget logoutButtonWidget() {
-    return GestureDetector(
-      onTap: () async {
-        setState(() {
-          loading = true;
-        });
-        if (await signOut()) {
-          Navigator.pushReplacementNamed(context, LoginPage.id);
-        }
-        setState(() {
-          loading = false;
-        });
+  // Widget logoutButtonWidget() {
+  //   return GestureDetector(
+  //     onTap: () async {
+  //       setState(() {
+  //         loading = true;
+  //       });
+  //       if (await signOut()) {
+  //         Navigator.pushReplacementNamed(context, LoginPage.id);
+  //       }
+  //       setState(() {
+  //         loading = false;
+  //       });
 
-        // showDialog(
-        //   context: context,
-        //   builder: (context) {
-        //     return AlertDialog(
-        //       //title: const Text('Delete Chat'),
-        //       content: const Text('Are you sure you want to Logout'),
-        //       actions: [
-        //         TextButton(
-        //           onPressed: () {
-        //             Navigator.pop(context);
-        //           },
-        //           child: const Text('Cancel'),
-        //         ),
-        //         TextButton(
-        //           onPressed: () async {
+  //       showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             //title: const Text('Delete Chat'),
+  //             content: const Text('Are you sure you want to Logout'),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: const Text('Cancel'),
+  //               ),
+  //               TextButton(
+  //                 onPressed: () async {
 
-        //             Navigator.pop(context);
-        //             setState(() {
-        //               loading = true;
-        //             });
-        //             if (await signOut()) {
-        //               Navigator.pushReplacementNamed(context, LoginPage.id);
-        //             }
-        //             setState(() {
-        //               loading = false;
-        //             });
-        //           },
-        //           child: const Text('Logout'),
-        //         ),
-        //       ],
-        //     );
-        //   },
-        // );
-      },
-      child: Container(
-        height: 38,
-        width: MediaQuery.of(context).size.width / 4,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          //color: Color.fromARGB(255, 168, 101, 101),
-          border: Border.all(color: Color.fromARGB(164, 133, 2, 2), width: 1.5),
-        ),
-        child: const Center(
-          child: Text(
-            'Logout',
-            style:
-                TextStyle(color: Color.fromARGB(164, 133, 2, 2), fontSize: 20),
-          ),
-        ),
-      ),
-    );
-  }
+  //                   Navigator.pop(context);
+  //                   setState(() {
+  //                     loading = true;
+  //                   });
+  //                   if (await signOut()) {
+  //                     Navigator.pushReplacementNamed(context, LoginPage.id);
+  //                   }
+  //                   setState(() {
+  //                     loading = false;
+  //                   });
+  //                 },
+  //                 child: const Text('Logout'),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //     child: Container(
+  //       height: 38,
+  //       width: MediaQuery.of(context).size.width / 4,
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(32),
+  //         //color: Color.fromARGB(255, 168, 101, 101),
+  //         border: Border.all(color: Color.fromARGB(164, 133, 2, 2), width: 1.5),
+  //       ),
+  //       child: const Center(
+  //         child: Text(
+  //           'Logout',
+  //           style:
+  //               TextStyle(color: Color.fromARGB(164, 133, 2, 2), fontSize: 20),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

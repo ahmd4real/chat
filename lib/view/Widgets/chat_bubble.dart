@@ -44,7 +44,7 @@ class ChatBubble extends StatelessWidget {
             textAlign: isSentByUser ? TextAlign.end : TextAlign.start,
             message.messageDate,
             style: const TextStyle(
-              color: Colors.white,
+             // color: Colors.white,
               fontSize: 10,
             ),
           ),

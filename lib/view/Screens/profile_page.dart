@@ -32,9 +32,10 @@ class _ProfilePageState extends State<ProfilePage> {
   bool loading = false;
 
   @override
-  @override
   Widget build(BuildContext context) {
     final imageCubit = context.read<ImageCubit>();
+    final imageState = context.watch<ImageCubit>().state;
+
     return ModalProgressHUD(
       inAsyncCall: loading,
       progressIndicator: CircularProgressIndicator(
@@ -45,229 +46,167 @@ class _ProfilePageState extends State<ProfilePage> {
           title: Text(
             'Profile',
             style: TextStyle(
-                color: mainColor, fontSize: 32, fontWeight: FontWeight.w600),
+              color: mainColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: Center(child: _buildUserInfo(context, imageCubit)),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserInfo(BuildContext context, ImageCubit imageCubit) {
-    final imageState = context.watch<ImageCubit>().state;
-    return ListView(
-      children: [
-        Column(
-          children: [
-            CircleAvatar(
-              backgroundImage: widget.profilePic != null
-                  ? NetworkImage(
-                      'https://chat-app.runasp.net/${widget.profilePic}')
-                  : imageState.avatarImg.image,
-              radius: MediaQuery.of(context).size.width * 0.25,
-              backgroundColor: noColor,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              //'Ahmed Alaa',
-              '${widget.firstName} ${widget.lastName}',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              widget.bio ?? '',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 32),
-            ProfilePageItems(
-              icon: Icons.edit_outlined,
-              text: "Edit Profile",
-              navigateScreens: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EditProfilePage(),
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: widget.profilePic != null
+                        ? NetworkImage(
+                            'https://chat-app.runasp.net/${widget.profilePic}')
+                        : imageState.avatarImg.image,
+                    radius: MediaQuery.of(context).size.width * 0.25,
+                    backgroundColor: noColor,
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            ProfilePageItems(
-              icon: Icons.person_outlined,
-              text: "Manage Profile",
-              navigateScreens: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ManageProfilePage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            ProfilePageItems(
-              icon: Icons.settings_outlined,
-              text: "Settings",
-              navigateScreens: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-  onTap: () {
-    // Show confirmation dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Logout'),
-          content: const Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                setState(() {
-                  loading = true;
-                });
-                if (await signOut()) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>  LoginPage(),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${widget.firstName} ${widget.lastName}',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }
-                setState(() {
-                  loading = false;
-                });
-              },
-              child: const Text('Logout'),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.bio ?? '',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  ProfilePageItems(
+                    icon: Icons.edit_outlined,
+                    text: "Edit Profile",
+                    navigateScreens: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfilePage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  ProfilePageItems(
+                    icon: Icons.person_outlined,
+                    text: "Manage Profile",
+                    navigateScreens: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ManageProfilePage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  ProfilePageItems(
+                    icon: Icons.settings_outlined,
+                    text: "Settings",
+                    navigateScreens: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Show confirmation dialog
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Confirm Logout'),
+                                content: const Text(
+                                    'Are you sure you want to logout?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                      setState(() {
+                                        loading = true;
+                                      });
+              
+                                      // Perform logout operations
+                                      bool loggedOut = await signOut();
+              
+                                      // Check if widget is still mounted before navigating
+                                      if (loggedOut && mounted) {
+                                        Navigator.pushReplacementNamed(
+                                            context, LoginPage.id);
+                                      }
+              
+                                      // Ensure setState is only called if the widget is still mounted
+                                      if (mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      }
+                                    },
+                                    child: const Text('Logout'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          height: 38,
+                          width: MediaQuery.of(context).size.width / 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(32),
+                            border: Border.all(
+                              color: const Color.fromARGB(164, 133, 2, 2),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Color.fromARGB(164, 133, 2, 2),
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
-  },
-  child: Container(
-    height: 38,
-    width: MediaQuery.of(context).size.width / 4,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(32),
-      border: Border.all(
-        color: Color.fromARGB(164, 133, 2, 2),
-        width: 1.5,
-      ),
-    ),
-    child: const Center(
-      child: Text(
-        'Logout',
-        style: TextStyle(
-          color: Color.fromARGB(164, 133, 2, 2),
-          fontSize: 20,
+          ),
         ),
       ),
-    ),
-  ),
-),
-
-               
-                SizedBox(
-                  width: 16,
-                )
-              ],
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ],
     );
   }
-
-  // Widget logoutButtonWidget() {
-  //   return GestureDetector(
-  //     onTap: () async {
-  //       setState(() {
-  //         loading = true;
-  //       });
-  //       if (await signOut()) {
-  //         Navigator.pushReplacementNamed(context, LoginPage.id);
-  //       }
-  //       setState(() {
-  //         loading = false;
-  //       });
-
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             //title: const Text('Delete Chat'),
-  //             content: const Text('Are you sure you want to Logout'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               TextButton(
-  //                 onPressed: () async {
-
-  //                   Navigator.pop(context);
-  //                   setState(() {
-  //                     loading = true;
-  //                   });
-  //                   if (await signOut()) {
-  //                     Navigator.pushReplacementNamed(context, LoginPage.id);
-  //                   }
-  //                   setState(() {
-  //                     loading = false;
-  //                   });
-  //                 },
-  //                 child: const Text('Logout'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //     child: Container(
-  //       height: 38,
-  //       width: MediaQuery.of(context).size.width / 4,
-  //       decoration: BoxDecoration(
-  //         borderRadius: BorderRadius.circular(32),
-  //         //color: Color.fromARGB(255, 168, 101, 101),
-  //         border: Border.all(color: Color.fromARGB(164, 133, 2, 2), width: 1.5),
-  //       ),
-  //       child: const Center(
-  //         child: Text(
-  //           'Logout',
-  //           style:
-  //               TextStyle(color: Color.fromARGB(164, 133, 2, 2), fontSize: 20),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

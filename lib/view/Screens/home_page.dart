@@ -5,7 +5,7 @@ import 'package:chat/services/services.dart';
 import 'package:chat/services/signalR.dart';
 import 'package:chat/utilities.dart';
 import 'package:chat/view/Screens/explore_page.dart';
-import 'package:chat/view/Screens/freindsRequests.dart';
+import 'package:chat/view/Screens/friendsRequests.dart';
 import 'package:chat/view/Screens/inside_chat.dart';
 import 'package:chat/view/Screens/profile_page.dart';
 import 'package:chat/view/Widgets/chatat_widget.dart';
@@ -88,13 +88,15 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+  late List<Chat> allChats;
+  List<Chat> filteredChats = [];
+  late Chat chatToDelete;
 
 class _HomeState extends State<Home> {
   late Future<List<Chat>> futureChats;
-  late List<Chat> allChats;
-  List<Chat> filteredChats = [];
+  
   final TextEditingController _searchController = TextEditingController();
-   late SignalRService signalRService;
+   SignalRService signalRService=SignalRService();
 
   @override
   void initState() {
@@ -109,8 +111,18 @@ class _HomeState extends State<Home> {
 
     _searchController.addListener(_filterChats);
 
-    signalRService = SignalRService();
-    signalRService.setupSignalR(kToken);
+  
+    signalRService.setupSignalR(kToken,
+    
+    
+    onDeleteChat: () {
+     setState(() {
+      allChats.remove(chatToDelete);
+      filteredChats.remove(chatToDelete);
+    });
+    },
+    
+    );
   }
 
   void _filterChats() {
@@ -181,6 +193,7 @@ class _HomeState extends State<Home> {
                         final fullName = '${user.firstName} ${user.lastName}';
                         return ChatatWidget(
                           onLongpress: () {
+                            chatToDelete=chat;
                             showDialog(
                               context: context,
                               builder: (context) {

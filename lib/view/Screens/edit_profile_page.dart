@@ -4,7 +4,7 @@ import 'package:chat/models/BLoCs/SignUp/sign_up_bloc.dart';
 import 'package:chat/models/BLoCs/SignUp/sign_up_state.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/utilities.dart';
-import 'package:chat/view/Screens/Auth/login_page.dart';
+
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:chat/view/Widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';

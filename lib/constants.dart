@@ -42,3 +42,5 @@ late HubConnection hubConnection;
 const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';
 
 late String kToken;
+
+bool typing=false;

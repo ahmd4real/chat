@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/request_model.dart';
 import 'package:chat/services/services.dart';
+import 'package:chat/services/signalR.dart';
 import 'package:chat/view/Widgets/request_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,7 @@ class FriendsRequests extends StatefulWidget {
 class _FriendsRequestsState extends State<FriendsRequests> {
   List<Request> requests = [];
   bool isLoading = true;
-  late HubConnection hubConnection;
+  //late HubConnection hubConnection;
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
 
   @override
   void dispose() {
-    hubConnection.stop();
+    //hubConnection.stop();
     super.dispose();
   }
 
@@ -97,12 +98,12 @@ class _FriendsRequestsState extends State<FriendsRequests> {
   }
 
   void setupSignalR() async {
-    hubConnection = HubConnectionBuilder().withUrl(
-      'https://chat-app.runasp.net/chat',
-      options: HttpConnectionOptions(
-        accessTokenFactory: () async => kToken,
-      ),
-    ).build();
+    // hubConnection = HubConnectionBuilder().withUrl(
+    //   'https://chat-app.runasp.net/chat',
+    //   options: HttpConnectionOptions(
+    //     accessTokenFactory: () async => kToken,
+    //   ),
+    // ).build();
 
    
     hubConnection.on('friendRequest', (parameters) {
@@ -134,9 +135,9 @@ class _FriendsRequestsState extends State<FriendsRequests> {
       }
     });
 
-    await hubConnection.start(); 
-    //TODO: Make it global when the app starts
-    print('SignalR connection started');
+    // await hubConnection.start(); 
+    // //TODO: Make it global when the app starts
+    // print('SignalR connection started');
   }
 
   // Method to remove a request by its ID

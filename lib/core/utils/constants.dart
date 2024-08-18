@@ -39,7 +39,7 @@ String kCreatedAt='createdAt';
 String kMessageId='id';
 
 
-late HubConnection hubConnection;
+//late HubConnection hubConnection;
 
 const String  baseUrl='https://chat-app.runasp.net/api/Accounts/';
 

@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
 
     _searchController.addListener(_filterChats);
 
-    signalRService.setupSignalR( onDeleteChat: () {
+    signalRService.setupSignalR(kToken, onDeleteChat: () {
       print('hello from onDeleteChat->initState->home_page.dart');
       setState(() {
         allChats.remove(chatToDelete);
@@ -302,3 +302,15 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+
+
+
+
+
+                    
+                    //####################################################################
+                   
+                    //#######################################################################
+                 
+                 

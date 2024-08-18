@@ -42,9 +42,9 @@ class Chat {
       users: (json['users'] as List<dynamic>)
           .map((userJson) => User.fromJson(userJson))
           .toList(),
-      lastMessage: json['lastMessage']??'',
-      lastMessageDate: json['lastMessageDate']??'',
-      senderId: json['senderId']??0,
+      lastMessage: json['lastMessage'],
+      lastMessageDate: json['lastMessageDate'],
+      senderId: json['senderId'],
     );
   }
 }

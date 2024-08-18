@@ -5,12 +5,12 @@ class ChatatWidget extends StatelessWidget {
   ChatatWidget(
       {super.key,
       required this.userName,
-      this.timeAgo,
+      this.timeAgo = '',
       this.onTap,
       //required this.isOnline,
       this.picUrl,
-      this.lastMsg ,
-      this.whoSentMsg ,
+      this.lastMsg = '',
+      this.whoSentMsg = '',
       this.numberOfUnread = 7,
       this.onLongpress});
   final String userName;
@@ -19,7 +19,7 @@ class ChatatWidget extends StatelessWidget {
   void Function()? onLongpress;
   String? picUrl;
   //final String isOnline;
-  String ?lastMsg, whoSentMsg, timeAgo;
+  String lastMsg, whoSentMsg, timeAgo;
   int numberOfUnread;
 
   @override
@@ -39,7 +39,7 @@ class ChatatWidget extends StatelessWidget {
           userName,
           style: TextStyle(color: kWhite,fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('${whoSentMsg??''} ${lastMsg??''}',
+        subtitle: Text('$whoSentMsg $lastMsg',
         
         
         maxLines: 1,
@@ -49,7 +49,7 @@ class ChatatWidget extends StatelessWidget {
           children: [
             Text(
               
-              timeAgo??'',
+              timeAgo,
               style: TextStyle(
                 color: timeAgoColor,
 

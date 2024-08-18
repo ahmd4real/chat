@@ -1,5 +1,3 @@
-
-
 class User {
   final String firstName;
   final String lastName;
@@ -24,8 +22,14 @@ class Chat {
   final String id;
   final bool isRead;
   final List<User> users;
+  final String lastMessage;
+  final String lastMessageDate;
+  final int senderId;
 
   Chat({
+    required this.lastMessage,
+    required this.lastMessageDate,
+    required this.senderId,
     required this.id,
     required this.isRead,
     required this.users,
@@ -38,7 +42,9 @@ class Chat {
       users: (json['users'] as List<dynamic>)
           .map((userJson) => User.fromJson(userJson))
           .toList(),
+      lastMessage: json['lastMessage'],
+      lastMessageDate: json['lastMessageDate'],
+      senderId: json['senderId'],
     );
   }
 }
-

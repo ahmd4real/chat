@@ -1,6 +1,7 @@
 import 'package:chat/constants.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
+import 'package:chat/models/message_model.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/services/signalR.dart';
 import 'package:chat/utilities.dart';
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _getUserFullName();
   }
 
@@ -68,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
-          //appBar: AppBar(),
+          backgroundColor: background,
           bottomNavigationBar: CustomNavBar(
             onTabChange: (index) => navigateScreens(index),
           ),
@@ -88,19 +90,26 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
-  late List<Chat> allChats;
-  List<Chat> filteredChats = [];
-  late Chat chatToDelete;
+
+late List<Chat> allChats;
+List<Chat> filteredChats = [];
+late Chat chatToDelete;
+List<Chat> lastMsgs = [];
+int? currentUserId;
+late List<Map<String, String>> mp;
 
 class _HomeState extends State<Home> {
   late Future<List<Chat>> futureChats;
-  
+  Map<String, String> userOnlineStatus = {};
+
   final TextEditingController _searchController = TextEditingController();
-   SignalRService signalRService=SignalRService();
+  SignalRService signalRService = SignalRService();
 
   @override
   void initState() {
     super.initState();
+    getCurrentUserId();
+
     futureChats = fetchChats(kToken);
     futureChats.then((chats) {
       setState(() {
@@ -111,18 +120,20 @@ class _HomeState extends State<Home> {
 
     _searchController.addListener(_filterChats);
 
-  
-    signalRService.setupSignalR(kToken,
-    
-    
-    onDeleteChat: () {
-     setState(() {
-      allChats.remove(chatToDelete);
-      filteredChats.remove(chatToDelete);
+    signalRService.setupSignalR(kToken, onDeleteChat: () {
+      print('hello from onDeleteChat->initState->home_page.dart');
+      setState(() {
+        allChats.remove(chatToDelete);
+        filteredChats.remove(chatToDelete);
+      });
+    }, onUserOnlineStatus: (isOnline) {
+      print('hello from onUserOnlineStatus->initState->home_page.dart');
+      if (isOnline) {
+        print('user is online');
+      } else {
+        print('user is offline');
+      }
     });
-    },
-    
-    );
   }
 
   void _filterChats() {
@@ -144,6 +155,22 @@ class _HomeState extends State<Home> {
     });
   }
 
+  getCurrentUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currentUserId = prefs.getInt('userId');
+  }
+
+  Future<void> fetchChatsId(String token) async {
+    lastMsgs = await fetchChats(token);
+  }
+
+  Future<void> isOnline(String chatId) async {
+    await signalRService.isOnline(chatId);
+  }
+
+  
+  
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -154,108 +181,136 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: SearchBar(
-              controller: _searchController,
-              hintText: 'Search for Friends',
-              leading: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.search_rounded),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SearchBar(
+                hintStyle:
+                    WidgetStatePropertyAll(TextStyle(color: searchContent)),
+                backgroundColor: WidgetStatePropertyAll(
+                    searchBack), //MaterialAccentColor(primary, swatch),
+                controller: _searchController,
+                hintText: 'Search for Friends',
+                leading: Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    Icons.search_sharp,
+                    color: searchContent,
+                    size: 32,
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: FutureBuilder<List<Chat>>(
-              future: futureChats,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                      child: CircularProgressIndicator(
-                    color: mainColor,
-                  ));
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No chats available'));
-                } else {
-                  return ListView.builder(
-                    itemCount: filteredChats.length,
-                    itemBuilder: (context, index) {
-                      final chat = filteredChats[index];
+            const SizedBox(height: 16),
+            Expanded(
+              child: FutureBuilder<List<Chat>>(
+                future: futureChats,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: mainColor,
+                    ));
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No chats available'));
+                  } else {
+                    return ListView.builder(
+                      itemCount: filteredChats.length,
+                      itemBuilder: (context, index) {
+                        final chat = filteredChats[index];
+                        isOnline(chat.id);
 
-                      // Check if the users list is not empty before accessing the first element
-                      if (chat.users.isNotEmpty) {
-                        final user = chat.users[0];
-                        final fullName = '${user.firstName} ${user.lastName}';
-                        return ChatatWidget(
-                          onLongpress: () {
-                            chatToDelete=chat;
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Delete Chat'),
-                                  content: const Text(
-                                      'Are you sure you want to delete this chat?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                      _deleteChat(chat);
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Delete'),
-                                    ),
-                                  ],
+                        if (chat.users.isNotEmpty) {
+                          final user = chat.users[0];
+                          final fullName = '${user.firstName} ${user.lastName}';
+                          final status = userOnlineStatus[chat.id] ??
+                              'Offline'; // Get the status
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: ChatatWidget(
+                              //isOnline: status,
+                              onLongpress: () {
+                                chatToDelete = chat;
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Delete Chat'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this chat?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            _deleteChat(chat);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          userName: fullName,
-                          onTap: () async {
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                            final currentUserId = prefs.getInt('userId');
-                           // await signalRService.setupSignalR(kToken);
-                            print('Current user ID: $currentUserId');
-
-                            signalRService.dispose();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InsideChat(
-                                  chatId: chat.id,
-                                  picUrl: user.profilePicture,
-                                  fullName: fullName,
-                                  //signalRService: signalRService,
-                                   currentUserId: currentUserId!,
-                                ),
-                              ),
-                            );
-                          },
-                          picUrl: user.profilePicture,
-                        );
-                      } else {
-                        // Handle the case where the users list is empty
-                        return const SizedBox
-                            .shrink(); // Return an empty widget or handle accordingly
-                      }
-                    },
-                  );
-                }
-              },
+                              timeAgo: chat.lastMessageDate,
+                              userName: fullName,
+                              lastMsg: chat.lastMessage, //lastMsgs[index] ,
+                              whoSentMsg: '',
+                              //numberOfUnread: 7,
+                              onTap: () async {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                final currentUserId = prefs.getInt('userId');
+                                signalRService.dispose();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => InsideChat(
+                                      chatId: chat.id,
+                                      picUrl: user.profilePicture,
+                                      fullName: fullName,
+                                      currentUserId: currentUserId!,
+                                    ),
+                                  ),
+                                );
+                              },
+                              picUrl: user.profilePicture,
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+
+
+
+
+
+                    
+                    //####################################################################
+                   
+                    //#######################################################################
+                 
+                 

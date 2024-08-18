@@ -29,54 +29,51 @@ class _InsideChatState extends State<InsideChat> {
   final scrollCTRL = ScrollController();
   List<Message> messagesList = [];
   final SignalRService signalRService = SignalRService();
-String typingSetState='';
-
+  String typingSetState = '';
+  String userOnlineStatus = '';
 
   @override
   void initState() {
     super.initState();
-    print('Current User ID from initState: ${widget.currentUserId}');
+
     _loadMessages();
 
-    signalRService.setupSignalR(kToken, onMessageReceived: (message) {
-      //print('New message received setupINIT: ${message.msg}');
-      print('Sender ID setupINIT: ${message.sender}');
-      print('Current User ID setupINIT: ${widget.currentUserId}');
-      setState(() {
-        
-        messagesList.insert(
-          0,
-          Message(
-            msg: message.msg,
-            sender: message.sender, 
-            timestamp: message.timestamp,
-          ),
-        );
-      
-        _scrollToBottom();
+    signalRService.setupSignalR(
+      kToken,
+      onMessageReceived: (message) {
+        setState(() {
+          messagesList.insert(
+            0,
+            Message(
+              msg: message.msg,
+              sender: message.sender,
+              timestamp: message.timestamp,
+            ),
+          );
+
+          _scrollToBottom();
           setState(() {
-        typingSetState='';
-      });
-      });
-    },onTyping: (){
-      setState(() {
-        typingSetState='Typing....';
-      });
-    },
-  
+            typingSetState = '';
+          });
+        });
+      },
+      onTyping: () {
+        setState(() {
+          typingSetState = 'Typing....';
+        });
+      },
     );
 
-     isTyping( widget.chatId);
-     
-     
-    
+    isTyping(widget.chatId);
   }
 
-Future<void >isTyping(String chatId)async{
-  await signalRService.isTyping(chatId);
-}
+  Future<void> isTyping(String chatId) async {
+    await signalRService.isTyping(chatId);
+  }
 
-
+  Future<void> isOnline(String chatId) async {
+    await signalRService.isOnline(chatId);
+  }
 
   Future<void> _loadMessages() async {
     try {
@@ -128,50 +125,47 @@ Future<void >isTyping(String chatId)async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: background,
       appBar: AppBar(
-        
-        leadingWidth: 80,
-        leading: InkWell(
-          
-         onTap: (){
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  HomePage()));
-          },
-          
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Icon(
-                Icons.arrow_back,
-                size: 32,
-              ),
-              CircleAvatar(
-                backgroundImage: widget.picUrl != null
-                    ? NetworkImage(
-                        'https://chat-app.runasp.net/${widget.picUrl!}')
-                    : const AssetImage(kAvatar) as ImageProvider,
-                radius: 24,
-              ),
-            ],
-          ),
-        ),
+        centerTitle: true,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.125,
         iconTheme: IconThemeData(color: kWhite),
-        backgroundColor: mainColor,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        backgroundColor: background,
+        title: Row(
           children: [
-            Text(widget.fullName),
-            Text(
-             typingSetState,//typing ? 'typing...' : '',
-              style: TextStyle(
-                color: kWhite,
-                fontSize: 12,
-              ),
+            CircleAvatar(
+              backgroundImage: widget.picUrl != null
+                  ? NetworkImage(
+                      'https://chat-app.runasp.net/${widget.picUrl!}')
+                  : const AssetImage(kAvatar) as ImageProvider,
+              radius: 32,
+            ),
+            const SizedBox(width: 16),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(widget.fullName),
+                Text(
+                  'Online',
+                  //'$typingSetState $userOnlineStatus', //typing ? 'typing...' : '',
+                  style: TextStyle(
+                    color: kGreen,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
       body: Column(
         children: [
+          const SizedBox(height: 4),
+           Padding(
+             padding: const EdgeInsets.symmetric(horizontal: 32.0),
+             child: Divider(height: 1, color: searchContent),
+           ),
+          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
               reverse: true,
@@ -181,7 +175,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  Home
                 final message = messagesList[index];
                 final isSentByUser = message.sender.toString() ==
                     widget.currentUserId.toString();
-                
+
                 return ChatBubble(
                   message: message,
                   isSentByUser: isSentByUser,
@@ -190,35 +184,54 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  Home
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
             child: TextField(
               onChanged: (value) {
-                if (value.isNotEmpty ) {
-                 
-
+                if (value.isNotEmpty) {
                   signalRService.isTyping(widget.chatId);
-                  
                 }
-           
               },
+              cursorColor: searchContent,
               controller: controller,
               onSubmitted: (_) => sendMessage(),
               decoration: InputDecoration(
                 hintText: 'Send',
+                hintStyle: TextStyle(color: searchContent),
+                fillColor: searchBack,
+                focusColor: searchBack,
+                filled: true,
+                prefixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.emoji_emotions_rounded,
+                      color: searchContent,
+                      size: 32,
+                    )),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.send, color: mainColor),
+                  icon: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: mainColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: Image.asset(kIcon),
+                      )),
                   onPressed: sendMessage,
                 ),
                 border: OutlineInputBorder(
+                  borderSide: BorderSide(color: searchBack),
                   borderRadius: BorderRadius.circular(32),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32),
-                  borderSide: BorderSide(color: kGrey),
+                  borderSide: BorderSide(color: searchBack),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32),
-                  borderSide: BorderSide(color: mainColor),
+                  borderSide: BorderSide(color: searchBack),
                 ),
               ),
             ),

@@ -26,26 +26,23 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-  if (state is AuthLoading) {
-    // Show loading
-  } else if (state is AuthSuccess) {
-    // Initialize FriendRequestCubit after login success
-    context.read<FriendRequestCubit>().loadFriendRequestStates();
-
-    // Navigate to the HomePage
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
-  } else if (state is AuthFailure) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(state.error)),
-    );
-  }
-},
-
+        if (state is AuthLoading) {
+        } else if (state is AuthSuccess) {
+          context.read<FriendRequestCubit>().loadFriendRequestStates();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error)),
+          );
+        }
+      },
       child: ModalProgressHUD(
-        progressIndicator: CircularProgressIndicator(color:  mainColor,),
+        progressIndicator: CircularProgressIndicator(
+          color: mainColor,
+        ),
         inAsyncCall: context.watch<AuthBloc>().state is AuthLoading,
         child: Scaffold(
           appBar: AppBar(),
@@ -119,7 +116,7 @@ class LoginPage extends StatelessWidget {
                       CustomButton(
                         text: 'Login',
                         onTap: () {
-                          print (emailController.text+passwordController.text);
+                          print(emailController.text + passwordController.text);
                           if (formKey.currentState!.validate()) {
                             context.read<AuthBloc>().add(LoginEvent(
                                 emailController.text, passwordController.text));
@@ -134,7 +131,7 @@ class LoginPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                     const  Text(
+                      const Text(
                         'Don\'t have an account? ',
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),

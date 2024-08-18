@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:chat/models/message_model.dart';
 
@@ -7,14 +7,24 @@ class SignalRService {
   Function(Message)? onMessageReceived;
   void Function()? onDeleteChat;
   void Function()? onTyping;
-  Function(String)? isOnlineCallback;
-
+  void Function()? onOnline;
+  void Function()? onOffline;
+  Function(bool isOnline)? onUserOnlineStatus;
   Future<void> setupSignalR(String token,
-      {Function(String)? isOnlineCallback,Function()? onDeleteChat, Function(Message)? onMessageReceived,Function()? onTyping}) async {
+      {Function()? onDeleteChat,
+      Function(Message)? onMessageReceived,
+      void Function()? onOnline,
+      void Function()? onOffline,
+      Function()? onTyping,
+      Function(bool isOnline,)? onUserOnlineStatus}) async {
+
+
     this.onMessageReceived = onMessageReceived;
     this.onDeleteChat = onDeleteChat;
-    this.onTyping=onTyping;
-    this.isOnlineCallback=isOnlineCallback;   
+    this.onTyping = onTyping;
+    this.onOffline = onOffline;
+    this.onOnline = onOnline;
+    this.onUserOnlineStatus = onUserOnlineStatus;
 
     hubConnection = HubConnectionBuilder()
         .withUrl(
@@ -35,51 +45,45 @@ class SignalRService {
         final timestamp = parameters[2] as String;
 
         if (onMessageReceived != null) {
-          print('ID:$id,New message received: $message at $timestamp');
-          typing = false;
-          print('is Typing: $typing');
+          //print('ID:$id, New message received: $message at $timestamp');
           onMessageReceived(Message(
               msg: message, sender: id.toString(), timestamp: timestamp));
         }
       }
     });
 
-    //Example of another event handler
     hubConnection.on('DeleteChat', (message) {
-      print('DeleteChat message received: $message');
+      //print('DeleteChat message received: $message');
       if (onDeleteChat != null) {
-        print('DeleteChat not equal NULL:');
         onDeleteChat();
       }
     });
 
     hubConnection.on('IsTyping', (parameters) {
-      if(onTyping!=null){
+      if (onTyping != null) {
         onTyping();
       }
     });
-  
 
-  hubConnection.on('IsOnline', (response) {
-    print('IsOnline message received: $response');
-    if (isOnlineCallback != null) {
-      isOnlineCallback(response.toString());
-    }
+
+    hubConnection.on('IsOnline', (parameters) {
+  if (parameters != null && parameters.length ==1 ) {
+    //final chatId = parameters[0] as String;
+    final isOnline = parameters[0] as bool;
     
-  });
-  
+    if (onUserOnlineStatus != null) {
+      onUserOnlineStatus( isOnline);
+    }
+  }
+});
 
 
   }
 
-  // Send a message to the server
   Future<void> sendMessage(String message, String chatId) async {
     if (hubConnection.state == HubConnectionState.Connected) {
       try {
-        await hubConnection.invoke('SendMessage', args: [
-          message,
-          chatId,
-        ]);
+        await hubConnection.invoke('SendMessage', args: [message, chatId]);
         print('Message sent: $message');
       } catch (e) {
         print('Error sending message: $e');
@@ -112,19 +116,14 @@ class SignalRService {
       print('Connection not established');
     }
   }
-  
-  isOnline(String chatId) async{
-    if (hubConnection.state == HubConnectionState.Connected) {
-      try {
-        await hubConnection.invoke('IsOnline', args: [chatId]);
-        print('IsOnline invoked successfully');
-      } catch (e) {
-        print('Error invoking IsOnline: $e');
-      }
-    } else {
-      print('Connection not established');
-    }
 
+  Future<void> isOnline(String chatId) async {
+    try {
+      await hubConnection.invoke('IsOnline', args: [chatId]);
+      print('IsOnline invoked successfully');
+    } catch (e) {
+     print('Error invoking IsOnline: $e');
+    }
   }
 
   @override

@@ -1,7 +1,7 @@
 
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/services/services.dart';
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Screens/profile_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';
 import 'package:chat/view/Widgets/custom_text_form_field.dart';

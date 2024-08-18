@@ -1,4 +1,4 @@
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

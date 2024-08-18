@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/models/message_model.dart';
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/request_model.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/request_widget.dart';

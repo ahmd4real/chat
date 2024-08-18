@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -70,8 +70,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           labelText: widget.labelText,
           hintText: widget.hintText,
           
-          hintStyle: TextStyle(color: kGrey),
-          labelStyle: TextStyle(color: mainColor),
+        //  hintStyle: TextStyle(color: kGrey),
+         // labelStyle: TextStyle(color: mainColor),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),

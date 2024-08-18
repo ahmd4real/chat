@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/models/BLoCs/Theme/theme_bloc.dart';

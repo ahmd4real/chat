@@ -1,10 +1,10 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/models/message_model.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/services/signalR.dart';
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Screens/explore_page.dart';
 import 'package:chat/view/Screens/friendsRequests.dart';
 import 'package:chat/view/Screens/inside_chat.dart';
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
-          backgroundColor: background,
+         backgroundColor: background,
           bottomNavigationBar: CustomNavBar(
             onTabChange: (index) => navigateScreens(index),
           ),
@@ -195,7 +195,7 @@ class _HomeState extends State<Home> {
                 controller: _searchController,
                 hintText: 'Search for Friends',
                 leading: Padding(
-                  padding: EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
                     Icons.search_sharp,
                     color: searchContent,
@@ -265,8 +265,8 @@ class _HomeState extends State<Home> {
                               timeAgo: chat.lastMessageDate,
                               userName: fullName,
                               lastMsg: chat.lastMessage, //lastMsgs[index] ,
-                              whoSentMsg: '',
-                              //numberOfUnread: 7,
+                              whoSentMsg: chat.senderId.toString()==currentUserId.toString()?'You: ':'',
+                           
                               onTap: () async {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();

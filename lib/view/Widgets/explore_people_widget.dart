@@ -2,7 +2,7 @@ import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 
 class ExplorePeopleWidget extends StatelessWidget {
   final String userName;

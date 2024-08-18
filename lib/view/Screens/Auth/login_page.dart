@@ -1,10 +1,10 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/BLoCs/Login/login_bloc.dart';
 import 'package:chat/models/BLoCs/Login/login_event.dart';
 import 'package:chat/models/BLoCs/Login/login_state.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/Auth/enter_email.dart';
 import 'package:chat/view/Screens/Auth/signup_page.dart';
@@ -109,6 +109,7 @@ class LoginPage extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                              
                             )
                           ],
                         ),

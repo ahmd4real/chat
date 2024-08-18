@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import '../../models/message_model.dart';
 
@@ -34,7 +34,7 @@ class ChatBubble extends StatelessWidget {
             child: Text(
               message.msg,
               style: TextStyle(
-                fontFamily: font2,
+                fontFamily: font,
                 color: kWhite,
                 fontSize: 16,
               ),

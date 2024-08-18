@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/request_model.dart';
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Widgets/request_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

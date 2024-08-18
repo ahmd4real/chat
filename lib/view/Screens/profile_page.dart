@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/settings_page.dart';
 import 'package:flutter/material.dart';

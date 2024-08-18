@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/BLoCs/Verification/verification_bloc.dart';
 import 'package:chat/models/BLoCs/Verification/verification_event.dart';
 import 'package:chat/models/BLoCs/Verification/verification_state.dart';

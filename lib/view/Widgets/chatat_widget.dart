@@ -1,4 +1,4 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ChatatWidget extends StatelessWidget {
@@ -39,11 +39,16 @@ class ChatatWidget extends StatelessWidget {
           userName,
           style: TextStyle(color: kWhite,fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('$whoSentMsg $lastMsg'),
+        subtitle: Text('$whoSentMsg $lastMsg',
+        
+        
+        maxLines: 1,
+  overflow: TextOverflow.ellipsis,),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
+              
               timeAgo,
               style: TextStyle(
                 color: timeAgoColor,

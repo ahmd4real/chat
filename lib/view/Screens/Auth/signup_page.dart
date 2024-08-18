@@ -1,8 +1,8 @@
-import 'package:chat/constants.dart';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/BLoCs/SignUp/sign_up_bloc.dart';
 import 'package:chat/models/BLoCs/SignUp/sign_up_event.dart';
 import 'package:chat/models/BLoCs/SignUp/sign_up_state.dart';
-import 'package:chat/utilities.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Screens/Auth/login_page.dart';
 import 'package:chat/view/Screens/Auth/verificaton_code_page.dart';
 import 'package:chat/view/Widgets/custom_button.dart';

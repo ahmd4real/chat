@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/custom_image_picker.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 void snackBar(BuildContext context, String msg) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
@@ -117,4 +115,25 @@ cropImage(File imgFile, Function(Image) setImage) async {
     await uploadImage(croppedFile);
     setImage(Image.file(File(croppedFile.path)));
   }
+}
+
+String getTimeNow() {
+  int hour = DateTime.now().hour;
+  final minute = DateTime.now().minute;
+  String pmOrAm = hour > 12 ? 'PM' : 'AM';
+  hour = hour > 12 ? hour - 12 : hour;
+
+  return '$hour:$minute $pmOrAm';
+}
+
+String handleTimeFromDB(String dbtime) {
+  String amOrPm = dbtime.substring(0, 2);
+
+  int hour = int.parse(dbtime.substring(3, 5));
+  hour++;
+
+  hour = hour > 12 ? hour - 12 : hour;
+  final minute = dbtime.substring(6, 8);
+
+  return '$hour:$minute $amOrPm';
 }

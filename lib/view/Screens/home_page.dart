@@ -1,12 +1,11 @@
 import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
-import 'package:chat/models/message_model.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/services/signalR.dart';
 import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/view/Screens/explore_page.dart';
-import 'package:chat/view/Screens/friendsRequests.dart';
+import 'package:chat/view/Screens/friends_requests_page.dart';
 import 'package:chat/view/Screens/inside_chat.dart';
 import 'package:chat/view/Screens/profile_page.dart';
 import 'package:chat/view/Widgets/chatat_widget.dart';
@@ -70,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
-         backgroundColor: background,
+          backgroundColor: background,
           bottomNavigationBar: CustomNavBar(
             onTabChange: (index) => navigateScreens(index),
           ),
@@ -168,9 +167,6 @@ class _HomeState extends State<Home> {
     await signalRService.isOnline(chatId);
   }
 
-  
-  
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -262,12 +258,16 @@ class _HomeState extends State<Home> {
                                   },
                                 );
                               },
-                              timeAgo: chat.lastMessageDate,
+                              timeAgo: handleTimeFromDB(chat.lastMessageDate),
                               userName: fullName,
-                              lastMsg: chat.lastMessage, //lastMsgs[index] ,
-                              whoSentMsg: chat.senderId.toString()==currentUserId.toString()?'You: ':'',
-                           
+                              lastMsg: chat.lastMessage,  
+                              whoSentMsg: chat.senderId.toString() ==
+                                      currentUserId.toString()
+                                  ? 'You: '
+                                  : '',
+
                               onTap: () async {
+                               
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 final currentUserId = prefs.getInt('userId');
@@ -302,15 +302,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-
-
-
-
-
-                    
-                    //####################################################################
-                   
-                    //#######################################################################
-                 
-                 

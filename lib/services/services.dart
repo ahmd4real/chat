@@ -5,6 +5,7 @@ import 'package:chat/core/utils/constants.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/models/message_model.dart';
 import 'package:chat/core/utils/utilities.dart';
+import 'package:chat/models/request_model.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -172,6 +173,25 @@ Future<int?> updateUserData({
     return null;
   }
 }
+
+
+Future<List<Request>> getRequests(String jwtToken) async {
+    final url = Uri.parse('https://chat-app.runasp.net/api/FriendRequest');
+    final response = await http.get(
+      url,
+      headers: {
+        'accept': '*/*',
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      return body.map((dynamic item) => Request.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load friend requests');
+    }
+  }
 
 Future<void> uploadImage(CroppedFile croppedFile) async {
   File imageFile = File(croppedFile.path);

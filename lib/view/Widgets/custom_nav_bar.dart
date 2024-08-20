@@ -12,17 +12,19 @@ class CustomNavBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical:  16.0),
       child: GNav(
+        //rippleColor: kWhite,
         tabBorderRadius: 50,
-       
-        style: GnavStyle.google,
+      // backgroundColor: kBlack,
+        style: GnavStyle.google,//GnavStyle.google,
           onTabChange: (index) => onTabChange!(index),
           duration: const Duration(milliseconds: 200),
       gap: 1,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          tabBackgroundColor: mainColor,
+          tabBackgroundColor: searchBack,//mainColor,
           mainAxisAlignment: MainAxisAlignment.center,
           tabs:  const [
             GButton(
+              
               icon: Icons.chat_outlined,
               text: 'Chats',
              

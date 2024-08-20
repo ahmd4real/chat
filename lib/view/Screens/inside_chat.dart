@@ -1,4 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
+import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Widgets/chat_bubble.dart';
@@ -31,6 +32,7 @@ class _InsideChatState extends State<InsideChat> {
   final SignalRService signalRService = SignalRService();
   String typingSetState = '';
   String userOnlineStatus = '';
+  bool tapped = false;
 
   @override
   void initState() {
@@ -48,6 +50,7 @@ class _InsideChatState extends State<InsideChat> {
               msg: message.msg,
               sender: message.sender,
               timestamp: message.timestamp,
+              messageDate: message.messageDate,
             ),
           );
 
@@ -106,14 +109,17 @@ class _InsideChatState extends State<InsideChat> {
   void sendMessage() async {
     final message = controller.text.trim();
     if (message.isNotEmpty) {
+      final String timeNow = getTimeNow();
       await signalRService.sendMessage(message, widget.chatId);
       setState(() {
+        tapped = true;
         messagesList.insert(
           0,
           Message(
             msg: message,
             sender: widget.currentUserId.toString(),
             timestamp: DateTime.now().toString(),
+            messageDate: timeNow,
           ),
         );
       });
@@ -121,6 +127,8 @@ class _InsideChatState extends State<InsideChat> {
       _scrollToBottom();
     }
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -146,8 +154,8 @@ class _InsideChatState extends State<InsideChat> {
               children: [
                 Text(widget.fullName),
                 Text(
-                  'Online',
-                  //'$typingSetState $userOnlineStatus', //typing ? 'typing...' : '',
+                  // 'Online',
+                  '$typingSetState $userOnlineStatus', //typing ? 'typing...' : '',
                   style: TextStyle(
                     color: kGreen,
                     fontSize: 12,
@@ -161,10 +169,10 @@ class _InsideChatState extends State<InsideChat> {
       body: Column(
         children: [
           const SizedBox(height: 4),
-           Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 32.0),
-             child: Divider(height: 1, color: searchContent),
-           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Divider(height: 1, color: searchContent),
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
@@ -177,6 +185,7 @@ class _InsideChatState extends State<InsideChat> {
                     widget.currentUserId.toString();
 
                 return ChatBubble(
+                  tapped: tapped,
                   message: message,
                   isSentByUser: isSentByUser,
                 );
@@ -219,7 +228,10 @@ class _InsideChatState extends State<InsideChat> {
                         height: 18,
                         child: Image.asset(kIcon),
                       )),
-                  onPressed: sendMessage,
+                  onPressed: () {
+                   
+                    sendMessage();
+                  },
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: searchBack),

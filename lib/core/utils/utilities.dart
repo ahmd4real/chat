@@ -29,7 +29,6 @@ String? emailValidator(String? value) {
   if (value == null || value.isEmpty) {
     return 'Email is required';
   }
-  // Regular expression for email validation
   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
   if (!emailRegex.hasMatch(value)) {
     return 'Enter a valid email';
@@ -114,7 +113,19 @@ cropImage(File imgFile, Function(Image) setImage) async {
     imageCache.clear();
     await uploadImage(croppedFile);
     setImage(Image.file(File(croppedFile.path)));
+    
   }
+}
+
+
+Future<void> saveProfilePicture(String profilePicUrl) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('profilePic', profilePicUrl);
+}
+
+Future<String?> loadProfilePicture() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('profilePicture');
 }
 
 String getTimeNow() {
@@ -122,18 +133,14 @@ String getTimeNow() {
   final minute = DateTime.now().minute;
   String pmOrAm = hour > 12 ? 'PM' : 'AM';
   hour = hour > 12 ? hour - 12 : hour;
-
   return '$hour:$minute $pmOrAm';
 }
 
 String handleTimeFromDB(String dbtime) {
   String amOrPm = dbtime.substring(0, 2);
-
   int hour = int.parse(dbtime.substring(3, 5));
   hour++;
-
   hour = hour > 12 ? hour - 12 : hour;
   final minute = dbtime.substring(6, 8);
-
   return '$hour:$minute $amOrPm';
 }

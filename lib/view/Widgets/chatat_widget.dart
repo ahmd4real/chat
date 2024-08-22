@@ -7,7 +7,7 @@ class ChatatWidget extends StatelessWidget {
       required this.userName,
       this.timeAgo = '',
       this.onTap,
-      //required this.isOnline,
+      required this.isOnline,
       this.picUrl,
       this.lastMsg = '',
       this.whoSentMsg = '',
@@ -18,7 +18,7 @@ class ChatatWidget extends StatelessWidget {
   void Function()? onTap;
   void Function()? onLongpress;
   String? picUrl;
-  //final String isOnline;
+  final bool isOnline;
   String lastMsg, whoSentMsg, timeAgo;
   int numberOfUnread;
 
@@ -28,20 +28,36 @@ class ChatatWidget extends StatelessWidget {
       onLongPress: onLongpress,
       onTap: onTap,
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: picUrl != null
-              ? NetworkImage('https://chat-app.runasp.net/${picUrl!}')
-              : const AssetImage(kAvatar),
-          backgroundColor: noColor,
-          radius: 30,
+        leading: Stack(
+          children:[ CircleAvatar(
+            backgroundImage: picUrl != null
+                ? NetworkImage('https://chat-app.runasp.net/${picUrl!}')
+                : const AssetImage(kAvatar),
+            backgroundColor: noColor,
+            radius: 30,
+          ),
+          isOnline? Positioned(
+            right: 2,
+            bottom: 2,
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration:  BoxDecoration(
+                color: kGreen,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ):
+          Container()
+          
+          ]
         ),
         title: Text(
           userName,
           style: TextStyle(color: kWhite,fontWeight: FontWeight.bold),
         ),
         subtitle: Text('$whoSentMsg $lastMsg',
-        
-        
+style: TextStyle(color: Colors.grey[500]),
         maxLines: 1,
   overflow: TextOverflow.ellipsis,),
         trailing: Column(

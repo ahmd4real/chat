@@ -1,4 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
+import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/services/services.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     firstName = await getData('firstName') ?? '';
     lastName = await getData('lastName') ?? '';
     email = await getData('email') ?? '';
-    profilePic = await getData('profilePic');
+    profilePic = await getData('profilePicture');
     bio = await getData('bio');
 
     setState(() {
@@ -55,6 +56,10 @@ class _HomePageState extends State<HomePage> {
           bio: bio,
         ),
       ];
+      if (profilePic != null && profilePic!.isNotEmpty) {
+        ImageCubit().updateProfilePicture(profilePic!);
+      }
+      
     });
   }
 
@@ -99,7 +104,7 @@ late List<Map<String, String>> mp;
 
 class _HomeState extends State<Home> {
   late Future<List<Chat>> futureChats;
-  Map<String, String> userOnlineStatus = {};
+  //Map<String, bool> userOnlineStatus = {};
 
   final TextEditingController _searchController = TextEditingController();
   SignalRService signalRService = SignalRService();
@@ -186,10 +191,9 @@ class _HomeState extends State<Home> {
               child: SearchBar(
                 hintStyle:
                     WidgetStatePropertyAll(TextStyle(color: searchContent)),
-                backgroundColor: WidgetStatePropertyAll(
-                    searchBack), //MaterialAccentColor(primary, swatch),
+                backgroundColor: WidgetStatePropertyAll(searchBack),
                 controller: _searchController,
-                hintText: 'Search for Friends',
+                hintText: 'Search your cahts',
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
@@ -224,12 +228,11 @@ class _HomeState extends State<Home> {
                         if (chat.users.isNotEmpty) {
                           final user = chat.users[0];
                           final fullName = '${user.firstName} ${user.lastName}';
-                          final status = userOnlineStatus[chat.id] ??
-                              'Offline'; // Get the status
+                          //final status = userOnlineStatus[chat.id] ?? false;
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
                             child: ChatatWidget(
-                              //isOnline: status,
+                              isOnline: true,
                               onLongpress: () {
                                 chatToDelete = chat;
                                 showDialog(
@@ -260,14 +263,13 @@ class _HomeState extends State<Home> {
                               },
                               timeAgo: handleTimeFromDB(chat.lastMessageDate),
                               userName: fullName,
-                              lastMsg: chat.lastMessage,  
+                              lastMsg: chat.lastMessage,
                               whoSentMsg: chat.senderId.toString() ==
                                       currentUserId.toString()
                                   ? 'You: '
                                   : '',
 
                               onTap: () async {
-                               
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 final currentUserId = prefs.getInt('userId');

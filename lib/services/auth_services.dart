@@ -29,7 +29,6 @@ class AuthServices {
       prefs.setString('bio', data['biography']??'');
       prefs.setString('profilePicture', data['profilePicture']??'');
       prefs.setInt('userId', data['userId']??'');
-     
       return data;
     } else {
       throw Exception('Failed to login');

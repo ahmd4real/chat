@@ -45,7 +45,7 @@ class SignalRService {
         final timestamp = parameters[2] as String;
 
         if (onMessageReceived != null) {
-          //print('ID:$id, New message received: $message at $timestamp');
+       
           onMessageReceived(Message(
               msg: message, sender: id.toString(), timestamp: timestamp));
         }
@@ -53,7 +53,7 @@ class SignalRService {
     });
 
     hubConnection.on('DeleteChat', (message) {
-      //print('DeleteChat message received: $message');
+   
       if (onDeleteChat != null) {
         onDeleteChat();
       }
@@ -68,11 +68,9 @@ class SignalRService {
 
     hubConnection.on('IsOnline', (parameters) {
   if (parameters != null && parameters.length ==1 ) {
-    //final chatId = parameters[0] as String;
     final isOnline = parameters[0] as bool;
-    
     if (onUserOnlineStatus != null) {
-      onUserOnlineStatus( isOnline);
+      onUserOnlineStatus(isOnline);
     }
   }
 });

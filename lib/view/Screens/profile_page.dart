@@ -48,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
           title: Text(
             'Profile',
             style: TextStyle(
+              fontFamily: font,
               color: mainColor,
               fontSize: 32,
               fontWeight: FontWeight.w600,
@@ -62,10 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   CircleAvatar(
-                    backgroundImage: widget.profilePic != null
-                        ? NetworkImage(
-                            'https://chat-app.runasp.net/${widget.profilePic}')
-                        : imageState.avatarImg.image,
+                    backgroundImage: imageState.avatarImg.image,
                     radius: MediaQuery.of(context).size.width * 0.25,
                     backgroundColor: noColor,
                   ),
@@ -73,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     '${widget.firstName} ${widget.lastName}',
                     style: const TextStyle(
+                      fontFamily: font,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -81,6 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     widget.bio ?? '',
                     style: const TextStyle(
+                      fontFamily: font,
                       fontSize: 16,
                     ),
                   ),
@@ -92,7 +92,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EditProfilePage(),
+                          builder: (context) =>  EditProfilePage(
+                            profilePic: widget.profilePic,
+                          ),
                         ),
                       );
                     },
@@ -152,17 +154,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                       setState(() {
                                         loading = true;
                                       });
-              
+
                                       // Perform logout operations
                                       bool loggedOut = await signOut();
-              
+
                                       // Check if widget is still mounted before navigating
                                       if (loggedOut && mounted) {
                                         Navigator.pushReplacementNamed(
                                             context, LoginPage.id);
                                       }
-              
-                                      // Ensure setState is only called if the widget is still mounted
+
+                                 
                                       if (mounted) {
                                         setState(() {
                                           loading = false;
@@ -190,6 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: Text(
                               'Logout',
                               style: TextStyle(
+                                fontFamily: font,
                                 color: Color.fromARGB(164, 133, 2, 2),
                                 fontSize: 20,
                               ),

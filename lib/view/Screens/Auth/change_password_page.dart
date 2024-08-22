@@ -11,6 +11,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
   static String id = 'ChangePasswordPage';
+
   @override
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }

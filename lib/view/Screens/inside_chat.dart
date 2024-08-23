@@ -43,6 +43,7 @@ class _InsideChatState extends State<InsideChat> {
     signalRService.setupSignalR(
       kToken,
       onMessageReceived: (message) {
+        print(' hello from  onMessageReceived: $message');
         setState(() {
           messagesList.insert(
             0,

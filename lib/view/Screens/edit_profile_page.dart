@@ -163,7 +163,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       showImagePicker(context, (Image newImage) {
         imageCubit.setAvatarImg(newImage);
         // Call updateProfilePicture after the image is successfully uploaded to the server
-        imageCubit.updateProfilePicture(widget.profilePic ?? '');
+        //imageCubit.updateProfilePicture(widget.profilePic ?? '');
       });
     },
     icon: Container(

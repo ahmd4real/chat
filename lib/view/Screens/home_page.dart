@@ -57,7 +57,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ];
       if (profilePic != null && profilePic!.isNotEmpty) {
-        ImageCubit().updateProfilePicture(profilePic!);
+
+        //ImageCubit().updateProfilePicture(profilePic!);
       }
       
     });
@@ -130,7 +131,9 @@ class _HomeState extends State<Home> {
         allChats.remove(chatToDelete);
         filteredChats.remove(chatToDelete);
       });
-    }, onUserOnlineStatus: (isOnline) {
+    }, 
+    
+    onUserOnlineStatus: (isOnline) {
       print('hello from onUserOnlineStatus->initState->home_page.dart');
       if (isOnline) {
         print('user is online');

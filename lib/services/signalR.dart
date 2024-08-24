@@ -39,6 +39,7 @@ class SignalRService {
     print('SignalR connection started');
 
     hubConnection.on('SendMessage', (parameters) {
+      //print('hello from onMessageReceived: $parameters');
       if (parameters != null && parameters.length == 3) {
         final id = parameters[0] as int;
         final message = parameters[1] as String;

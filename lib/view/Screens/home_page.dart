@@ -14,7 +14,7 @@ import 'package:chat/view/Widgets/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+String ?profilePic;
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   static String id = 'HomePage';
@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   String firstName = '', lastName = '', email = '';
-  String? profilePic, bio;
+  String? bio;
   List<Widget> pages = [];
 
   @override
@@ -56,10 +56,7 @@ class _HomePageState extends State<HomePage> {
           bio: bio,
         ),
       ];
-      if (profilePic != null && profilePic!.isNotEmpty) {
-
-        //ImageCubit().updateProfilePicture(profilePic!);
-      }
+     
       
     });
   }

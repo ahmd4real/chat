@@ -1,4 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
+import 'package:chat/view/Screens/home_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,7 @@ class AuthServices {
       prefs.setString('expirationOfJwt', data['expirationOfJwt']??'');
       prefs.setString('bio', data['biography']??'');
       prefs.setString('profilePicture', data['profilePicture']??'');
+      profilePic=data['profilePicture']??'';
       prefs.setInt('userId', data['userId']??'');
       return data;
     } else {

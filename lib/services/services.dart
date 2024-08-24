@@ -6,6 +6,7 @@ import 'package:chat/models/chat_model.dart';
 import 'package:chat/models/message_model.dart';
 import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/models/request_model.dart';
+import 'package:chat/view/Screens/home_page.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -217,6 +218,9 @@ Future<void> uploadImage(CroppedFile croppedFile) async {
     var response = await request.send();
     if (response.statusCode == 200) {
       print("File uploaded successfully!");
+      profilePic = imageFile.path;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('profilePicture', profilePic!);
     } else {
       print("File upload failed: ${response.statusCode}");
     }

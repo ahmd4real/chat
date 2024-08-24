@@ -39,7 +39,7 @@ class _InsideChatState extends State<InsideChat> {
     super.initState();
 
     _loadMessages();
-
+print('init is working');
     signalRService.setupSignalR(
       kToken,
       onMessageReceived: (message) {

@@ -1,5 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
-import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
+//import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/services/services.dart';
@@ -14,6 +14,9 @@ import 'package:chat/view/Widgets/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
+
 String ?profilePic;
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -96,7 +99,7 @@ class Home extends StatefulWidget {
 late List<Chat> allChats;
 List<Chat> filteredChats = [];
 late Chat chatToDelete;
-List<Chat> lastMsgs = [];
+List<Chat> ?lastMsgs = [];
 int? currentUserId;
 late List<Map<String, String>> mp;
 

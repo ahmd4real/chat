@@ -93,6 +93,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: background,
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(

@@ -37,14 +37,14 @@ class Chat {
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
-      id: json['id'],
-      isRead: json['isRead'],
+      id: json['id']??'',
+      isRead: json['isRead']??false,
       users: (json['users'] as List<dynamic>)
           .map((userJson) => User.fromJson(userJson))
           .toList(),
-      lastMessage: json['lastMessage'],
-      lastMessageDate: json['lastMessageDate'],
-      senderId: json['senderId'],
+      lastMessage: json['lastMessage']??'',
+      lastMessageDate: json['lastMessageDate']??'',
+      senderId: json['senderId']??0,
     );
   }
 }

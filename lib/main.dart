@@ -7,18 +7,17 @@ import 'package:chat/models/BLoCs/Theme/theme_state.dart';
 import 'package:chat/models/BLoCs/Verification/verification_bloc.dart';
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/services/auth_services.dart';
-
 import 'package:chat/view/Screens/Auth/change_password_page.dart';
 import 'package:chat/view/Screens/Auth/enter_email.dart';
 import 'package:chat/view/Screens/Auth/verificaton_code_page.dart';
-
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/Auth/login_page.dart';
 import 'package:chat/view/Screens/Auth/signup_page.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,7 +82,7 @@ class ChatApp extends StatelessWidget {
               VerificationCodePage.id: (context) =>
                   VerificationCodePage(email: '', resetPass: false),
             },
-            home: FutureBuilder<bool>(
+            home:FutureBuilder<bool>(
               future: isLoggedIn(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

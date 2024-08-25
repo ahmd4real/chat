@@ -129,6 +129,7 @@ Future<String?> loadProfilePicture() async {
 }
 
 String getTimeNow() {
+  
   int hour = DateTime.now().hour;
   final minute = DateTime.now().minute;
   String pmOrAm = hour > 12 ? 'PM' : 'AM';
@@ -137,6 +138,9 @@ String getTimeNow() {
 }
 
 String handleTimeFromDB(String dbtime) {
+  if (dbtime == null || dbtime.isEmpty) {
+    return '';
+  }
   String amOrPm = dbtime.substring(0, 2);
   int hour = int.parse(dbtime.substring(3, 5));
   hour++;

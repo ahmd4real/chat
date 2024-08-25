@@ -51,7 +51,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         vertical: 8,
       ),
       child: TextFormField(
-       // maxLines: widget.maxLines,
         obscureText: isHidden,
         validator: widget.validator ??
             (value) {
@@ -69,9 +68,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           prefixIcon: Icon(widget.prefixIcon, color: mainColor,),
           labelText: widget.labelText,
           hintText: widget.hintText,
-          
-        //  hintStyle: TextStyle(color: kGrey),
-         // labelStyle: TextStyle(color: mainColor),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),

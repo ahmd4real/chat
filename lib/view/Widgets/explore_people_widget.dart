@@ -33,24 +33,35 @@ class ExplorePeopleWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: const Color.fromARGB(90, 122, 121, 121),
+          color:
+          searchBack,
+          // const Color.fromARGB(90, 122, 121, 121),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xff54B22E),
-                ),
-                height: MediaQuery.of(context).size.width / 3,
-                width: MediaQuery.of(context).size.width / 3,
-                child: Image(
-                  fit: BoxFit.cover,
-                  image: profilePic != null
-                      ? NetworkImage('https://chat-app.runasp.net/$profilePic')
-                      : const AssetImage(kAvatar),
-                )),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: kGreen,
+              ),
+              height: MediaQuery.of(context).size.width / 2.5,
+              width: MediaQuery.of(context).size.width / 2.5,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: profilePic != null
+                    ? Image(
+                        image: NetworkImage(
+                            'https://chat-app.runasp.net/$profilePic'),
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(
+                        Icons.person_rounded,
+                        color: kWhite,
+                        size: MediaQuery.of(context).size.width / 2.5,
+                      ),
+              ),
+            ),
             Text(
               userName,
               style: const TextStyle(
@@ -63,57 +74,41 @@ class ExplorePeopleWidget extends StatelessWidget {
               builder: (context, pendingRequests) {
                 final isPending = pendingRequests[id] ?? false;
 
-                return GestureDetector(
+                return InkWell(
                   onTap: isPending
                       ? () => handleCancelFriend(context)
                       : () => handleAddFriend(context),
                   child: Container(
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      color: isPending ? Colors.grey : mainColor,
+                      color: isPending ? Colors.grey : kGreen,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        isPending ? 'Pending' : 'Add Friend',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: kWhite,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(
+                            isPending
+                                ? Icons.cancel
+                                : Icons.person_add_alt_1_outlined,
+                            color: kWhite,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            isPending ? 'Pending' : 'Add Friend',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: kWhite,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 );
-              },
-            ),
-            BlocBuilder<FriendRequestCubit, Map<int, bool>>(
-              builder: (context, pendingRequests) {
-                final isPending = pendingRequests[id] ?? false;
-                return isPending
-                    ? GestureDetector(
-                        onTap: () => handleCancelFriend(context),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Cancel',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: kWhite,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(); // Return an empty container if not pending
               },
             ),
           ],

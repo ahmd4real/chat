@@ -5,6 +5,8 @@ import 'package:chat/view/Widgets/request_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
+
+
 class FriendsRequests extends StatefulWidget {
   const FriendsRequests({super.key});
 

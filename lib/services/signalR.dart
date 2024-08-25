@@ -39,15 +39,17 @@ class SignalRService {
     print('SignalR connection started');
 
     hubConnection.on('SendMessage', (parameters) {
-      //print('hello from onMessageReceived: $parameters');
-      if (parameters != null && parameters.length == 3) {
+      print('hello from onMessageReceived: $parameters');
+      if (parameters != null && parameters.length == 4) {
         final id = parameters[0] as int;
         final message = parameters[1] as String;
         final timestamp = parameters[2] as String;
+        final msgdate=parameters[3] as String;
 
         if (onMessageReceived != null) {
        
           onMessageReceived(Message(
+            //messageDate: msgdate,
               msg: message, sender: id.toString(), timestamp: timestamp));
         }
       }

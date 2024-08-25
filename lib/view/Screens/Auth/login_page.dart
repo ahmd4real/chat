@@ -45,7 +45,12 @@ class LoginPage extends StatelessWidget {
         ),
         inAsyncCall: context.watch<AuthBloc>().state is AuthLoading,
         child: Scaffold(
-          appBar: AppBar(),
+          backgroundColor:
+          background,
+          //const Color.fromARGB(255, 13, 75, 85),
+          appBar: AppBar(
+            backgroundColor: background,
+          ),
           body: Form(
             key: formKey,
             child: ListView(

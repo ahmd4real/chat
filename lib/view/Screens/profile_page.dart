@@ -130,54 +130,35 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async{
                           // Show confirmation dialog
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Confirm Logout'),
-                                content: const Text(
-                                    'Are you sure you want to logout?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-                                      setState(() {
-                                        loading = true;
-                                      });
 
-                                      // Perform logout operations
-                                      bool loggedOut = await signOut();
+                          setState(() {
+                            loading = true;
 
-                                      // Check if widget is still mounted before navigating
-                                      if (loggedOut && mounted) {
-                                        Navigator.pushReplacementNamed(
-                                            context, LoginPage.id);
-                                      }
+                          });
 
-                                 
-                                      if (mounted) {
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Logout'),
-                                  ),
-                                ],
-                              );
+                          bool loggedOut=await signOut();
+
+                          if(loggedOut){
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  LoginPage(),
+                              ),
+                            );
+
+                          }
+
+                          setState(() {
+                            
+                            loading = false;
+                          });
+                            
+                         
                             },
-                          );
-                        },
+                          
+                        
                         child: Container(
                           height: 38,
                           width: MediaQuery.of(context).size.width / 4,

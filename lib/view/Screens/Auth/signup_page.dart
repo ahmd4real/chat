@@ -16,11 +16,8 @@ class SignUpPage extends StatelessWidget {
   static String id = 'SignUpPage';
 
   TextEditingController passwordController = TextEditingController();
-
   TextEditingController nameController = TextEditingController();
-
   TextEditingController lastNameController = TextEditingController();
-
   TextEditingController confirmPasswordController = TextEditingController();
 
   TextEditingController emailController = TextEditingController();
@@ -52,7 +49,10 @@ class SignUpPage extends StatelessWidget {
        progressIndicator: CircularProgressIndicator(color: mainColor,),
         inAsyncCall: context.watch<SignUpBloc>().state is SignUpLoading,
         child: Scaffold(
-          appBar: AppBar(),
+          backgroundColor: background,
+          appBar: AppBar(
+            backgroundColor: background,
+          ),
           body: Form(
             key: formKey,
             child: ListView(

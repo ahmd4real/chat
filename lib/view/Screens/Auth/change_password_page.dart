@@ -80,7 +80,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         if (!passwordMatched(
                             newPasswordController.text, value)) {
                           return 'Passwords do not match';
-                        }
+                        } 
                         return null;
                       },
                     ),

@@ -35,7 +35,7 @@ class ExplorePeopleWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           color:
           searchBack,
-          // const Color.fromARGB(90, 122, 121, 121),
+        
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

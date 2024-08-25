@@ -98,7 +98,7 @@ cropImage(File imgFile, Function(Image) setImage) async {
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: "Edit Photo",
-            toolbarColor: Colors.green, //kGreenBigButtons,
+            toolbarColor: Colors.green,
             toolbarWidgetColor: Colors.white,
             statusBarColor: Colors.green,
             activeControlsWidgetColor: Colors.green,

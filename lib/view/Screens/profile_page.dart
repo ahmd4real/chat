@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  EditProfilePage(
+                          builder: (context) => EditProfilePage(
                             profilePic: widget.profilePic,
                           ),
                         ),
@@ -130,35 +130,28 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: () async{
+                        onTap: () async {
                           // Show confirmation dialog
 
                           setState(() {
                             loading = true;
-
                           });
 
-                          bool loggedOut=await signOut();
+                          bool loggedOut = await signOut();
 
-                          if(loggedOut){
+                          if (loggedOut) {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>  LoginPage(),
+                                builder: (context) => LoginPage(),
                               ),
                             );
-
                           }
 
                           setState(() {
-                            
                             loading = false;
                           });
-                            
-                         
-                            },
-                          
-                        
+                        },
                         child: Container(
                           height: 38,
                           width: MediaQuery.of(context).size.width / 4,

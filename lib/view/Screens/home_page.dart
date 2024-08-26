@@ -75,7 +75,11 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
-          backgroundColor: background,
+
+          backgroundColor: 
+          //const Color.fromARGB(255, 123, 142, 145),
+          
+          background,
           bottomNavigationBar: CustomNavBar(
             onTabChange: (index) => navigateScreens(index),
           ),
@@ -105,7 +109,7 @@ late List<Map<String, String>> mp;
 
 class _HomeState extends State<Home> {
   late Future<List<Chat>> futureChats;
-  //Map<String, bool> userOnlineStatus = {};
+  Map<String, bool> userOnlineStatus = {};
 
   final TextEditingController _searchController = TextEditingController();
   SignalRService signalRService = SignalRService();
@@ -132,15 +136,18 @@ class _HomeState extends State<Home> {
         filteredChats.remove(chatToDelete);
       });
     }, 
+
+    onUserOnlineStatus: (chatId, isOnline) {
+      setState(() {
+        userOnlineStatus[chatId] = isOnline;
+      });
+      print(chatId + ' ' + isOnline.toString());
+    },
     
-    onUserOnlineStatus: (isOnline) {
-      print('hello from onUserOnlineStatus->initState->home_page.dart');
-      if (isOnline) {
-        print('user is online');
-      } else {
-        print('user is offline');
-      }
-    });
+  
+    
+    
+    );
   }
 
   void _filterChats() {
@@ -222,23 +229,23 @@ class _HomeState extends State<Home> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(child: Text('No chats available'));
                   } else {
-                    return ListView.builder(
-                      itemCount: filteredChats.length,
-                      itemBuilder: (context, index) {
-                        final chat = filteredChats[index];
-                        isOnline(chat.id);
+                    return 
+                    
+                    ListView.builder(
+            itemCount: filteredChats.length,
+            itemBuilder: (context, index) {
+              final chat = filteredChats[index];
+              final user = chat.users[0];
+              final fullName = '${user.firstName} ${user.lastName}';
+              final isUserOnline = userOnlineStatus[chat.id] ?? false;
 
-                        if (chat.users.isNotEmpty) {
-                          final user = chat.users[0];
-                          final fullName = '${user.firstName} ${user.lastName}';
-                          //final status = userOnlineStatus[chat.id] ?? false;
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: ChatatWidget(
-                              isOnline: true,
-                              onLongpress: () {
-                                chatToDelete = chat;
-                                showDialog(
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: ChatatWidget(
+                  isOnline: isUserOnline,
+                  onLongpress: () {
+                    chatToDelete = chat;
+                     showDialog(
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
@@ -263,40 +270,90 @@ class _HomeState extends State<Home> {
                                     );
                                   },
                                 );
-                              },
-                              timeAgo: handleTimeFromDB(chat.lastMessageDate),
-                              userName: fullName,
-                              lastMsg: chat.lastMessage,
-                              whoSentMsg: chat.senderId.toString() ==
-                                      currentUserId.toString()
-                                  ? 'You: '
-                                  : '',
-
-                              onTap: () async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                final currentUserId = prefs.getInt('userId');
-                                signalRService.dispose();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => InsideChat(
-                                      chatId: chat.id,
-                                      picUrl: user.profilePicture,
-                                      fullName: fullName,
-                                      currentUserId: currentUserId!,
-                                    ),
-                                  ),
-                                );
-                              },
-                              picUrl: user.profilePicture,
-                            ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
+                  },
+                  timeAgo: handleTimeFromDB(chat.lastMessageDate),
+                  userName: fullName,
+                  lastMsg: chat.lastMessage,
+                  whoSentMsg: chat.senderId.toString() == currentUserId.toString() 
+                              ? 'You: ' 
+                              : '',
+                  onTap: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    final currentUserId = prefs.getInt('userId');
+                    signalRService.dispose();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InsideChat(
+                          chatId: chat.id,
+                          picUrl: user.profilePicture,
+                          fullName: fullName,
+                          currentUserId: currentUserId!,
+                        ),
+                      ),
                     );
+                  },
+                  picUrl: user.profilePicture,
+                ),
+              );
+            },
+          );
+                    
+                    // ListView.builder(
+                    //   itemCount: filteredChats.length,
+                    //   itemBuilder: (context, index) {
+                    //     final chat = filteredChats[index];
+                    //     isOnline(chat.id);
+
+                    //     if (chat.users.isNotEmpty) {
+                    //       final user = chat.users[0];
+                    //       final fullName = '${user.firstName} ${user.lastName}';
+                    //       //final status = userOnlineStatus[chat.id] ?? false;
+                    //       return Padding(
+                    //         padding: const EdgeInsets.symmetric(vertical: 4),
+                    //         child: ChatatWidget(
+                    //           isOnline: true,
+                    //           onLongpress: () {
+                    //             chatToDelete = chat;
+                    //            
+                    //           },
+                    //           timeAgo: handleTimeFromDB(chat.lastMessageDate),
+                    //           userName: fullName,
+                    //           lastMsg: chat.lastMessage,
+                    //           whoSentMsg: chat.senderId.toString() ==
+                    //                   currentUserId.toString()
+                    //               ? 'You: '
+                    //               : '',
+
+                    //           onTap: () async {
+                    //             SharedPreferences prefs =
+                    //                 await SharedPreferences.getInstance();
+                    //             final currentUserId = prefs.getInt('userId');
+                    //             signalRService.dispose();
+                    //             Navigator.push(
+                    //               context,
+                    //               MaterialPageRoute(
+                    //                 builder: (context) => InsideChat(
+                    //                   chatId: chat.id,
+                    //                   picUrl: user.profilePicture,
+                    //                   fullName: fullName,
+                    //                   currentUserId: currentUserId!,
+                    //                 ),
+                    //               ),
+                    //             );
+                    //           },
+                    //           picUrl: user.profilePicture,
+                    //         ),
+                    //       );
+                    //     } else {
+                    //       return const SizedBox.shrink();
+                    //     }
+                    //   },
+                    // );
+
+
+
+
                   }
                 },
               ),

@@ -79,7 +79,10 @@ Future<bool> signOut() async {
 
   if (response.statusCode == 200) {
     print('Account Deleted');
-    prefs.clear();
+    prefs.clear().then((value) => print('Shared preferences cleared'));
+    print('profile Picture after delete $profilePic');
+    final profilePicFromStorage = await getData('profilePic');
+    print('profile Picture from storage after delete $profilePicFromStorage');
     return true;
   } else {
     print('Failed to delete account');
@@ -219,6 +222,7 @@ Future<void> uploadImage(CroppedFile croppedFile) async {
     if (response.statusCode == 200) {
       print("File uploaded successfully!");
       profilePic = imageFile.path;
+      print('profile picture form service uploadeImage: $profilePic');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('profilePicture', profilePic!);
     } else {

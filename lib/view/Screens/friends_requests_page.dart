@@ -95,6 +95,15 @@ class _FriendsRequestsState extends State<FriendsRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: background,
+        title:  Text('Friend Requests',
+        style: TextStyle(
+          color: mainColor,
+          fontFamily: font
+        ),
+        ),
+      ),
       backgroundColor: background,
       body: isLoading
           ? Center(

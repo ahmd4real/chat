@@ -1,4 +1,3 @@
-
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:chat/models/message_model.dart';
 
@@ -9,16 +8,17 @@ class SignalRService {
   void Function()? onTyping;
   void Function()? onOnline;
   void Function()? onOffline;
-  Function(bool isOnline)? onUserOnlineStatus;
+  Function(String chatId, bool isOnline)? onUserOnlineStatus;
   Future<void> setupSignalR(String token,
       {Function()? onDeleteChat,
       Function(Message)? onMessageReceived,
       void Function()? onOnline,
       void Function()? onOffline,
       Function()? onTyping,
-      Function(bool isOnline,)? onUserOnlineStatus}) async {
-
-
+      Function(
+        String chatId,
+        bool isOnline,
+      )? onUserOnlineStatus}) async {
     this.onMessageReceived = onMessageReceived;
     this.onDeleteChat = onDeleteChat;
     this.onTyping = onTyping;
@@ -44,19 +44,19 @@ class SignalRService {
         final id = parameters[0] as int;
         final message = parameters[1] as String;
         final timestamp = parameters[2] as String;
-        final msgdate=parameters[3] as String;
+        final msgdate = parameters[3] as String;
 
         if (onMessageReceived != null) {
-       
           onMessageReceived(Message(
-            //messageDate: msgdate,
-              msg: message, sender: id.toString(), timestamp: timestamp));
+              //messageDate: msgdate,
+              msg: message,
+              sender: id.toString(),
+              timestamp: timestamp));
         }
       }
     });
 
     hubConnection.on('DeleteChat', (message) {
-   
       if (onDeleteChat != null) {
         onDeleteChat();
       }
@@ -68,17 +68,15 @@ class SignalRService {
       }
     });
 
-
     hubConnection.on('IsOnline', (parameters) {
-  if (parameters != null && parameters.length ==1 ) {
-    final isOnline = parameters[0] as bool;
-    if (onUserOnlineStatus != null) {
-      onUserOnlineStatus(isOnline);
-    }
-  }
-});
-
-
+      if (parameters != null && parameters.length == 2) {
+        final isOnline = parameters[0] as bool;
+        final chatId = parameters[1] as String;
+        if (onUserOnlineStatus != null) {
+          onUserOnlineStatus(chatId, isOnline);
+        }
+      }
+    });
   }
 
   Future<void> sendMessage(String message, String chatId) async {
@@ -123,7 +121,7 @@ class SignalRService {
       await hubConnection.invoke('IsOnline', args: [chatId]);
       print('IsOnline invoked successfully');
     } catch (e) {
-     print('Error invoking IsOnline: $e');
+      print('Error invoking IsOnline: $e');
     }
   }
 

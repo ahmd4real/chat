@@ -58,7 +58,10 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: 
+      
+      
+      background,
       appBar: AppBar(
         backgroundColor: background,
         title: Text(

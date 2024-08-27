@@ -1,5 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
-//import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
+
 import 'package:chat/models/BLoCs/cubit/friend_request_cubit.dart';
 import 'package:chat/models/chat_model.dart';
 import 'package:chat/services/services.dart';
@@ -15,9 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+String? profilePic;
 
-
-String ?profilePic;
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   static String id = 'HomePage';
@@ -59,8 +58,6 @@ class _HomePageState extends State<HomePage> {
           bio: bio,
         ),
       ];
-     
-      
     });
   }
 
@@ -75,11 +72,10 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
+          backgroundColor:
+              //const Color.fromARGB(255, 123, 142, 145),
 
-          backgroundColor: 
-          //const Color.fromARGB(255, 123, 142, 145),
-          
-          background,
+              background,
           bottomNavigationBar: CustomNavBar(
             onTabChange: (index) => navigateScreens(index),
           ),
@@ -103,7 +99,7 @@ class Home extends StatefulWidget {
 late List<Chat> allChats;
 List<Chat> filteredChats = [];
 late Chat chatToDelete;
-List<Chat> ?lastMsgs = [];
+List<Chat>? lastMsgs = [];
 int? currentUserId;
 late List<Map<String, String>> mp;
 
@@ -129,24 +125,22 @@ class _HomeState extends State<Home> {
 
     _searchController.addListener(_filterChats);
 
-    signalRService.setupSignalR(kToken, onDeleteChat: () {
-      print('hello from onDeleteChat->initState->home_page.dart');
-      setState(() {
-        allChats.remove(chatToDelete);
-        filteredChats.remove(chatToDelete);
-      });
-    }, 
-
-    onUserOnlineStatus: (chatId, isOnline) {
-      setState(() {
-        userOnlineStatus[chatId] = isOnline;
-      });
-      print(chatId + ' ' + isOnline.toString());
-    },
-    
-  
-    
-    
+    signalRService.setupSignalR(
+      kToken,
+      onDeleteChat: () {
+        print('hello from onDeleteChat->initState->home_page.dart');
+        setState(() {
+          allChats.remove(chatToDelete);
+          filteredChats.remove(chatToDelete);
+        });
+      },
+      onUserOnlineStatus: (chatId, isOnline) {
+        print('hello from onUserOnlineStatus->initState->home_page.dart');
+        setState(() {
+          userOnlineStatus[chatId] = isOnline;
+        });
+        print(chatId + ' ' + isOnline.toString());
+      },
     );
   }
 
@@ -229,131 +223,77 @@ class _HomeState extends State<Home> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(child: Text('No chats available'));
                   } else {
-                    return 
-                    
-                    ListView.builder(
-            itemCount: filteredChats.length,
-            itemBuilder: (context, index) {
-              final chat = filteredChats[index];
-              final user = chat.users[0];
-              final fullName = '${user.firstName} ${user.lastName}';
-              final isUserOnline = userOnlineStatus[chat.id] ?? false;
+                    return ListView.builder(
+                      itemCount: filteredChats.length,
+                      itemBuilder: (context, index) {
+                        final chat = filteredChats[index];
+                        final user = chat.users[0];
+                        final fullName = '${user.firstName} ${user.lastName}';
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: ChatatWidget(
-                  isOnline: isUserOnline,
-                  onLongpress: () {
-                    chatToDelete = chat;
-                     showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Delete Chat'),
-                                      content: const Text(
-                                          'Are you sure you want to delete this chat?'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            _deleteChat(chat);
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Delete'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                  },
-                  timeAgo: handleTimeFromDB(chat.lastMessageDate),
-                  userName: fullName,
-                  lastMsg: chat.lastMessage,
-                  whoSentMsg: chat.senderId.toString() == currentUserId.toString() 
-                              ? 'You: ' 
-                              : '',
-                  onTap: () async {
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    final currentUserId = prefs.getInt('userId');
-                    signalRService.dispose();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => InsideChat(
-                          chatId: chat.id,
-                          picUrl: user.profilePicture,
-                          fullName: fullName,
-                          currentUserId: currentUserId!,
-                        ),
-                      ),
+                        isOnline(chat.id);
+                        final isUserOnline = userOnlineStatus[chat.id] ?? false;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: ChatatWidget(
+                            isOnline: isUserOnline,
+                            onLongpress: () {
+                              chatToDelete = chat;
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete Chat'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this chat?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          _deleteChat(chat);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            timeAgo: handleTimeFromDB(chat.lastMessageDate),
+                            userName: fullName,
+                            lastMsg: chat.lastMessage,
+                            whoSentMsg: chat.senderId.toString() ==
+                                    currentUserId.toString()
+                                ? 'You: '
+                                : '',
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              final currentUserId = prefs.getInt('userId');
+                              signalRService.dispose();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InsideChat(
+                                    chatId: chat.id,
+                                    picUrl: user.profilePicture,
+                                    fullName: fullName,
+                                    currentUserId: currentUserId!,
+                                  ),
+                                ),
+                              );
+                            },
+                            picUrl: user.profilePicture,
+                          ),
+                        );
+                      },
                     );
-                  },
-                  picUrl: user.profilePicture,
-                ),
-              );
-            },
-          );
-                    
-                    // ListView.builder(
-                    //   itemCount: filteredChats.length,
-                    //   itemBuilder: (context, index) {
-                    //     final chat = filteredChats[index];
-                    //     isOnline(chat.id);
-
-                    //     if (chat.users.isNotEmpty) {
-                    //       final user = chat.users[0];
-                    //       final fullName = '${user.firstName} ${user.lastName}';
-                    //       //final status = userOnlineStatus[chat.id] ?? false;
-                    //       return Padding(
-                    //         padding: const EdgeInsets.symmetric(vertical: 4),
-                    //         child: ChatatWidget(
-                    //           isOnline: true,
-                    //           onLongpress: () {
-                    //             chatToDelete = chat;
-                    //            
-                    //           },
-                    //           timeAgo: handleTimeFromDB(chat.lastMessageDate),
-                    //           userName: fullName,
-                    //           lastMsg: chat.lastMessage,
-                    //           whoSentMsg: chat.senderId.toString() ==
-                    //                   currentUserId.toString()
-                    //               ? 'You: '
-                    //               : '',
-
-                    //           onTap: () async {
-                    //             SharedPreferences prefs =
-                    //                 await SharedPreferences.getInstance();
-                    //             final currentUserId = prefs.getInt('userId');
-                    //             signalRService.dispose();
-                    //             Navigator.push(
-                    //               context,
-                    //               MaterialPageRoute(
-                    //                 builder: (context) => InsideChat(
-                    //                   chatId: chat.id,
-                    //                   picUrl: user.profilePicture,
-                    //                   fullName: fullName,
-                    //                   currentUserId: currentUserId!,
-                    //                 ),
-                    //               ),
-                    //             );
-                    //           },
-                    //           picUrl: user.profilePicture,
-                    //         ),
-                    //       );
-                    //     } else {
-                    //       return const SizedBox.shrink();
-                    //     }
-                    //   },
-                    // );
-
-
-
-
                   }
                 },
               ),

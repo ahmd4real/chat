@@ -155,7 +155,7 @@ print('init is working');
               children: [
                 Text(widget.fullName),
                 Text(
-                  // 'Online',
+               
                   '$typingSetState $userOnlineStatus', //typing ? 'typing...' : '',
                   style: TextStyle(
                     color: kGreen,

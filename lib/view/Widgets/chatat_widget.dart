@@ -11,7 +11,7 @@ class ChatatWidget extends StatelessWidget {
     this.picUrl,
     this.lastMsg = '',
     this.whoSentMsg = '',
-    this.numberOfUnread = 7,
+    this.numberOfUnread = 0,
     this.onLongpress,
   });
 

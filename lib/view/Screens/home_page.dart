@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     email = await getData('email') ?? '';
     profilePic = await getData('profilePicture');
     bio = await getData('bio');
+    
 
     setState(() {
       pages = [
@@ -73,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         create: (context) => FriendRequestCubit()..loadFriendRequestStates(),
         child: Scaffold(
           backgroundColor:
-              //const Color.fromARGB(255, 123, 142, 145),
+             
 
               background,
           bottomNavigationBar: CustomNavBar(

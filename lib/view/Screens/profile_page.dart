@@ -158,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(32),
                             border: Border.all(
-                              color: const Color.fromARGB(164, 133, 2, 2),
+                              color: const Color.fromARGB(163, 201, 111, 8),
                               width: 1.5,
                             ),
                           ),
@@ -167,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               'Logout',
                               style: TextStyle(
                                 fontFamily: font,
-                                color: Color.fromARGB(164, 133, 2, 2),
+                                color: Color.fromARGB(163, 201, 111, 8),
                                 fontSize: 20,
                               ),
                             ),

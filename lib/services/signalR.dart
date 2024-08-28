@@ -48,7 +48,7 @@ class SignalRService {
 
         if (onMessageReceived != null) {
           onMessageReceived(Message(
-              //messageDate: msgdate,
+              messageDate: msgdate,
               msg: message,
               sender: id.toString(),
               timestamp: timestamp));

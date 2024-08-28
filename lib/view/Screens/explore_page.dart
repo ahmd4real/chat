@@ -125,9 +125,11 @@ class _ExplorePageState extends State<ExplorePage> {
                         final profilePic = person['profilePicture'];
                         final isPending =
                             pendingRequests[person['id']] ?? false;
+                            final bio=person['biography'];
 
 
                         return ExplorePeopleWidget(
+                          bio: bio,
                           userName: fullName,
                           id: person['id'],
                           profilePic: profilePic,

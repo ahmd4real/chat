@@ -1,7 +1,6 @@
 import 'package:chat/core/utils/constants.dart';
 import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/services/services.dart';
-import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/models/message_model.dart';
@@ -39,7 +38,7 @@ class _InsideChatState extends State<InsideChat> {
     super.initState();
 
     _loadMessages();
-print('init is working');
+    print('init is working');
     signalRService.setupSignalR(
       kToken,
       onMessageReceived: (message) {
@@ -107,29 +106,44 @@ print('init is working');
     super.dispose();
   }
 
-  void sendMessage() async {
-    final message = controller.text.trim();
-    if (message.isNotEmpty) {
-      final String timeNow = getTimeNow();
-      await signalRService.sendMessage(message, widget.chatId);
-      setState(() {
-        tapped = true;
-        messagesList.insert(
-          0,
-          Message(
-            msg: message,
-            sender: widget.currentUserId.toString(),
-            timestamp: DateTime.now().toString(),
-            messageDate: timeNow,
-          ),
-        );
-      });
-      controller.clear();
-      _scrollToBottom();
-    }
-  }
 
- 
+void sendMessage() async {
+  final message = controller.text.trim();
+  if (message.isNotEmpty) {
+    await signalRService.sendMessage(message, widget.chatId);
+    setState(() {
+      final newMessage = Message.newMessage(
+        msg: message,
+        sender: widget.currentUserId.toString(),
+      );
+      messagesList.insert(0, newMessage);
+    });
+    controller.clear();
+    _scrollToBottom();
+  }
+}
+
+  // void sendMessage() async {
+  //   final message = controller.text.trim();
+  //   if (message.isNotEmpty) {
+  //     final String timeNow = getTimeNow();
+  //     await signalRService.sendMessage(message, widget.chatId);
+  //     setState(() {
+  //       tapped = true;
+  //       messagesList.insert(
+  //         0,
+  //         Message(
+  //           msg: message,
+  //           sender: widget.currentUserId.toString(),
+  //           timestamp: DateTime.now().toString(),
+  //           messageDate: timeNow,
+  //         ),
+  //       );
+  //     });
+  //     controller.clear();
+  //     _scrollToBottom();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +169,7 @@ print('init is working');
               children: [
                 Text(widget.fullName),
                 Text(
-               
-                  '$typingSetState $userOnlineStatus', //typing ? 'typing...' : '',
+                  '$typingSetState $userOnlineStatus',
                   style: TextStyle(
                     color: kGreen,
                     fontSize: 12,
@@ -186,7 +199,7 @@ print('init is working');
                     widget.currentUserId.toString();
 
                 return ChatBubble(
-                  tapped: tapped,
+               
                   message: message,
                   isSentByUser: isSentByUser,
                 );
@@ -230,7 +243,6 @@ print('init is working');
                         child: Image.asset(kIcon),
                       )),
                   onPressed: () {
-                   
                     sendMessage();
                   },
                 ),

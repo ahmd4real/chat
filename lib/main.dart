@@ -71,7 +71,9 @@ class ChatApp extends StatelessWidget {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
-            theme: state.themeData,
+            theme: 
+            ThemeData.dark(),
+            //state.themeData,
             debugShowCheckedModeBanner: false,
             routes: {
               LoginPage.id: (context) => LoginPage(),

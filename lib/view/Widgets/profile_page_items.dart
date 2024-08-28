@@ -24,12 +24,13 @@ class ProfilePageItems extends StatelessWidget {
       ),
       child: Center(
         child: ListTile(
-          leading: Icon(icon),
+          leading: Icon(icon,color: kWhite,),
           title: Text(
             text,
-            style: TextStyle(color:mainColor ),
+            style: TextStyle(color:mainColor,fontFamily: font ,fontWeight: FontWeight.bold),
+            
           ),
-          trailing: trailing??const Icon(Icons.chevron_right),
+          trailing: trailing?? Icon(Icons.chevron_right,color: kWhite,),
           onTap: navigateScreens,
         ),
       ),

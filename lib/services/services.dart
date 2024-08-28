@@ -224,7 +224,7 @@ Future<void> uploadImage(CroppedFile croppedFile) async {
       profilePic = imageFile.path;
       print('profile picture form service uploadeImage: $profilePic');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('profilePicture', profilePic!);
+      prefs.setString('profilePicture', imageFile.path);
     } else {
       print("File upload failed: ${response.statusCode}");
     }

@@ -132,9 +132,10 @@ String getTimeNow() {
   
   int hour = DateTime.now().hour;
   final minute = DateTime.now().minute;
+ String minuteStr = minute < 10 ? '0$minute' : '$minute';
   String pmOrAm = hour > 12 ? 'PM' : 'AM';
   hour = hour > 12 ? hour - 12 : hour;
-  return '$hour:$minute $pmOrAm';
+  return '$hour:$minuteStr $pmOrAm';
 }
 
 String handleTimeFromDB(String dbtime) {

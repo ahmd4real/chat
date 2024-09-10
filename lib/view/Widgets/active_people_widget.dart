@@ -6,7 +6,7 @@ class ActivePeopleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 80,
       height: 80,
       child:  Column(
@@ -14,7 +14,7 @@ class ActivePeopleWidget extends StatelessWidget {
           CircleAvatar(
             backgroundImage: const AssetImage(kAvatar),
             radius: 35,
-            backgroundColor: noColor,
+            backgroundColor: kGreen,
           ),
           const SizedBox(height: 4),
           const Text('Ahmed ')]

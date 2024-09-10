@@ -199,35 +199,33 @@ Future<List<Request>> getRequests(String jwtToken) async {
 
 Future<void> uploadImage(CroppedFile croppedFile) async {
   File imageFile = File(croppedFile.path);
-  if (imageFile != null) {
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(
-          '${baseUrl}settings/profile-picture'), // Replace with your upload URL
-    );
-    request.headers.addAll(
-      {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer ${await getData('jwt')}'
-      },
-    );
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'newPicture',
-        imageFile.path,
-        filename: imageFile.path,
-      ),
-    );
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      print("File uploaded successfully!");
-      profilePic = imageFile.path;
-      print('profile picture form service uploadeImage: $profilePic');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('profilePicture', imageFile.path);
-    } else {
-      print("File upload failed: ${response.statusCode}");
-    }
+  var request = http.MultipartRequest(
+    'POST',
+    Uri.parse(
+        '${baseUrl}settings/profile-picture'), // Replace with your upload URL
+  );
+  request.headers.addAll(
+    {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': 'Bearer ${await getData('jwt')}'
+    },
+  );
+  request.files.add(
+    await http.MultipartFile.fromPath(
+      'newPicture',
+      imageFile.path,
+      filename: imageFile.path,
+    ),
+  );
+  var response = await request.send();
+  if (response.statusCode == 200) {
+    print("File uploaded successfully!");
+    profilePic = imageFile.path;
+    print('profile picture form service uploadeImage: $profilePic');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('profilePicture', imageFile.path);
+  } else {
+    print("File upload failed: ${response.statusCode}");
   }
 }
 
@@ -244,10 +242,11 @@ Future<bool> friendRequestResponse(bool isAccepted, int id) async {
       body: jsonEncode({"isAccepted": isAccepted, "id": id}));
 
   if (response.statusCode == 200) {
-    if (isAccepted)
+    if (isAccepted) {
       print('Friend request accepted successfully');
-    else
+    } else {
       print('Friend request declined successfully');
+    }
     return true;
   }
   print(response.statusCode);

@@ -1,6 +1,5 @@
 import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class ProfilePageItems extends StatelessWidget {
   ProfilePageItems(

@@ -1,6 +1,6 @@
 import 'package:chat/core/utils/constants.dart';
-import 'package:chat/core/utils/utilities.dart';
 import 'package:chat/services/services.dart';
+import 'package:chat/view/Screens/user_profile_page.dart';
 import 'package:chat/view/Widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/models/message_model.dart';
@@ -42,7 +42,7 @@ class _InsideChatState extends State<InsideChat> {
     signalRService.setupSignalR(
       kToken,
       onMessageReceived: (message) {
-        print(' hello from  onMessageReceived: $message');
+        print(' hello from onMessageReceived: $message');
         setState(() {
           messagesList.insert(
             0,
@@ -53,6 +53,8 @@ class _InsideChatState extends State<InsideChat> {
               messageDate: message.messageDate,
             ),
           );
+
+         // print(message.messageDate+' Date '+ message.timestamp+' time ');
 
           _scrollToBottom();
           setState(() {
@@ -84,7 +86,7 @@ class _InsideChatState extends State<InsideChat> {
           await fetchMessages(widget.chatId, kToken);
       setState(() {
         messagesList.addAll(fetchedMessages);
-        messagesList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+       messagesList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       });
     } catch (e) {
       print('Error fetching messages: $e');
@@ -156,20 +158,30 @@ void sendMessage() async {
         backgroundColor: background,
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: widget.picUrl != null
-                  ? NetworkImage(
-                      'https://chat-app.runasp.net/${widget.picUrl!}')
-                  : const AssetImage(kAvatar) as ImageProvider,
-              radius: 32,
+            InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage(userName: widget.fullName,profilePic: widget.picUrl,)));
+              },
+              child: CircleAvatar(
+                backgroundColor: kGreen,
+                backgroundImage: widget.picUrl != null
+                    ? NetworkImage(
+                        'https://chat-app.runasp.net/${widget.picUrl!}')
+                    : const AssetImage(kAvatar) as ImageProvider,
+                radius: 32,
+              ),
             ),
             const SizedBox(width: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.fullName),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(widget.fullName,overflow: TextOverflow.ellipsis,maxLines: 1,),
+                ),
                 Text(
-                  '$typingSetState $userOnlineStatus',
+                  typingSetState,
                   style: TextStyle(
                     color: kGreen,
                     fontSize: 12,
@@ -197,9 +209,7 @@ void sendMessage() async {
                 final message = messagesList[index];
                 final isSentByUser = message.sender.toString() ==
                     widget.currentUserId.toString();
-
                 return ChatBubble(
-               
                   message: message,
                   isSentByUser: isSentByUser,
                 );
@@ -208,7 +218,10 @@ void sendMessage() async {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-            child: TextField(
+            child: 
+            TextField(
+              minLines: 1,
+              maxLines: 3,
               onChanged: (value) {
                 if (value.isNotEmpty) {
                   signalRService.isTyping(widget.chatId);

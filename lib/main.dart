@@ -10,6 +10,7 @@ import 'package:chat/services/auth_services.dart';
 import 'package:chat/view/Screens/Auth/change_password_page.dart';
 import 'package:chat/view/Screens/Auth/enter_email.dart';
 import 'package:chat/view/Screens/Auth/verificaton_code_page.dart';
+import 'package:chat/view/Screens/edit_profile_page.dart';
 import 'package:chat/view/Screens/home_page.dart';
 import 'package:chat/view/Screens/Auth/login_page.dart';
 import 'package:chat/view/Screens/Auth/signup_page.dart';
@@ -83,8 +84,14 @@ class ChatApp extends StatelessWidget {
               ChangePasswordPage.id: (context) => const ChangePasswordPage(),
               VerificationCodePage.id: (context) =>
                   VerificationCodePage(email: '', resetPass: false),
+              EditProfilePage.id: (context) => EditProfilePage(),
+             // ProfilePage.id: (context) => ProfilePage(),
             },
-            home:FutureBuilder<bool>(
+            home:
+        // ExplorePage()
+            
+            
+            FutureBuilder<bool>(
               future: isLoggedIn(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

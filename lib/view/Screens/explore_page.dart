@@ -69,6 +69,7 @@ class _ExplorePageState extends State<ExplorePage> {
           style: TextStyle( 
             color: mainColor,
             fontSize: 32,
+            fontFamily: font,
             fontWeight: FontWeight.w600,
           ),
         ),

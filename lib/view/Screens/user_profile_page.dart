@@ -17,8 +17,10 @@ class UserProfilePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
+          
           children: [
             CircleAvatar(
+              backgroundColor: kGreen,
               radius: 100,
               backgroundImage: profilePic != null
                   ? NetworkImage('https://chat-app.runasp.net/${profilePic!}')
@@ -27,17 +29,16 @@ class UserProfilePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               child: Text(
-                userName,
+                
+              userName,
                 style: const TextStyle(
                   fontFamily: font,
                   fontSize: 32,
                 ),
+                textAlign: TextAlign.center,
               ),
 
-              // Divider(
-              //   height: 1,
-              //   color: searchContent,
-              // ),
+              
             ),
             Text(
               bio ?? '',

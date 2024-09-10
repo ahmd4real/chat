@@ -41,7 +41,7 @@ class Message {
   // Factory constructor to create a Message from JSON
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      timestamp: DateTime.now().toString(),
+      timestamp: json['messageDate'],
       msg: json['messageText'],
       sender: json['senderId'].toString(),
       messageDate: json['messageDate'],

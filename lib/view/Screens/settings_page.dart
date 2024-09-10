@@ -1,3 +1,4 @@
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/view/Screens/Auth/change_password_page.dart';
 import 'package:chat/view/Widgets/profile_page_items.dart';
 import 'package:chat/view/Widgets/toggle_button.dart';
@@ -10,13 +11,23 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
+        title:  Text('Settings',style:TextStyle(
+              fontFamily: font,
+              color: mainColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+            ),),
+        backgroundColor: background,
+        
       ),
+      backgroundColor: background,
       body: Center(
         child: ListView(
           children: [
-            for (int i = 0; i < 3; i++)
+            const SizedBox(
+              height: 16,
+            ),
+           
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),

@@ -5,6 +5,8 @@ import 'package:chat/models/BLoCs/Theme/theme_bloc.dart';
 import 'package:chat/models/BLoCs/Theme/theme_event.dart';
 
 class ChangeThemeButton extends StatefulWidget {
+  const ChangeThemeButton({super.key});
+
   @override
   _ChangeThemeButtonState createState() => _ChangeThemeButtonState();
 }

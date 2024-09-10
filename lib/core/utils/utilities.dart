@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/view/Widgets/custom_image_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void snackBar(BuildContext context, String msg) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: chatBubble2,
+      content: Center(
+          child: Text(
+        msg,
+        style: TextStyle(color: kWhite, fontFamily: font),
+      ))));
 }
 
 bool passwordMatched(String password, String confirmPassword) {
@@ -113,10 +120,8 @@ cropImage(File imgFile, Function(Image) setImage) async {
     imageCache.clear();
     await uploadImage(croppedFile);
     setImage(Image.file(File(croppedFile.path)));
-    
   }
 }
-
 
 Future<void> saveProfilePicture(String profilePicUrl) async {
   final prefs = await SharedPreferences.getInstance();
@@ -129,21 +134,22 @@ Future<String?> loadProfilePicture() async {
 }
 
 String getTimeNow() {
-  
   int hour = DateTime.now().hour;
   final minute = DateTime.now().minute;
- String minuteStr = minute < 10 ? '0$minute' : '$minute';
+  String minuteStr = minute < 10 ? '0$minute' : '$minute';
   String pmOrAm = hour > 12 ? 'PM' : 'AM';
   hour = hour > 12 ? hour - 12 : hour;
   return '$hour:$minuteStr $pmOrAm';
 }
 
 String handleTimeFromDB(String dbtime) {
-  if (dbtime == null || dbtime.isEmpty) {
+  if (dbtime.isEmpty) {
     return '';
   }
   String amOrPm = dbtime.substring(0, 2);
+ //print(amOrPm + ' amOrPm' + dbtime + ' dbtime');
   int hour = int.parse(dbtime.substring(3, 5));
+
   hour++;
   hour = hour > 12 ? hour - 12 : hour;
   final minute = dbtime.substring(6, 8);

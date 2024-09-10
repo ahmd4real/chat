@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/models/BLoCs/ImageCubit/image_cubit.dart';
 import 'package:chat/view/Screens/Auth/login_page.dart';
 import 'package:chat/view/Screens/edit_profile_page.dart';
-import 'package:chat/view/Screens/manage_profile_page.dart';
 import 'package:chat/view/Widgets/profile_page_items.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -65,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   CircleAvatar(
                     backgroundImage: imageState.avatarImg.image,
                     radius: MediaQuery.of(context).size.width * 0.25,
-                    backgroundColor: noColor,
+                    backgroundColor: kGreen,
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -99,19 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
-                  const SizedBox(height: 8),
-                  ProfilePageItems(
-                    icon: Icons.person_outlined,
-                    text: "Manage Profile",
-                    navigateScreens: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ManageProfilePage(),
-                        ),
-                      );
-                    },
-                  ),
+                  
                   const SizedBox(height: 8),
                   ProfilePageItems(
                     icon: Icons.settings_outlined,
@@ -131,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          // Show confirmation dialog
+                          
 
                           setState(() {
                             loading = true;

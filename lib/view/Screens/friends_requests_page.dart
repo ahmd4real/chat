@@ -98,10 +98,12 @@ class _FriendsRequestsState extends State<FriendsRequests> {
       appBar: AppBar(
         backgroundColor: background,
         title:  Text('Friend Requests',
-        style: TextStyle(
-          color: mainColor,
-          fontFamily: font
-        ),
+        style: TextStyle( 
+            color: mainColor,
+            fontSize: 32,
+            fontFamily: font,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       backgroundColor: background,
@@ -111,7 +113,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
               color: mainColor,
             ))
           : requests.isEmpty
-              ? const Center(child: Text('No friend requests'))
+              ? const Center(child: Text('No friend requests',style: TextStyle(fontFamily: font),))
               : ListView.builder(
                   itemCount: requests.length,
                   itemBuilder: (context, index) {
@@ -119,7 +121,7 @@ class _FriendsRequestsState extends State<FriendsRequests> {
                     return RequestWidget(
                       fullName:
                           '${request.firstName ?? 'Unknown'} ${request.lastName ?? ''}',
-                      bio: request.biography ?? 'No bio available',
+                      bio: request.biography ?? '',
                       onAccept: () {
                         removeRequestById(request.id);
                         friendRequestResponse(true, request.id);

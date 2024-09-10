@@ -82,9 +82,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: Stack(
                   children: [
                     CircleAvatar(
+                      backgroundColor: kGreen,
                       backgroundImage: imageState.avatarImg.image,
                       radius: MediaQuery.of(context).size.width * 0.25,
-                      backgroundColor: noColor,
+                      //backgroundColor: noColor,
                     ),
                     Positioned(
                       top: 120,
@@ -101,8 +102,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: Text('Edit Profile',
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                        color: kDarkGrey,
+                        color: mainColor,
                         fontSize: 48,
+                        fontFamily: font,
                         fontWeight: FontWeight.bold)),
               ),
               Padding(

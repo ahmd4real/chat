@@ -140,8 +140,9 @@ class ChatBubble extends StatelessWidget {
             children: [
               Text(
                 textAlign: isSentByUser ? TextAlign.end : TextAlign.start,
-                message.isNewMessage ? getTimeNow() : handleTimeFromDB(message.messageDate),
+                message.isNewMessage ? getTimeNow() :handleTimeFromDB(message.timestamp),//message.timestamp,
                 style: const TextStyle(
+                  fontFamily: font,
                   fontSize: 10,
                 ),
               ),

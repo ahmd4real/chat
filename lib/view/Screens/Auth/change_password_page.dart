@@ -1,4 +1,3 @@
-
 import 'package:chat/core/utils/constants.dart';
 import 'package:chat/services/services.dart';
 import 'package:chat/core/utils/utilities.dart';
@@ -31,13 +30,20 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       ),
       inAsyncCall: loading,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: background,
+        ),
+        backgroundColor: background,
+        
         body: Form(
           key: formKey,
           child: ListView(
             children: [
              SizedBox(
                   height: MediaQuery.of(context).size.height / 4,
+                  child: Center(
+                    child: Image.asset(kLogo),
+                  )
                 
                 ),
                 Padding(
@@ -47,28 +53,29 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     child:  Text('Change Password',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                          color: kDarkGrey,
+                          color: mainColor,
+                          fontFamily: font,
                             fontSize: 48, fontWeight: FontWeight.bold)),
                   
                   ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
-                    CustomTextFormField(
+                    
+                  CustomTextFormField(
                       controller: oldPasswordController,
                       hidden: false,
                       labelText: 'Enter old Password',
                       prefixIcon: Icons.key_off_outlined,
                     ),
-                    CustomTextFormField(
+                  CustomTextFormField(
                       controller: newPasswordController,
                       hidden: false,
                       labelText: 'Enter New Password',
                       prefixIcon: Icons.key_outlined,
                     ),
-                    CustomTextFormField(
+                  CustomTextFormField(
                        prefixIcon: Icons.key_outlined,
                       controller: confirmPasswordController,
                       hidden: true,
@@ -84,7 +91,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         return null;
                       },
                     ),
-                    CustomButton(
+                  CustomButton(
                       text: 'Continue',
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
@@ -95,16 +102,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           if (await changePassword(
                             oldPasswordController.text,
                               newPasswordController.text)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Your Password Changed')),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+                                backgroundColor: chatBubble2,
+                                  content: Center(child: Text('Your Password Changed',style: TextStyle(color: kWhite,fontFamily: font) ,))),
                             );
-                            Navigator.pushReplacementNamed(
-                                context, ProfilePage.id);
+                          Navigator.pushReplacement(
+                                context, MaterialPageRoute(builder: (context)=>ProfilePage(firstName: '',lastName: '',email: '',profilePic: '',bio: '',)));
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('failed  Change your password')),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+                                backgroundColor: chatBubble2  ,
+                                  content: Center(child: Text('failed  Change your password',style: TextStyle(color: kWhite,fontFamily: font) ,))),
                             );
                           }
                 

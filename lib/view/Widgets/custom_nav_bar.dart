@@ -15,6 +15,7 @@ class CustomNavBar extends StatelessWidget {
         //rippleColor: kWhite,
         tabBorderRadius: 50,
       // backgroundColor: kBlack,
+      textStyle: const TextStyle(fontFamily: font),
         style: GnavStyle.google,//GnavStyle.google,
           onTabChange: (index) => onTabChange!(index),
           duration: const Duration(milliseconds: 200),

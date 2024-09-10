@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
           );
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
+            SnackBar(backgroundColor: chatBubble2,content: Center(child: Text(state.error,style: TextStyle(color: kWhite,fontFamily: font) ,))),
           );
         }
       },
@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
         child: Scaffold(
           backgroundColor:
           background,
-          //const Color.fromARGB(255, 13, 75, 85),
+        
           appBar: AppBar(
             backgroundColor: background,
           ),
@@ -57,7 +57,11 @@ class LoginPage extends StatelessWidget {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 4,
+                  child: Center(
+                    child: Image.asset(kLogo),
+                  ),
                 ),
+                const SizedBox(height: 16,),
                 Padding(
                   padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.08 + 16,
@@ -66,6 +70,7 @@ class LoginPage extends StatelessWidget {
                     'Login',
                     textAlign: TextAlign.start,
                     style: TextStyle(
+                      fontFamily: font,
                       color: mainColor,
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
@@ -73,7 +78,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 0),
                   child: Column(
                     children: [
                       const SizedBox(height: 16),
@@ -101,12 +106,13 @@ class LoginPage extends StatelessWidget {
                           children: [
                             InkWell(
                               onTap: () {
-                                Navigator.pushReplacementNamed(
+                                Navigator.pushNamed(
                                     context, EnterYourEmail.id);
                               },
                               child: const Text(
                                 'Forgot Password?',
                                 style: TextStyle(
+                                  fontFamily: font,
                                   decorationColor: Colors.grey,
                                   color: Colors.grey,
                                   fontSize: 14,
@@ -139,7 +145,7 @@ class LoginPage extends StatelessWidget {
                     children: [
                       const Text(
                         'Don\'t have an account? ',
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                        style: TextStyle(color: Colors.grey, fontSize: 16,fontFamily: font),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -151,6 +157,7 @@ class LoginPage extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
+                            fontFamily: font,
                             decorationColor: Colors.grey,
                             decoration: TextDecoration.underline,
                             fontWeight: FontWeight.w600,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ImageCubit extends Cubit<ImageState> {
   ImageCubit()
       : super(ImageState(
-          avatarImg: profilePic!=null?
+          avatarImg: profilePic!=null && profilePic!.isNotEmpty?
           Image.network('https://chat-app.runasp.net/$profilePic'):
           Image.asset('assets/images/avatar.png'),
          

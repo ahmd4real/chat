@@ -1,5 +1,4 @@
 import 'package:chat/core/utils/constants.dart';
-import 'package:chat/view/Screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class RequestWidget extends StatelessWidget {
@@ -18,7 +17,20 @@ class RequestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      subtitleTextStyle: TextStyle(
+        fontFamily: font,
+        color: kWhite
+      ),
+      titleTextStyle: TextStyle(
+        fontFamily: font,
+        color: kWhite
+      ),
+      leadingAndTrailingTextStyle: TextStyle(
+        fontFamily: font,
+        color: kWhite
+      ),
       leading: CircleAvatar(
+        backgroundColor: kGreen,
         backgroundImage: profilePicture != null
             ? NetworkImage('https://chat-app.runasp.net/${profilePicture!}')
             : const AssetImage(kAvatar) as ImageProvider,

@@ -30,14 +30,22 @@ class _EnterYourEmailState extends State<EnterYourEmail> {
       progressIndicator: CircularProgressIndicator(color: mainColor,),
       inAsyncCall: loading,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: background,
+        ),
+        backgroundColor: background,
         body: Form(
           key: formKey,
           child: ListView(
             children: [
               SizedBox(
                   height: MediaQuery.of(context).size.height / 4,
+                  child: Center(
+                    child: Image.asset(kLogo),
+                  ),
                 
                 ),
+                 const SizedBox(height: 16),
                 Padding(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.08 + 16,
@@ -45,15 +53,16 @@ class _EnterYourEmailState extends State<EnterYourEmail> {
                     child:  Text('Reset Password',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                          color: kDarkGrey,
+                          color: mainColor,
+                          fontFamily: font,
                             fontSize: 48, fontWeight: FontWeight.bold)),
                   
                   ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
+                   // const SizedBox(height: 16),
                     CustomTextFormField(
                       controller: emailController,
                       hidden: false,
@@ -107,9 +116,12 @@ class _EnterYourEmailState extends State<EnterYourEmail> {
                                           )),
                                 )
                               : ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Failed to send verification code, please try again'),
+                                   SnackBar(
+                                    backgroundColor: chatBubble2,
+                                    content: Center(
+                                      child: Text(
+                                          'Failed to send verification code, please try again',style: TextStyle(color: kWhite,fontFamily: font) ,),
+                                    ),
                                   ),
                                 );
                 

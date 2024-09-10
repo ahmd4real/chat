@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
         setState(() {
           userOnlineStatus[chatId] = isOnline;
         });
-        print(chatId + ' ' + isOnline.toString());
+        print('$chatId $isOnline');
       },
     );
   }
@@ -187,119 +187,137 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SearchBar(
-                hintStyle:
-                    WidgetStatePropertyAll(TextStyle(color: searchContent)),
-                backgroundColor: WidgetStatePropertyAll(searchBack),
-                controller: _searchController,
-                hintText: 'Search your cahts',
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Icon(
-                    Icons.search_sharp,
-                    color: searchContent,
-                    size: 32,
+
+      child: Scaffold(
+        backgroundColor: background,
+        appBar: AppBar(
+          backgroundColor: background,
+          elevation: 0,
+          title: Text(
+            'Chat Hub',
+            style: TextStyle(
+              fontFamily: font,
+              color: mainColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SearchBar(
+                  hintStyle:
+                      WidgetStatePropertyAll(TextStyle(color: searchContent)),
+                  backgroundColor: WidgetStatePropertyAll(searchBack),
+                  controller: _searchController,
+                  hintText: 'Search your cahts',
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      Icons.search_sharp,
+                      color: searchContent,
+                      size: 32,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: FutureBuilder<List<Chat>>(
-                future: futureChats,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                      color: mainColor,
-                    ));
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No chats available'));
-                  } else {
-                    return ListView.builder(
-                      itemCount: filteredChats.length,
-                      itemBuilder: (context, index) {
-                        final chat = filteredChats[index];
-                        final user = chat.users[0];
-                        final fullName = '${user.firstName} ${user.lastName}';
-
-                        isOnline(chat.id);
-                        final isUserOnline = userOnlineStatus[chat.id] ?? false;
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: ChatatWidget(
-                            isOnline: isUserOnline,
-                            onLongpress: () {
-                              chatToDelete = chat;
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete Chat'),
-                                    content: const Text(
-                                        'Are you sure you want to delete this chat?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          _deleteChat(chat);
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Delete'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            timeAgo: handleTimeFromDB(chat.lastMessageDate),
-                            userName: fullName,
-                            lastMsg: chat.lastMessage,
-                            whoSentMsg: chat.senderId.toString() ==
-                                    currentUserId.toString()
-                                ? 'You: '
-                                : '',
-                            onTap: () async {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              final currentUserId = prefs.getInt('userId');
-                              signalRService.dispose();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InsideChat(
-                                    chatId: chat.id,
-                                    picUrl: user.profilePicture,
-                                    fullName: fullName,
-                                    currentUserId: currentUserId!,
+              const SizedBox(height: 16),
+              Expanded(
+                child: FutureBuilder<List<Chat>>(
+                  future: futureChats,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: mainColor,
+                      ));
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No chats available'));
+                    } else {
+                      return ListView.builder(
+                        itemCount: filteredChats.length,
+                        itemBuilder: (context, index) {
+                          final chat = filteredChats[index];
+                          final user = chat.users[0];
+                          final fullName = '${user.firstName} ${user.lastName}';
+        
+                          isOnline(chat.id);
+                          final isUserOnline = userOnlineStatus[chat.id] ?? false;
+        
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: ChatatWidget(
+                              isOnline: isUserOnline,
+                              onLongpress: () {
+                                chatToDelete = chat;
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: chatBubble2,
+                                      title:  Text('Delete Chat',style: TextStyle(color: kWhite,fontFamily: font) ,),
+                                      content:  Text(
+                                          'Are you sure you want to delete this chat?',style: TextStyle(color: kWhite,fontFamily: font) ,),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child:  Text('Cancel',style: TextStyle(color: kWhite,fontFamily: font) ,),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            _deleteChat(chat);
+                                            Navigator.pop(context);
+                                          },
+                                          child:  Text('Delete',style: TextStyle(color: kWhite,fontFamily: font) ,),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              timeAgo: handleTimeFromDB(chat.lastMessageDate),
+                              userName: fullName,
+                              lastMsg: chat.lastMessage,
+                              whoSentMsg: chat.senderId.toString() ==
+                                      currentUserId.toString()
+                                  ? 'You: '
+                                  : '',
+                              onTap: () async {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                final currentUserId = prefs.getInt('userId');
+                                signalRService.dispose();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => InsideChat(
+                                      chatId: chat.id,
+                                      picUrl: user.profilePicture,
+                                      fullName: fullName,
+                                      currentUserId: currentUserId!,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            picUrl: user.profilePicture,
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
+                                );
+                              },
+                              picUrl: user.profilePicture,
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

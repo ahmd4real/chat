@@ -41,7 +41,7 @@ class SignUpPage extends StatelessWidget {
           );
         } else if (state is SignUpFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
+            SnackBar(backgroundColor: chatBubble2,content: Center(child: Text(state.error,style: TextStyle(color: kWhite,fontFamily: font) ,))),
           );
         }
       },
@@ -58,21 +58,25 @@ class SignUpPage extends StatelessWidget {
             child: ListView(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 12,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.08 + 16,
+                  height: MediaQuery.of(context).size.height / 4.5,
+                  child: Center(
+                    child: Image.asset(kLogo),
                   ),
-                  child: Text('Sign Up',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: mainColor,
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold)),
                 ),
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //     left: MediaQuery.of(context).size.width * 0.08 + 16,
+                //   ),
+                //   child: Text('Sign Up',
+                //       textAlign: TextAlign.start,
+                //       style: TextStyle(
+                //         fontFamily: font,
+                //           color: mainColor,
+                //           fontSize: 48,
+                //           fontWeight: FontWeight.bold)),
+                // ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Center(
                     child: Column(
                       children: [
@@ -143,7 +147,7 @@ class SignUpPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Already have an account? '),
+                      const Text('Already have an account? ',style: TextStyle(fontFamily: font),),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacementNamed(context, LoginPage.id);
@@ -151,6 +155,7 @@ class SignUpPage extends StatelessWidget {
                         child: const Text(
                           'Login',
                           style: TextStyle(
+                            fontFamily: font,
                             decoration: TextDecoration.underline,
                             fontWeight: FontWeight.w600,
                           ),

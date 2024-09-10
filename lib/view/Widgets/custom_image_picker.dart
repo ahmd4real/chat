@@ -1,3 +1,4 @@
+import 'package:chat/core/utils/constants.dart';
 import 'package:chat/core/utils/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -75,7 +76,7 @@ class BottomSheetBuilderIcon extends StatelessWidget {
               text,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 16, color: Colors.grey, ),
+                fontSize: 16, color: Colors.grey,fontFamily: font ),
             )
           ],
         ),

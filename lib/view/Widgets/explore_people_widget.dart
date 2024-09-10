@@ -77,12 +77,19 @@ class ExplorePeopleWidget extends StatelessWidget {
                         ),
                 ),
               ),
-              Text(
-                userName,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+
+                  userName,
+                  maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: font,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               BlocBuilder<FriendRequestCubit, Map<int, bool>>(
@@ -115,6 +122,7 @@ class ExplorePeopleWidget extends StatelessWidget {
                               isPending ? 'Pending' : 'Add Friend',
                               textAlign: TextAlign.center,
                               style: TextStyle(
+                                fontFamily: font,
                                 color: kWhite,
                                 fontWeight: FontWeight.bold,
                               ),

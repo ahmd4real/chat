@@ -68,6 +68,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           prefixIcon: Icon(widget.prefixIcon, color: mainColor,),
           labelText: widget.labelText,
           hintText: widget.hintText,
+          hintStyle: const TextStyle(fontFamily: font),
+          labelStyle:  TextStyle(fontFamily: font,color: kWhite),
+
+          
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),

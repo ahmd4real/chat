@@ -2,7 +2,7 @@ import 'package:chat/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ChatatWidget extends StatelessWidget {
-  ChatatWidget({
+  const ChatatWidget({
     super.key,
     required this.userName,
     this.timeAgo = '',
@@ -35,7 +35,7 @@ class ChatatWidget extends StatelessWidget {
               backgroundImage: picUrl != null
                   ? NetworkImage('https://chat-app.runasp.net/${picUrl!}')
                   : const AssetImage(kAvatar),
-              backgroundColor: noColor,
+              backgroundColor: kGreen,
               radius: 30,
             ),
             if (isOnline)
@@ -59,14 +59,19 @@ class ChatatWidget extends StatelessWidget {
         ),
         title: Text(
           userName,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
           style: TextStyle(
+            
+            fontFamily: font,
             color: kWhite,
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: Text(
+        
           '$whoSentMsg $lastMsg',
-          style: TextStyle(color: Colors.grey[500]),
+          style: TextStyle(color: Colors.grey[500],fontFamily: font),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -76,6 +81,7 @@ class ChatatWidget extends StatelessWidget {
             Text(
               timeAgo,
               style: TextStyle(
+                fontFamily: font,
                 color: timeAgoColor,
               ),
             ),
@@ -90,7 +96,7 @@ class ChatatWidget extends StatelessWidget {
                 child: Center(
                   child: Text(
                     numberOfUnread.toString(),
-                    style: TextStyle(color: kWhite),
+                    style: TextStyle(color: kWhite,fontFamily: font),
                   ),
                 ),
               ),

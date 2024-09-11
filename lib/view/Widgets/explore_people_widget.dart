@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/core/utils/constants.dart';
 
-
-
-
 class ExplorePeopleWidget extends StatelessWidget {
   final String userName;
   final int id;
@@ -16,7 +13,11 @@ class ExplorePeopleWidget extends StatelessWidget {
   //String userId;
 
   ExplorePeopleWidget(
-      {super.key, this.bio,required this.userName, required this.id, this.profilePic});
+      {super.key,
+      this.bio,
+      required this.userName,
+      required this.id,
+      this.profilePic});
 
   void handleAddFriend(BuildContext context) async {
     bool result = await addFriend(id);
@@ -42,7 +43,7 @@ class ExplorePeopleWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => UserProfilePage(
-                    bio:bio,
+                        bio: bio,
                         userName: userName,
                         profilePic: profilePic,
                       )));
@@ -64,11 +65,28 @@ class ExplorePeopleWidget extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 2.5,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: profilePic != null
-                      ? Image(
-                          image: NetworkImage(
-                              'https://chat-app.runasp.net/$profilePic'),
+                  child: profilePic != null && profilePic!.isNotEmpty
+                      ? Image.network(
+                          'https://chat-app.runasp.net/$profilePic',
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: kGreen,
+                              ),
+                               height: MediaQuery.of(context).size.width / 2.5,
+                width: MediaQuery.of(context).size.width / 2.5,
+                              child: ClipRRect(
+                                 borderRadius: BorderRadius.circular(20),
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  color: kWhite,
+                                  size: MediaQuery.of(context).size.width / 2.5,
+                                ),
+                              ),
+                            );
+                          },
                         )
                       : Icon(
                           Icons.person_rounded,
@@ -80,10 +98,9 @@ class ExplorePeopleWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-
                   userName,
                   maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
